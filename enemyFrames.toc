@@ -1,0 +1,11 @@
+## Interface: 11200
+## Title: BG Enemy Frames
+## Notes: by kuurtzen
+
+globals\spellCastingCore.lua
+globals\spellInfo.lua
+
+enemyFrames.lua
+--enemyFramesCore.lua
+
+
