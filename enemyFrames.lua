@@ -14,28 +14,21 @@ local moduiLoaded = false
 local TEXTURE = [[Interface\AddOns\enemyFrames\globals\barTexture.tga]]
 local BACKDROP = {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]],}
 local factionRGB = {['Alliance'] = {['r'] = 0, ['g'] = .68, ['b'] = .94}, ['Horde'] = {['r'] = 1, ['g'] = .1, ['b'] = .1}}
-local playerFactionColor
+local enemyFactionColor
 
 local frameMovable = true
-local 	enemyFrame = CreateFrame('Frame', 'enemyFrame', UIParent)
+local 	enemyFrame = CreateFrame('Frame', 'enemyFrameDisplay', UIParent)
 		enemyFrame:SetFrameStrata("BACKGROUND")
-		--enemyFrame:ClearAllPoints()
 		enemyFrame:SetPoint('CENTER', UIParent)
 		
 		enemyFrame:SetHeight(20)
 		
-		--enemyFrame.background = enemyFrame:CreateTexture()
-		--enemyFrame.background:SetTexture(0,0,0,0.3)
-		--enemyFrame.background:SetAllPoints() 
 		enemyFrame:SetBackdrop(BACKDROP)
-		enemyFrame:SetBackdropColor(0, 0, 0, .4)
-		
-		--modSkin(enemyFrame, 13)
-		--modSkinColor(enemyFrame, .2, .2, .2)
+		enemyFrame:SetBackdropColor(0, 0, 0, .6)
 		
 		enemyFrame:SetMovable(true)
 		enemyFrame:EnableMouse(true)
-		enemyFrame:ClampedToScreen(true)
+		enemyFrame:SetClampedToScreen(true)
 		
 		enemyFrame:SetScript('OnDragStart', function() if frameMovable then this:StartMoving() end end)
 		enemyFrame:SetScript('OnDragStop', function() if frameMovable then  this:StopMovingOrSizing() end end)
@@ -52,17 +45,16 @@ local 	enemyFrame = CreateFrame('Frame', 'enemyFrame', UIParent)
 		enemyFrame.spawnText:SetText('-')
 		
 		enemyFrame.spawnText.Button = CreateFrame('Button', nil, enemyFrame)
-		--enemyFrame.spawnButton:SetAllPoints()
 		enemyFrame.spawnText.Button:SetHeight(15)	enemyFrame.spawnText.Button:SetWidth(15)
 
 		
-local unitWidth, unitHeight = 65, 30
+local unitWidth, unitHeight, castBarHeight, ccIconWidth, ccIconHeight = 64, 20, 10, 26, 22
 for i = 1, unitLimit do
 	-- health statusbar
 	units[i] = CreateFrame('StatusBar', nil, enemyFrame)
 	units[i]:SetFrameLevel(0)
-	--units[i]:SetStatusBarTexture(TEXTURE)
-	units[i]:SetWidth(unitWidth)	units[i]:SetHeight(unitHeight*.70)
+	units[i]:SetStatusBarTexture(TEXTURE)
+	units[i]:SetWidth(unitWidth)	units[i]:SetHeight(unitHeight)
 	units[i]:SetMinMaxValues(0, 100)
 	
 	local pos = math.mod(i,unitGroup)
@@ -77,7 +69,7 @@ for i = 1, unitLimit do
 	end		
 	
 	units[i]:SetBackdrop(BACKDROP)
-	units[i]:SetBackdropColor(0, 0, 0, .4)
+	units[i]:SetBackdropColor(0, 0, 0, .6)
 	
 --	modSkin(units[i], 8)
 --	modSkinPadding(units[i], 1)
@@ -89,8 +81,7 @@ for i = 1, unitLimit do
 	units[i].manabar:SetStatusBarTexture(TEXTURE)
 	units[i].manabar:SetHeight(unitHeight*.10)
 	units[i].manabar:SetWidth(unitWidth)	
-	units[i].manabar:SetMinMaxValues(0, 100)
-	
+	units[i].manabar:SetMinMaxValues(0, 100)	
 	units[i].manabar:SetPoint('TOPLEFT', units[i], 'BOTTOMLEFT', 0, 2)
 	
 	units[i].manabar:SetBackdrop(BACKDROP)
@@ -103,15 +94,14 @@ for i = 1, unitLimit do
 	-- cast bar --
 	units[i].castbar = CreateFrame('StatusBar', nil, units[i])
 	units[i].castbar:SetFrameLevel(0)
-	--units[i].castbar:SetStatusBarTexture(TEXTURE)
-	units[i].castbar:SetHeight(unitHeight*.30)
+	units[i].castbar:SetStatusBarTexture(TEXTURE)
+	units[i].castbar:SetHeight(castBarHeight)
 	units[i].castbar:SetWidth(unitWidth - (units[i].castbar:GetHeight()))	
---	units[i].castbar:SetMinMaxValues(0, 100)
 	units[i].castbar:SetStatusBarColor(1, .4, 0)
-	units[i].castbar:SetPoint('TOPLEFT', units[i], 'BOTTOMLEFT', units[i].castbar:GetHeight(), -3)
+	units[i].castbar:SetPoint('TOPRIGHT', units[i], 'BOTTOMRIGHT', 0, -3)
 	
 	units[i].castbar:SetBackdrop(BACKDROP)
-	units[i].castbar:SetBackdropColor(0, 0, 0, .4)
+	units[i].castbar:SetBackdropColor(0, 0, 0, .6)
 	
 --	modSkin(units[i].castbar, 8)
 --	modSkinPadding(units[i].castbar, 1)
@@ -128,7 +118,6 @@ for i = 1, unitLimit do
 	units[i].castbar.icon = units[i].castbar.iconborder:CreateTexture()
 	units[i].castbar.icon:SetTexture([[Interface\Icons\Inv_misc_gem_sapphire_01]])
 	units[i].castbar.icon:SetTexCoord(.078, .92, .079, .937)
-	--units[i].castbar.icon:SetWidth(units[i].castbar:GetHeight()+1)	units[i].castbar.icon:SetHeight(units[i].castbar:GetHeight()+1)
 	units[i].castbar.icon:SetAllPoints()
 	units[i].castbar.icon:SetPoint('CENTER', units[i].castbar.iconborder, 'CENTER')
 	
@@ -145,7 +134,7 @@ for i = 1, unitLimit do
 	units[i].castbar.timer:SetShadowOffset(1, -1)
 	units[i].castbar.timer:SetShadowColor(0, 0, 0)
 	units[i].castbar.timer:SetPoint('RIGHT', units[i].castbar, 'RIGHT', -2, 1)
-	units[i].castbar.timer:SetText('1.5s')
+	units[i].castbar.timer:SetText('1.5')
 	--------------
 
 	units[i].name = units[i]:CreateFontString(nil, 'OVERLAY')
@@ -155,13 +144,14 @@ for i = 1, unitLimit do
 	
 	---- CC ------
 	units[i].cc = CreateFrame('Frame', nil, units[i])
-	units[i].cc:SetWidth(25) units[i].cc:SetHeight(22)
+	units[i].cc:SetWidth(ccIconWidth) units[i].cc:SetHeight(ccIconHeight)
 	units[i].cc:SetPoint('TOPLEFT', units[i],'TOPRIGHT', 4, -1)
 	
 	--modSkin(units[i].cc, 10)
 	--modSkinPadding(units[i].cc, 2)
 
 	units[i].cc.icon = units[i].cc:CreateTexture(nil, 'ARTWORK')
+	units[i].cc.icon:SetTexture([[Interface\Icons\Inv_misc_gem_sapphire_01]])
 	units[i].cc.icon:SetAllPoints()
 	units[i].cc.icon:SetTexCoord(.1, .9, .25, .75)
 
@@ -186,7 +176,7 @@ for i = 1, unitLimit do
 end
 
 -- use modui to reskin some ui elements
-local function reSkinUI()
+local function moduiReSkin()
 	TEXTURE = [[Interface\AddOns\modui\statusbar\texture\sb.tga]]
 	
 	-- enemyFrame
@@ -222,7 +212,7 @@ end
 
 -- check if modui loaded first		
 if IsAddOnLoaded'modui' then
-	reSkinUI()
+	moduiReSkin()
 end
 
 local function showhideUnits()
@@ -238,28 +228,27 @@ local function showhideUnits()
 end
 
 local function SetupTitle(maxUnits)
-	-- get player's opposing faction
+	-- get player's faction
 	playerFaction = UnitFactionGroup('player')
 	
-
 	if playerFaction == 'Alliance' then 
-		playerFactionColor = factionRGB['Horde']
+		enemyFactionColor = factionRGB['Horde']
 		enemyFrame.Title:SetText('Horde')
 	else 
-		playerFactionColor = factionRGB['Alliance']
+		enemyFactionColor = factionRGB['Alliance']
 		enemyFrame.Title:SetText('Alliance')		
 	end
 	
-	enemyFrame.Title:SetTextColor(playerFactionColor['r'], playerFactionColor['g'], playerFactionColor['b'], .9)
-	enemyFrame.spawnText:SetTextColor(playerFactionColor['r'], playerFactionColor['g'], playerFactionColor['b'], .9)
-	enemyFrame.totalPlayers:SetTextColor(playerFactionColor['r'], playerFactionColor['g'], playerFactionColor['b'], .9)
+	enemyFrame.Title:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
+	enemyFrame.spawnText:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
+	enemyFrame.totalPlayers:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
 		
 	-- width of the draggable frame
 	local rows = maxUnits / unitGroup
 	enemyFrame:SetWidth(98*rows)
 	
 	enemyFrame.Title:SetPoint('CENTER', enemyFrame)
-	enemyFrame.totalPlayers:SetPoint('RIGHT', enemyFrame, 'RIGHT', -4, 0)
+	enemyFrame.totalPlayers:SetPoint('RIGHT', enemyFrame, 'RIGHT', -4, 1)
 	enemyFrame.spawnText:SetPoint('LEFT', enemyFrame, 'LEFT', 8, 0)
 	enemyFrame.spawnText.Button:SetPoint('CENTER', enemyFrame.spawnText, 'CENTER')
 	enemyFrame.spawnText.Button:SetScript('OnClick', function()
@@ -336,9 +325,11 @@ local function updateUnits()
 		-- target indicator
 		if moduiLoaded then
 			if UnitName'target' == v['name'] then
-				modSkinColor(units[i], playerFactionColor['r'], playerFactionColor['g'], playerFactionColor['b'])
+				modSkinColor(units[i], enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'])
+				units[i]:SetBackdropColor(enemyFactionColor['r'] - .5, enemyFactionColor['g'] - .5, enemyFactionColor['b'] - .5, .6)
 			else
 				modSkinColor(units[i], .2, .2, .2)
+				units[i]:SetBackdropColor(0, 0, 0, .6)
 			end
 		end
 		-- castbar
@@ -392,11 +383,6 @@ local function enemyFramesOnUpdate()
 	if visible then updateUnits()	end
 end
 
--- DUMMY FRAME
-local f = CreateFrame('Frame', 'enemyFrameDisplay', UIParent)
-f:RegisterEvent'PLAYER_ENTERING_WORLD'
-f:RegisterEvent'ZONE_CHANGED_NEW_AREA'
-f:RegisterEvent'ADDON_LOADED'
 
 --- GLOBAL ACCESS ---
 function ENEMYFRAMESInitialize(maxUnits)
@@ -406,29 +392,33 @@ function ENEMYFRAMESInitialize(maxUnits)
 		SetupTitle(maxUnits)
 		
 		enemyFrame:Show()
-		f:SetScript('OnUpdate', enemyFramesOnUpdate)
+		enemyFrame:SetScript('OnUpdate', enemyFramesOnUpdate)
 	else
-		f:SetScript('OnUpdate', nil)
+		enemyFrame:SetScript('OnUpdate', nil)
 	end
 end
 ---------------------
 
 local function eventHandler()
 	if event == 'PLAYER_ENTERING_WORLD' or event == 'ZONE_CHANGED_NEW_AREA' then
-		--enemyFrame:Hide()
+		enemyFrame:Hide()
 		--
 	elseif event == 'ADDON_LOADED' then
 		if arg1 == 'modui' then
-			reSkinUI()
+			moduiReSkin()
 		end
 	end
 end
---f:SetScript('OnEvent', eventHandler)
+
+enemyFrame:RegisterEvent'PLAYER_ENTERING_WORLD'
+enemyFrame:RegisterEvent'ZONE_CHANGED_NEW_AREA'
+enemyFrame:RegisterEvent'ADDON_LOADED'
+enemyFrame:SetScript('OnEvent', eventHandler)
 
 
 SLASH_ENEMYFRAMES1 = '/efd'
 SlashCmdList["ENEMYFRAMES"] = function(msg)
-	--print('tt0')
+	SetupTitle(15)
 	enemyFrame:Show()
 end
 

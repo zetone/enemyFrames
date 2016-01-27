@@ -1,6 +1,9 @@
 
 local playerFaction
-local bgs = {['Warsong Gulch'] = 10, ['Arathi Basin'] = 15, ['Alterac Valley'] = 40}
+local bgs = {['Warsong Gulch'] = 10, 
+			 ['Arathi Basin'] = 15, 
+			 --['Alterac Valley'] = 40
+			 }
 -- TIMERS
 local playerListInterval, playerListRefresh, enemyNearbyInterval, enemyNearbyRefresh = 30, 0, 1, 0
 local nextPlayerCheck = 4
@@ -19,8 +22,7 @@ function ENEMYFRAMESCOREGetUnitsInfo()
 			local p 
 			if nearbyUnitsInfo[v['name']] then				
 				p = nearbyUnitsInfo[v['name']]
-				p['nearby'] = true		
-				--list[v['name']] = p				
+				p['nearby'] = true					
 			else
 				p = v
 				p['nearby'] = false
@@ -79,10 +81,11 @@ local function verifyUnitInfo(unit)
 		addNearbyPlayers({UnitName(unit)}, true)
 	end
 
-	-- updated unit's stats
+	-- update unit's stats
 	if nearbyUnitsInfo[UnitName(unit)] then		
 		nearbyUnitsInfo[UnitName(unit)]['health'] 	= UnitHealth(unit)
 		nearbyUnitsInfo[UnitName(unit)]['mana'] 	= UnitMana(unit)
+		refreshUnits = true
 	end
 end
 
@@ -167,8 +170,8 @@ local function updateInfo()
 		
 		if v['castinfo'] or v['buff'] then	nearbyUnitsInfo[v['name']]['nextCheck'] = nextCheck	end
 		
-		if not v['health'] 	then 	v['health'] = 100 end
-		if not v['mana'] 	then 	v['mana'] 	= 100 end
+		--if not v['health'] 	then 	v['health'] = 100 end
+		--if not v['mana'] 	then 	v['mana'] 	= 100 end
 	end
 end
 
@@ -188,8 +191,7 @@ local function enemyFramesCoreOnUpdate()
 	
 	-- update active units
 	updateInfo()
-	removeInactivePlayers()
-	
+	removeInactivePlayers()	
 end
 
 -- DUMMY FRAME
@@ -208,7 +210,7 @@ local function initializeValues()
 		ENEMYFRAMESInitialize(maxUnits)
 	else
 		-- nil value to disable ui elements
-		ENEMYFRAMESInitialize(maxUnits)
+		ENEMYFRAMESInitialize(nil)
 		f:SetScript('OnUpdate', nil)
 	end
 end

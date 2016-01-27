@@ -40,7 +40,7 @@
        local acnt = {}
        setmetatable(acnt,InstaBuff)
        acnt.caster    	= c
-       acnt.name      	= b
+       acnt.spell      	= b
 	   acnt.timeMod 	= list['mod']
 	   acnt.spellList 	= list['list']
        acnt.timeStart	= time
@@ -53,12 +53,12 @@
         setmetatable(acnt, buff)
         acnt.target    	= tar
 		acnt.caster    	= tar	-- facilitate entry removal
-        acnt.name      	= t
+        acnt.spell      = t
         acnt.icon      	= buffType['icon']
         acnt.timeStart 	= time
         acnt.timeEnd   	= time + buffType['duration']
 		acnt.prio		= buffType['prio'] and buffType['prio'] or 0
-		acnt.border		= buffType['type'] and RGB_BORDER_DEBUFFS_COLOR[buffType['type']] or {.2, .2, .2}
+		acnt.border		= buffType['type'] and RGB_BORDER_DEBUFFS_COLOR[buffType['type']] or {.2, .2, .2}	-- border rgb values depending on type of buff/debuff
         return acnt
     end
 	
@@ -192,7 +192,7 @@
 		local time = GetTime()
 		for k, v in pairs(tab) do
 			if (time < v.timeEnd) and (v.caster == caster) then
-				if (spell ~= nil) then if v.name == spell then	v.timeEnd = time - 10000 end 
+				if (spell ~= nil) then if v.spell == spell then	v.timeEnd = time - 10000 end 
 				else
 					v.timeEnd = time - 10000 -- force hide
 				end

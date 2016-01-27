@@ -6,6 +6,6 @@ globals\spellCastingCore.lua
 globals\spellInfo.lua
 
 enemyFrames.lua
---enemyFramesCore.lua
+enemyFramesCore.lua
 
 
