@@ -50,7 +50,7 @@
 	end
 	
 
-	MODUI_TRADECASTS_TO_TRACK = {
+	SPELLINFO_TRADECASTS_TO_TRACK = {
 		-- ALCHEMY
 		['Greater Healing Potion']					= {['icon'] = [[Interface\Icons\Inv_potion_52]], ['casttime'] = 3},
 		['Greater Fire Protection Potion']			= {['icon'] = [[Interface\Icons\Inv_potion_24]], ['casttime'] = 3},
@@ -94,7 +94,7 @@
 			
 	}
 
-    MODUI_SPELLCASTS_TO_TRACK = {
+    SPELLINFO_SPELLCASTS_TO_TRACK = {
 			-- MISC
 		['Furbolg Form'] 			= {['icon'] = [[Interface\Icons\Inv_misc_monsterclaw_04]], ['casttime'] = 2},
 		['Disenchant']				= {['icon'] = [[Interface\Icons\Inv_Enchant_Disenchant]], ['casttime'] = 3},
@@ -254,7 +254,7 @@
         ['Summon Voidwalker']       = {['icon'] = [[Interface\Icons\Spell_shadow_summonvoidwalker]], ['casttime'] = 10},
     }
 
-    MODUI_INTERRUPTS_TO_TRACK = {
+    SPELLINFO_INTERRUPTS_TO_TRACK = {
 		-- MISC
 		['Inferno Effect'] = true, ['Reckless Charge'] = true,
 		-- DRUID
@@ -282,7 +282,7 @@
     }
 	
 	-- minus .5 seconds to channeling tracked after the 1st tick 
-	MODUI_CHANNELED_HEALS_SPELLCASTS_TO_TRACK = {
+	SPELLINFO_CHANNELED_HEALS_SPELLCASTS_TO_TRACK = {
 		-- DRUID
 		['Tranquility']           	= {['icon'] = [[Interface\Icons\Spell_nature_tranquility]], ['casttime'] = 10, ['tick'] = 2},
 		-- FIRST AID
@@ -291,7 +291,7 @@
 		['Health Funnel']           = {['icon'] = [[Interface\Icons\Spell_shadow_lifedrain]], 	['casttime'] = 10, 	['tick'] = 1},		
 	}
 
-	MODUI_CHANNELED_SPELLCASTS_TO_TRACK = {
+	SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK = {
 		-- MISC
 		['Fishing']					= {['icon'] = [[Interface\Icons\Trade_Fishing]], ['casttime'] = 30},
 		
@@ -317,7 +317,7 @@
 
 	}
 	
-	MODUI_INSTANT_SPELLCASTS_TO_TRACK = {
+	SPELLINFO_INSTANT_SPELLCASTS_TO_TRACK = {
 		-- DRUID
 		['Moonfire'] = true,
 		
@@ -339,7 +339,7 @@
 		['Shadowburn'] = true,
 	}
 	
-	MODUI_TIME_MODIFIER_BUFFS_TO_TRACK = {
+	SPELLINFO_TIME_MODIFIER_BUFFS_TO_TRACK = {
 		['Curse of Tongues'] 			= {['mod'] = 1.6, 	['list'] = {'all'}},
 		
 		['Mind-numbing Poison'] 		= {['mod'] = 1.6, 	['list'] = {'all'}},
@@ -357,7 +357,7 @@
 		['Mind Quickening']				= {['mod'] = 0.66, 	['list'] = {'Fireball', 'Frostbolt', 'Pyroblast', 'Scorch', 'Polymorph'}},		
 	}
 	
-	MODUI_BUFFS_TO_TRACK = {
+	SPELLINFO_BUFFS_TO_TRACK = {
 	
         -- MISC
     	['Free Action Potion']     	= {['icon'] = [[Interface\Icons\Inv_potion_04]], 					['duration'] = 30, 	['type'] = 'magic'},
@@ -412,6 +412,7 @@
 		     -- WARLOCK
 		['Death Coil']				= {['icon'] = [[Interface\Icons\Spell_shadow_deathcoil]],			['duration'] = 3,	['type'] = 'magic',		['prio'] = 1},
 		["Fear"] 					= {['icon'] = [[Interface\Icons\Spell_shadow_possession]], 			['duration'] = 10, 	['type'] = 'magic', 	['prio'] = 1},
+		['Seduction']				= {['icon'] = [[Interface\Icons\Spell_shadow_mindsteal]],			['duration'] = 12, 	['type'] = 'magic', 	['prio'] = 3},
     	['Shadow Trance'] 			= {['icon'] = [[Interface\Icons\Spell_shadow_twilight]], 			['duration'] = 10, 	['type'] = 'magic'},
 		
 		--[[	WARRRIOR 	]]--
@@ -420,6 +421,4 @@
 
     }
     
-	
-	
 	--

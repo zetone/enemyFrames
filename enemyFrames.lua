@@ -4,7 +4,7 @@ local playerFaction
 local refreshUnits = true
 -- LISTS
 local nearbyUnitsInfo = {}
-local unitLimit, unitGroup = 40, 5
+local unitLimit, unitGroup = 15, 5
 local units = {}
 local visible = true
 local moduiLoaded = false
@@ -48,7 +48,7 @@ local 	enemyFrame = CreateFrame('Frame', 'enemyFrameDisplay', UIParent)
 		enemyFrame.spawnText.Button:SetHeight(15)	enemyFrame.spawnText.Button:SetWidth(15)
 
 		
-local unitWidth, unitHeight, castBarHeight, ccIconWidth, ccIconHeight = 64, 20, 10, 26, 22
+local unitWidth, unitHeight, castBarHeight, ccIconWidth, ccIconHeight = 64, 20, 10, 28, 24
 for i = 1, unitLimit do
 	-- health statusbar
 	units[i] = CreateFrame('StatusBar', nil, enemyFrame)
@@ -127,20 +127,22 @@ for i = 1, unitLimit do
 	units[i].castbar.text:SetShadowOffset(1, -1)
 	units[i].castbar.text:SetShadowColor(0, 0, 0)
 	units[i].castbar.text:SetPoint('LEFT', units[i].castbar, 'LEFT', 3, 2)
-	
+	units[i].castbar.text:SetText('Frostbolt')
+	--[[
 	units[i].castbar.timer = units[i].castbar:CreateFontString(nil, 'OVERLAY')
 	units[i].castbar.timer:SetFont(STANDARD_TEXT_FONT, 8)
 	units[i].castbar.timer:SetTextColor(1, 1, 1)
 	units[i].castbar.timer:SetShadowOffset(1, -1)
 	units[i].castbar.timer:SetShadowColor(0, 0, 0)
-	units[i].castbar.timer:SetPoint('RIGHT', units[i].castbar, 'RIGHT', -2, 1)
-	units[i].castbar.timer:SetText('1.5')
+	units[i].castbar.timer:SetPoint('LEFT', units[i].castbar, 'RIGHT', 2, 1)
+	units[i].castbar.timer:SetText('1.5')]]--
 	--------------
 
 	units[i].name = units[i]:CreateFontString(nil, 'OVERLAY')
-	units[i].name:SetFont(STANDARD_TEXT_FONT, 12, 'OUTLINE')
+	units[i].name:SetFont(STANDARD_TEXT_FONT, 11, 'OUTLINE')
 	units[i].name:SetTextColor(.8, .8, .8, .8)
 	units[i].name:SetPoint('CENTER', units[i])	
+	units[i].name:SetText('Player' .. i)
 	
 	---- CC ------
 	units[i].cc = CreateFrame('Frame', nil, units[i])
@@ -161,13 +163,7 @@ for i = 1, unitLimit do
 	units[i].cc.duration:SetShadowOffset(1, -1)
 	units[i].cc.duration:SetShadowColor(0, 0, 0)
 	units[i].cc.duration:SetPoint('CENTER', units[i].cc, 'BOTTOM', 0, -4)
-	--[[
-	units[i].cc = units[i]:CreateTexture(nil, 'ARTWORK')
-	units[i].cc:SetTexture([[Interface\Icons\IconLarge_Mage]])
-	--units[i].cc:SetTexCoord(.078, .92, .079, .937)
-	units[i].cc:SetTexCoord(.1, .9, .25, .75)
-	units[i].cc:SetWidth(25)	units[i].cc:SetHeight(15)
-	units[i].cc:SetPoint('TOPLEFT', units[i],'TOPRIGHT', 4, 0)]]--
+	units[i].cc.duration:SetText('1.4')
 	
 	------- EXTRAS
 	units[i].Button = CreateFrame('Button', nil, units[i])
@@ -245,7 +241,7 @@ local function SetupTitle(maxUnits)
 		
 	-- width of the draggable frame
 	local rows = maxUnits / unitGroup
-	enemyFrame:SetWidth(98*rows)
+	enemyFrame:SetWidth((unitWidth + ccIconWidth)*rows +  8*rows)
 	
 	enemyFrame.Title:SetPoint('CENTER', enemyFrame)
 	enemyFrame.totalPlayers:SetPoint('RIGHT', enemyFrame, 'RIGHT', -4, 1)
@@ -301,9 +297,15 @@ local function drawUnits(list)
 		i = i + 1
 	end
 	
+	local j = i
+	while units[j].isShown() do
+		units[j]:Hide()
+		j = j + 1
+	end
+	--[[
 	for j=i, unitLimit, 1 do
 		units[j]:Hide()
-	end
+	end]]--
 
 	enemyFrame.totalPlayers:SetText(nearU .. ' / ' .. i-1)
 end
@@ -345,7 +347,7 @@ local function updateUnits()
 			end
 			units[i].castbar.text:SetText(castInfo.spell)
 			units[i].castbar.text:SetText(string.sub(units[i].castbar.text:GetText(), 1, 8))
-			units[i].castbar.timer:SetText(getTimerLeft(castInfo.timeEnd))--..'s')
+			--units[i].castbar.timer:SetText(getTimerLeft(castInfo.timeEnd))--..'s')
 			units[i].castbar.icon:SetTexture(castInfo.icon)
 			units[i].castbar:Show()		
 		end
@@ -388,7 +390,6 @@ end
 function ENEMYFRAMESInitialize(maxUnits)
 		
 	if maxUnits then
-		--SetUIComponents()
 		SetupTitle(maxUnits)
 		
 		enemyFrame:Show()

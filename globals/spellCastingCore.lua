@@ -110,7 +110,7 @@
 	local checkForChannels = function(caster, spell)
 		local k = 1
     	for i, j in casts do
-    		if j.caster == caster and j.spell == spell and MODUI_CHANNELED_SPELLCASTS_TO_TRACK[spell] ~= nil then 
+    		if j.caster == caster and j.spell == spell and SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[spell] ~= nil then 
 				j.nextTick = j.nextTick + j.tick
 				return true 
 			end
@@ -148,11 +148,11 @@
     	local info = nil
 		
 		if channel then
-			if MODUI_CHANNELED_HEALS_SPELLCASTS_TO_TRACK[spell] ~= nil then info = MODUI_CHANNELED_HEALS_SPELLCASTS_TO_TRACK[spell]
-			elseif MODUI_CHANNELED_SPELLCASTS_TO_TRACK[spell] ~= nil then info = MODUI_CHANNELED_SPELLCASTS_TO_TRACK[spell] end
+			if SPELLINFO_CHANNELED_HEALS_SPELLCASTS_TO_TRACK[spell] ~= nil then info = SPELLINFO_CHANNELED_HEALS_SPELLCASTS_TO_TRACK[spell]
+			elseif SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[spell] ~= nil then info = SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[spell] end
 		else
-			if MODUI_SPELLCASTS_TO_TRACK[spell] ~= nil then info = MODUI_SPELLCASTS_TO_TRACK[spell] 
-			elseif MODUI_TRADECASTS_TO_TRACK[spell] ~= nil then info = MODUI_TRADECASTS_TO_TRACK[spell] end
+			if SPELLINFO_SPELLCASTS_TO_TRACK[spell] ~= nil then info = SPELLINFO_SPELLCASTS_TO_TRACK[spell] 
+			elseif SPELLINFO_TRADECASTS_TO_TRACK[spell] ~= nil then info = SPELLINFO_TRADECASTS_TO_TRACK[spell] end
 		end
 		if info ~= nil then
 			if not checkForChannels(caster, spell) then
@@ -175,13 +175,13 @@
 	
 	local newIBuff = function(caster, buff)
 		local time = GetTime()
-        local b = InstaBuff.create(caster, buff, MODUI_TIME_MODIFIER_BUFFS_TO_TRACK[buff], time)
+        local b = InstaBuff.create(caster, buff, SPELLINFO_TIME_MODIFIER_BUFFS_TO_TRACK[buff], time)
         table.insert(iBuffs, b)
 	end
 
 	local function newbuff(tar, t)
         local time = GetTime()
-		local n = buff.create(tar, t, MODUI_BUFFS_TO_TRACK[t], time)
+		local n = buff.create(tar, t, SPELLINFO_BUFFS_TO_TRACK[t], time)
 		table.insert(buffList, n)
     end
 
@@ -236,20 +236,20 @@
 			local s = gsub(arg1, m, '%2')
 			
 			-- buffs/debuffs to be displayed
-			if MODUI_BUFFS_TO_TRACK[s] then
+			if SPELLINFO_BUFFS_TO_TRACK[s] then
 				newbuff(c, s)
 			end
 			
 			-- self-cast buffs that interrupt cast (blink, ice block ...)
-			if MODUI_INTERRUPTS_TO_TRACK[s] then
+			if SPELLINFO_INTERRUPTS_TO_TRACK[s] then
 				forceHideTableItem(casts, c, nil)
 			end
 			-- specific channeled spells (evocation ...)
-			if MODUI_CHANNELED_SPELLCASTS_TO_TRACK[s] then
+			if SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[s] then
 				newCast(c, s, true)
 			end
 			-- buffs that alter spell casting speed
-			if MODUI_TIME_MODIFIER_BUFFS_TO_TRACK[s] then
+			if SPELLINFO_TIME_MODIFIER_BUFFS_TO_TRACK[s] then
 				newIBuff(c, s)
 			end
 		
@@ -260,15 +260,15 @@
 			local s = gsub(arg1, m, '%1')
 			
 			-- buffs/debuffs to be displayed
-			if MODUI_BUFFS_TO_TRACK[s] then
+			if SPELLINFO_BUFFS_TO_TRACK[s] then
 				forceHideTableItem(buffList, c, s)
 			end
 			
-			if MODUI_CHANNELED_SPELLCASTS_TO_TRACK[s] then
+			if SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[s] then
 				forceHideTableItem(casts, c, nil)
 			end
 			
-			if MODUI_TIME_MODIFIER_BUFFS_TO_TRACK[s] then
+			if SPELLINFO_TIME_MODIFIER_BUFFS_TO_TRACK[s] then
 				forceHideTableItem(iBuffs, c, s)
 			end
 			
@@ -279,16 +279,16 @@
 			local s = gsub(arg1, m, '%2')
 			
 			-- debuffs to be displayed
-			if MODUI_BUFFS_TO_TRACK[s] then
+			if SPELLINFO_BUFFS_TO_TRACK[s] then
 				newbuff(c, s)
 			end
 			
 			-- spell interrupting debuffs (stuns, incapacitate ...)
-			if MODUI_INTERRUPTS_TO_TRACK[s] then
+			if SPELLINFO_INTERRUPTS_TO_TRACK[s] then
 				forceHideTableItem(casts, c, nil)
 			end
 			-- debuffs that slow spellcasting speed (tongues ...)
-			if MODUI_TIME_MODIFIER_BUFFS_TO_TRACK[s] then
+			if SPELLINFO_TIME_MODIFIER_BUFFS_TO_TRACK[s] then
 				newIBuff(c, s)
 			end
 			
@@ -298,11 +298,11 @@
 			local s = gsub(arg1, m, '%2')
 			
 			-- buffs/debuffs to be displayed
-			if MODUI_BUFFS_TO_TRACK[s] then
+			if SPELLINFO_BUFFS_TO_TRACK[s] then
 				forceHideTableItem(buffList, c, s)
 			end
 			
-			if MODUI_TIME_MODIFIER_BUFFS_TO_TRACK[s] then
+			if SPELLINFO_TIME_MODIFIER_BUFFS_TO_TRACK[s] then
 				forceHideTableItem(iBuffs, c, s)
 			end
 		end
@@ -328,16 +328,16 @@
 			local t = gsub(arg1, m, '%3')
 			
 			-- instant spells that cancel casted ones
-			if MODUI_INSTANT_SPELLCASTS_TO_TRACK[s] then 
+			if SPELLINFO_INSTANT_SPELLCASTS_TO_TRACK[s] then 
 				forceHideTableItem(casts, c, nil)
 			end
 			
-			if MODUI_CHANNELED_SPELLCASTS_TO_TRACK[s] then
+			if SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[s] then
 				newCast(c, s, true)
 			end			
 			
 			-- interrupt dmg spell
-			if MODUI_INTERRUPTS_TO_TRACK[s] then
+			if SPELLINFO_INTERRUPTS_TO_TRACK[s] then
 				forceHideTableItem(casts, t, nil)
 			end
 		end
@@ -349,7 +349,7 @@
 			local t = gsub(arg1, m, '%2')
 			
 			-- interrupt dmg spell
-			if MODUI_INTERRUPTS_TO_TRACK[s] then
+			if SPELLINFO_INTERRUPTS_TO_TRACK[s] then
 				forceHideTableItem(casts, t, nil)
 			end
 		end
@@ -373,7 +373,7 @@
 			local s = gsub(arg1, m, '%4')
 			local t = gsub(arg1, m, '%1')
 			
-			if MODUI_CHANNELED_SPELLCASTS_TO_TRACK[s] then
+			if SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[s] then
 				newCast(c, s, true)
 			end			
 		end
@@ -384,7 +384,7 @@
 			local c = gsub(arg1, m, '%2')
 			local s = gsub(arg1, m, '%3')
 			
-			if MODUI_CHANNELED_SPELLCASTS_TO_TRACK[s] then
+			if SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[s] then
 				newCast(c, s, true)
 			end			
 		end
@@ -395,7 +395,7 @@
 			local c = gsub(arg1, m, '%1')
 			local s = gsub(arg1, m, '%2')
 			
-			if MODUI_CHANNELED_SPELLCASTS_TO_TRACK[s] then
+			if SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[s] then
 				newCast(c, s, true)
 			end			
 		end
@@ -406,7 +406,7 @@
 			local c = gsub(arg1, m, '%1')
 			local s = gsub(arg1, m, '%2')
 			
-			if MODUI_CHANNELED_SPELLCASTS_TO_TRACK[s] then
+			if SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[s] then
 				newCast(c, s, true)
 			end	
 		end
@@ -423,7 +423,7 @@
 			local s = fhot and gsub(arg1, m, '%4') or fphot and gsub(arg1, m, '%3')
 			local t = fhot and gsub(arg1, m, '%1') or nil
 			
-			if MODUI_CHANNELED_HEALS_SPELLCASTS_TO_TRACK[s] then
+			if SPELLINFO_CHANNELED_HEALS_SPELLCASTS_TO_TRACK[s] then
 				newCast(c, s, true)
 			end	
 		end
