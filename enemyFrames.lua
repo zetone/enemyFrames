@@ -71,9 +71,6 @@ for i = 1, unitLimit do
 	units[i]:SetBackdrop(BACKDROP)
 	units[i]:SetBackdropColor(0, 0, 0, .6)
 	
---	modSkin(units[i], 8)
---	modSkinPadding(units[i], 1)
-	
 	--[[
 	-- mana statusbar
 	units[i].manabar = CreateFrame('StatusBar', nil, units[i])
@@ -103,17 +100,10 @@ for i = 1, unitLimit do
 	units[i].castbar:SetBackdrop(BACKDROP)
 	units[i].castbar:SetBackdropColor(0, 0, 0, .6)
 	
---	modSkin(units[i].castbar, 8)
---	modSkinPadding(units[i].castbar, 1)
---	modSkinColor(units[i].castbar, .2, .2, .2)
 	
 	units[i].castbar.iconborder = CreateFrame('Frame', nil, units[i].castbar)
 	units[i].castbar.iconborder:SetWidth(units[i].castbar:GetHeight()+1)	units[i].castbar.iconborder:SetHeight(units[i].castbar:GetHeight()+1)
 	units[i].castbar.iconborder:SetPoint('RIGHT', units[i].castbar, 'LEFT')
-	
-	--modSkin(units[i].castbar.iconborder, 6)
-	--modSkinPadding(units[i].castbar.iconborder, 1)
-	--modSkinColor(units[i].castbar.iconborder, .2, .2, .2)
 	
 	units[i].castbar.icon = units[i].castbar.iconborder:CreateTexture()
 	units[i].castbar.icon:SetTexture([[Interface\Icons\Inv_misc_gem_sapphire_01]])
@@ -126,8 +116,9 @@ for i = 1, unitLimit do
 	units[i].castbar.text:SetFont(STANDARD_TEXT_FONT, 8)
 	units[i].castbar.text:SetShadowOffset(1, -1)
 	units[i].castbar.text:SetShadowColor(0, 0, 0)
-	units[i].castbar.text:SetPoint('LEFT', units[i].castbar, 'LEFT', 3, 2)
+	units[i].castbar.text:SetPoint('LEFT', units[i].castbar, 'LEFT', 2, 1)
 	units[i].castbar.text:SetText('Frostbolt')
+	
 	--[[
 	units[i].castbar.timer = units[i].castbar:CreateFontString(nil, 'OVERLAY')
 	units[i].castbar.timer:SetFont(STANDARD_TEXT_FONT, 8)
@@ -148,9 +139,6 @@ for i = 1, unitLimit do
 	units[i].cc = CreateFrame('Frame', nil, units[i])
 	units[i].cc:SetWidth(ccIconWidth) units[i].cc:SetHeight(ccIconHeight)
 	units[i].cc:SetPoint('TOPLEFT', units[i],'TOPRIGHT', 4, -1)
-	
-	--modSkin(units[i].cc, 10)
-	--modSkinPadding(units[i].cc, 2)
 
 	units[i].cc.icon = units[i].cc:CreateTexture(nil, 'ARTWORK')
 	units[i].cc.icon:SetTexture([[Interface\Icons\Inv_misc_gem_sapphire_01]])
@@ -243,9 +231,9 @@ local function SetupTitle(maxUnits)
 	local rows = maxUnits / unitGroup
 	enemyFrame:SetWidth((unitWidth + ccIconWidth)*rows +  8*rows)
 	
-	enemyFrame.Title:SetPoint('CENTER', enemyFrame)
+	enemyFrame.Title:SetPoint('CENTER', enemyFrame, 0, 1)
 	enemyFrame.totalPlayers:SetPoint('RIGHT', enemyFrame, 'RIGHT', -4, 1)
-	enemyFrame.spawnText:SetPoint('LEFT', enemyFrame, 'LEFT', 8, 0)
+	enemyFrame.spawnText:SetPoint('LEFT', enemyFrame, 'LEFT', 8, 1)
 	enemyFrame.spawnText.Button:SetPoint('CENTER', enemyFrame.spawnText, 'CENTER')
 	enemyFrame.spawnText.Button:SetScript('OnClick', function()
 			local t
@@ -270,6 +258,7 @@ local function drawUnits(list)
 		local colour = RAID_CLASS_COLORS[v['class']]
 		local powerColor = GET_RGB_POWER_COLORS_BY_CLASS(v['class'])
 		
+		-- hightlight nearby unit
 		if v['nearby'] then		
 			units[i]:SetStatusBarColor(colour.r, colour.g, colour.b)
 			units[i].name:SetTextColor(colour.r, colour.g, colour.b)			
@@ -297,26 +286,22 @@ local function drawUnits(list)
 		i = i + 1
 	end
 	
-	local j = i
-	while units[j].isShown() do
-		units[j]:Hide()
-		j = j + 1
-	end
-	--[[
 	for j=i, unitLimit, 1 do
-		units[j]:Hide()
-	end]]--
+		if units[j]:IsShown() then
+			units[j]:Hide()
+		end
+	end
 
 	enemyFrame.totalPlayers:SetText(nearU .. ' / ' .. i-1)
 end
 
-local function decimal_round(n, dp)      -- ROUND TO 1 DECIMAL PLACE
-	 local shift = 10^(dp or 0)
-	 return math.floor(n*shift + .5)/shift
- end
+local function round(num, idp)
+	local mult = 10^(idp or 0)
+	return math.floor(num * mult + 0.5) / mult
+end
 local getTimerLeft = function(tEnd)
 	local t = tEnd - GetTime()
-	if t > 5 then return decimal_round(t, 0) else return decimal_round(t, 1) end
+	if t > 5 then return round(t, 0) else return round(t, 1) end
 end
 	
 -- health, castbar, cc etc
@@ -325,14 +310,16 @@ local function updateUnits()
 	
 	for k, v in pairs(nearbyUnitsInfo) do
 		-- target indicator
-		if moduiLoaded then
-			if UnitName'target' == v['name'] then
+		if UnitName'target' == v['name'] then
+			if moduiLoaded then
 				modSkinColor(units[i], enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'])
-				units[i]:SetBackdropColor(enemyFactionColor['r'] - .5, enemyFactionColor['g'] - .5, enemyFactionColor['b'] - .5, .6)
-			else
-				modSkinColor(units[i], .2, .2, .2)
-				units[i]:SetBackdropColor(0, 0, 0, .6)
 			end
+			units[i]:SetBackdropColor(enemyFactionColor['r'] - .6, enemyFactionColor['g'] - .6, enemyFactionColor['b'] - .6, .6)
+		else
+			if moduiLoaded then
+				modSkinColor(units[i], .2, .2, .2)
+			end
+			units[i]:SetBackdropColor(0, 0, 0, .6)
 		end
 		-- castbar
 		local castInfo = v['castinfo']--
@@ -346,7 +333,7 @@ local function updateUnits()
 				units[i].castbar:SetValue(mod((GetTime() - castInfo.timeStart), castInfo.timeEnd - castInfo.timeStart))					
 			end
 			units[i].castbar.text:SetText(castInfo.spell)
-			units[i].castbar.text:SetText(string.sub(units[i].castbar.text:GetText(), 1, 8))
+			units[i].castbar.text:SetText(string.sub(units[i].castbar.text:GetText(), 1, 11))
 			--units[i].castbar.timer:SetText(getTimerLeft(castInfo.timeEnd))--..'s')
 			units[i].castbar.icon:SetTexture(castInfo.icon)
 			units[i].castbar:Show()		
@@ -421,6 +408,7 @@ SLASH_ENEMYFRAMES1 = '/efd'
 SlashCmdList["ENEMYFRAMES"] = function(msg)
 	SetupTitle(15)
 	enemyFrame:Show()
+	
 end
 
 

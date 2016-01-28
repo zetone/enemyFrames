@@ -36,16 +36,6 @@ function ENEMYFRAMESCOREGetUnitsInfo()
 	return list
 end
 ---------------------
-local function removeInactivePlayers()
-	local now = GetTime()
-	
-	for k,v in pairs(nearbyUnitsInfo) do
-		if now > v['nextCheck'] then	
-			refreshUnits = true 	
-			nearbyUnitsInfo[v['name']] = nil
-		end		
-	end
-end
 
 local function fillPlayerList()
 	local f
@@ -161,9 +151,10 @@ local function processCombatLog()
 	--addNearbyPlayers({c, t}, false)
 end
 --]]
--- update unit info: casts, cc
-local function updateInfo()
+-- update unit info: casts, cc, inactive
+local function updatePlayerListInfo()
 	local nextCheck = GetTime() + nextPlayerCheck
+
 	for k, v in pairs(nearbyUnitsInfo) do
 		v['castinfo'] 	= SPELLCASTINGCOREgetCast(v['name'])
 		v['buff'] 		= SPELLCASTINGCOREgetPrioBuff(v['name'])
@@ -173,9 +164,33 @@ local function updateInfo()
 		--if not v['health'] 	then 	v['health'] = 100 end
 		--if not v['mana'] 	then 	v['mana'] 	= 100 end
 	end
+	--[[
+	for k, v in pairs(playerList) do
+		v['castinfo'] 	= SPELLCASTINGCOREgetCast(v['name'])
+		v['buff'] 		= SPELLCASTINGCOREgetPrioBuff(v['name'])
+		
+		if v['castinfo'] or v['buff'] then	
+			if nearbyUnitsInfo[v['name']] --~= nil then
+		--[[		addNearbyPlayers({v['name']}, true)
+			else
+				nearbyUnitsInfo[v['name']]--['nextCheck'] = nextCheck	
+			--	nearbyUnitsInfo[v['name']]['castinfo'] = v['castinfo']	nearbyUnitsInfo[v['name']]['buff'] = v['buff']
+			--[[	refreshUnits = true
+			end
+		end
+	end]]--
+	
+	-- remove inactive players
+	for k,v in pairs(nearbyUnitsInfo) do
+		if GetTime() > v['nextCheck'] then	
+			refreshUnits = true 	
+			nearbyUnitsInfo[v['name']] = nil
+		end		
+	end
 end
 
 local function enemyFramesCoreOnUpdate()
+	-- get battleground members on UPDATE_BATTLEFIELD_SCORE
 	RequestBattlefieldScoreData()
 
 	-- use target & mouseover to further populate list
@@ -189,9 +204,10 @@ local function enemyFramesCoreOnUpdate()
 		enemyNearbyRefresh = now + enemyNearbyInterval
 	end	
 	
-	-- update active units
-	updateInfo()
-	removeInactivePlayers()	
+	-- update player list
+	-- add casts/buffs 
+	-- remove inactive players
+	updatePlayerListInfo()	
 end
 
 -- DUMMY FRAME
