@@ -3,24 +3,25 @@ local playerFaction
 -- TIMERS
 local refreshUnits = true
 -- LISTS
-local nearbyUnitsInfo = {}
+local playerList = {}
 local unitLimit, unitGroup = 15, 5
 local units = {}
 local visible = true
 local moduiLoaded = false
+
 ---
 
 ------------ UI ELEMENTS ------------------
 local TEXTURE = [[Interface\AddOns\enemyFrames\globals\barTexture.tga]]
 local BACKDROP = {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]],}
 local factionRGB = {['Alliance'] = {['r'] = 0, ['g'] = .68, ['b'] = .94}, ['Horde'] = {['r'] = 1, ['g'] = .1, ['b'] = .1}}
+local defaultIcon = 'rank'
 local enemyFactionColor
 
 local frameMovable = true
 local 	enemyFrame = CreateFrame('Frame', 'enemyFrameDisplay', UIParent)
 		enemyFrame:SetFrameStrata("BACKGROUND")
-		enemyFrame:SetPoint('CENTER', UIParent)
-		
+		enemyFrame:SetPoint('CENTER', UIParent)		
 		enemyFrame:SetHeight(20)
 		
 		enemyFrame:SetBackdrop(BACKDROP)
@@ -46,6 +47,31 @@ local 	enemyFrame = CreateFrame('Frame', 'enemyFrameDisplay', UIParent)
 		
 		enemyFrame.spawnText.Button = CreateFrame('Button', nil, enemyFrame)
 		enemyFrame.spawnText.Button:SetHeight(15)	enemyFrame.spawnText.Button:SetWidth(15)
+		
+		-- bottom frame
+		enemyFrame.bottom = CreateFrame('Frame', nil, enemyFrame)
+		--enemyFrame.bottom:SetFrameStrata("BACKGROUND")
+		enemyFrame.bottom:SetFrameLevel(0)
+		enemyFrame.bottom:ClearAllPoints()		
+		enemyFrame.bottom:SetHeight(enemyFrame:GetHeight())
+		
+		enemyFrame.bottom:SetBackdrop(BACKDROP)
+		enemyFrame.bottom:SetBackdropColor(0, 0, 0, .6)
+		
+		-- class or rank option
+		enemyFrame.bottom.classText = enemyFrame.bottom:CreateFontString(nil, 'OVERLAY')
+		enemyFrame.bottom.classText:SetFont(STANDARD_TEXT_FONT, 12, 'OUTLINE')
+		enemyFrame.bottom.classText:SetText('class')
+		
+		enemyFrame.bottom.classButton = CreateFrame('Button', nil, enemyFrame.bottom)
+		
+		enemyFrame.bottom.rankText = enemyFrame.bottom:CreateFontString(nil, 'OVERLAY')
+		enemyFrame.bottom.rankText:SetFont(STANDARD_TEXT_FONT, 12, 'OUTLINE')
+		enemyFrame.bottom.rankText:SetText('rank')
+		
+		enemyFrame.bottom.rankButton = CreateFrame('Button', nil, enemyFrame.bottom)
+		
+		--enemyFrame.bottom:Hide()
 
 		
 local unitWidth, unitHeight, castBarHeight, ccIconWidth, ccIconHeight = 64, 20, 10, 28, 24
@@ -65,7 +91,7 @@ for i = 1, unitLimit do
 			units[i]:SetPoint('TOPLEFT', units[i-unitGroup].cc, 'TOPRIGHT', 6, 1)
 		end			
 	else
-		units[i]:SetPoint('TOPLEFT', units[i-1].castbar.icon, 'BOTTOMLEFT', 0, -6)
+		units[i]:SetPoint('TOPLEFT', units[i-1].castbar.icon, 'BOTTOMLEFT', 1, -6)
 	end		
 	
 	units[i]:SetBackdrop(BACKDROP)
@@ -144,6 +170,10 @@ for i = 1, unitLimit do
 	units[i].cc.icon:SetTexture([[Interface\Icons\Inv_misc_gem_sapphire_01]])
 	units[i].cc.icon:SetAllPoints()
 	units[i].cc.icon:SetTexCoord(.1, .9, .25, .75)
+	
+	units[i].cc.bg = units[i].cc:CreateTexture(nil, 'BACKGROUND')
+	units[i].cc.bg:SetTexture(0, 0, 0, .6)
+	units[i].cc.bg:SetAllPoints()
 
 	units[i].cc.duration = units[i].cc:CreateFontString(nil, 'OVERLAY', 'GameFontNormalSmall')
 	units[i].cc.duration:SetFont(STANDARD_TEXT_FONT, 12)
@@ -166,6 +196,9 @@ local function moduiReSkin()
 	-- enemyFrame
 	modSkin(enemyFrame, 13)
 	modSkinColor(enemyFrame, .2, .2, .2)
+	
+	modSkin(enemyFrame.bottom, 13)
+	modSkinColor(enemyFrame.bottom, .2, .2, .2)
 	
 	-- individual unit ui
 	for i = 1, unitLimit do
@@ -199,15 +232,17 @@ if IsAddOnLoaded'modui' then
 	moduiReSkin()
 end
 
-local function showhideUnits()
+local function showHideUnits()
 	if visible then
 		for j=1, unitLimit, 1 do
-			units[j]:SetAlpha(1)--Hide()
+			units[j]:SetAlpha(1)
 		end
+		enemyFrame.bottom:SetAlpha(1)
 	else
 		for j=1, unitLimit, 1 do
-			units[j]:SetAlpha(0)--:Show()
+			units[j]:SetAlpha(0)
 		end
+		enemyFrame.bottom:SetAlpha(0)
 	end
 end
 
@@ -236,25 +271,59 @@ local function SetupTitle(maxUnits)
 	enemyFrame.spawnText:SetPoint('LEFT', enemyFrame, 'LEFT', 8, 1)
 	enemyFrame.spawnText.Button:SetPoint('CENTER', enemyFrame.spawnText, 'CENTER')
 	enemyFrame.spawnText.Button:SetScript('OnClick', function()
-			local t
+			local t, tt
 			if visible then
 				t = '+'
+				tt = 'Show'
 				visible = false
 			else
-				t = '-' 
+				t = '-'
+				tt = 'Hide'				
 				visible = true
 			end
 			enemyFrame.spawnText:SetText(t)
-			showhideUnits()
+			showHideUnits()
 		end)
 		
+	-- bottom frame
+	enemyFrame.bottom:SetWidth(enemyFrame:GetWidth())
+	enemyFrame.bottom:SetPoint('CENTER', enemyFrame, 0, -((unitHeight + castBarHeight + 15) * unitGroup))
+	
+	if defaultIcon == 'class' then
+		enemyFrame.bottom.classText:SetTextColor(1, 1, 1, .9)
+		enemyFrame.bottom.rankText:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
+	else
+		enemyFrame.bottom.classText:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
+		enemyFrame.bottom.rankText:SetTextColor(1, 1, 1, .9)
+	end
+	
+	enemyFrame.bottom.classText:SetPoint('LEFT', enemyFrame.bottom, 'LEFT', 8, 1)
+	enemyFrame.bottom.rankText:SetPoint('LEFT', enemyFrame.bottom.classText, 'RIGHT', 6, 0)
+	
+	-- class/rank buttons
+	enemyFrame.bottom.classButton:SetHeight(enemyFrame.bottom:GetHeight())	enemyFrame.bottom.classButton:SetWidth(enemyFrame.bottom.classText:GetWidth())
+	enemyFrame.bottom.classButton:SetPoint('CENTER', enemyFrame.bottom.classText, 'CENTER')
+	enemyFrame.bottom.classButton:SetScript('OnClick', function()
+			defaultIcon = 'class'
+			enemyFrame.bottom.classText:SetTextColor(1, 1, 1, .9)
+			enemyFrame.bottom.rankText:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
+		end)
+	
+	enemyFrame.bottom.rankButton:SetHeight(enemyFrame.bottom:GetHeight())		enemyFrame.bottom.rankButton:SetWidth(enemyFrame.bottom.rankText:GetWidth())
+	enemyFrame.bottom.rankButton:SetPoint('CENTER', enemyFrame.bottom.rankText, 'CENTER')
+	enemyFrame.bottom.rankButton:SetScript('OnClick', function()
+			defaultIcon = 'rank'
+			enemyFrame.bottom.classText:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
+			enemyFrame.bottom.rankText:SetTextColor(1, 1, 1, .9)
+		end)
+	
 end
 
 local function drawUnits(list)
 			
-	nearbyUnitsInfo = list
+	playerList = list
 	local i, nearU = 1, 0
-	for k,v in pairs(nearbyUnitsInfo) do
+	for k,v in pairs(playerList) do
 		local colour = RAID_CLASS_COLORS[v['class']]
 		local powerColor = GET_RGB_POWER_COLORS_BY_CLASS(v['class'])
 		
@@ -268,11 +337,13 @@ local function drawUnits(list)
 			nearU = nearU + 1
 		else
 			units[i]:SetStatusBarColor(colour.r / 2, colour.g / 2, colour.b / 2, .6)
-			-- 100% hp when not near
-			units[i]:SetValue(100)
 			--units[i].manabar:SetStatusBarColor(powerColor[1] / 2, powerColor[2] / 2, powerColor[3] / 2)
 			units[i].name:SetTextColor(colour.r / 2, colour.g / 2, colour.b / 2, .6)			
 			units[i].cc.icon:SetVertexColor(.4, .4, .4, .6)
+		end
+		-- hightlight fc
+		if v['fc'] then
+			units[i].cc.icon:SetVertexColor(1, 1, 1, 1)
 		end
 		
 		units[i].name:SetText(v['name'])
@@ -308,7 +379,7 @@ end
 local function updateUnits()
 	local i = 1
 	
-	for k, v in pairs(nearbyUnitsInfo) do
+	for k, v in pairs(playerList) do
 		-- target indicator
 		if UnitName'target' == v['name'] then
 			if moduiLoaded then
@@ -350,7 +421,9 @@ local function updateUnits()
 			local r, g, b = b.border[1], b.border[2], b.border[3]
 			if moduiLoaded then modSkinColor(units[i].cc, r, g, b) end
 		else
-			units[i].cc.icon:SetTexture(GET_CLASS_ICON(v['class']))
+			-- signal FC or class / rank
+			--if v['rank'] == 0 then print(v['name'] .. ' r0') end
+			units[i].cc.icon:SetTexture(v['fc'] and SPELLINFO_WSG_FLAGS[playerFaction]['icon'] or v['rank'] < 0 and  GET_CLASS_ICON(v['class']) or _G['GET_'..string.upper(defaultIcon)..'_ICON'](v[defaultIcon]))
 			if moduiLoaded then modSkinColor(units[i].cc, .2, .2, .2)	end
 			units[i].cc.duration:SetText('')
 		end
@@ -407,8 +480,13 @@ enemyFrame:SetScript('OnEvent', eventHandler)
 SLASH_ENEMYFRAMES1 = '/efd'
 SlashCmdList["ENEMYFRAMES"] = function(msg)
 	SetupTitle(15)
-	enemyFrame:Show()
-	
+	enemyFrame:Show()	
+
+	--[[
+	icon = UIParent:CreateTexture(nil, 'ARTWORK')
+	icon:SetTexture(GET_RANK_ICON(7))
+	icon:SetHeight(16)	icon:SetWidth(16)
+	icon:SetPoint('CENTER', UIParent)]]--
 end
 
 

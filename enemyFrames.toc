@@ -4,6 +4,8 @@
 
 globals\spellCastingCore.lua
 globals\spellInfo.lua
+globals\wsgHandler.lua
+globals\settings.lua
 
 enemyFrames.lua
 enemyFramesCore.lua

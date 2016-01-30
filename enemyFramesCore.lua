@@ -5,51 +5,38 @@ local bgs = {['Warsong Gulch'] = 10,
 			 --['Alterac Valley'] = 40
 			 }
 -- TIMERS
-local playerListInterval, playerListRefresh, enemyNearbyInterval, enemyNearbyRefresh = 30, 0, 1, 0
+local playerListInterval, playerListRefresh, enemyNearbyInterval, enemyNearbyRefresh = 45, 0, .3, 0
+local raidMemberIndex = 1
 local nextPlayerCheck = 4
 local refreshUnits = true
 -- LISTS
-local nearbyUnitsInfo = {}
 local playerList = {}
 local targetQueue = {}
 
 
---- GLOBAL ACCESS ---
-function ENEMYFRAMESCOREGetUnitsInfo()
-	local list = {}
-	if refreshUnits then	
-		for k, v in pairs(playerList) do	
-			local p 
-			if nearbyUnitsInfo[v['name']] then				
-				p = nearbyUnitsInfo[v['name']]
-				p['nearby'] = true					
-			else
-				p = v
-				p['nearby'] = false
-			end
-			list[v['name']] = p
-		end
-		refreshUnits = false
-	else
-		return nil
-	end
-	return list
-end
----------------------
-
 local function fillPlayerList()
 	local f
 	local gotData = false
-	playerList = {}
-	refreshUnits = true
+	local l = {}
+	
 	if UnitFactionGroup('player') == 'Alliance' then f = 0 else f = 1 end
+	-- get opposing faction players
 	for i=1, GetNumBattlefieldScores() do
 		name, killingBlows, honorableKills, deaths, honorGained, faction, rank, race, class = GetBattlefieldScore(i)
 		if faction == f then
-			playerList[name] = {['name'] = name, ['class'] = string.upper(class)}
+			l[name] = {['name'] = name, ['class'] = string.upper(class), ['rank'] = rank-4} -- rank starts at -4 apparently
 			gotData = true
 		end
 	end	
+	
+	-- add new players
+	for i, v in pairs(l) do
+		if playerList[v['name']] == nil then	playerList[v['name']] = v 	refreshUnits = true end
+	end
+	-- remove aabsent players
+	for i, v in pairs(playerList) do
+		if l[v['name']] == nil then	playerList[v['name']] = nil 	refreshUnits = true end
+	end
 
 	return gotData
 end
@@ -60,8 +47,10 @@ local function addNearbyPlayers(players, isTarget)
 	
 	for k, v in pairs(players) do
 		if playerList[v] then
-			if nearbyUnitsInfo[v] == nil then		refreshUnits =  true		nearbyUnitsInfo[v] = playerList[v]	end
-			nearbyUnitsInfo[v]['nextCheck'] = nextCheck
+			--if nearbyUnitsInfo[v] == nil then		refreshUnits =  true		nearbyUnitsInfo[v] = playerList[v]	end
+			playerList[v]['nextCheck'] = nextCheck
+			playerList[v]['nearby'] = true
+			refreshUnits =  true
 		end
 	end
 end
@@ -72,20 +61,20 @@ local function verifyUnitInfo(unit)
 	end
 
 	-- update unit's stats
-	if nearbyUnitsInfo[UnitName(unit)] then		
-		nearbyUnitsInfo[UnitName(unit)]['health'] 	= UnitHealth(unit)
-		nearbyUnitsInfo[UnitName(unit)]['mana'] 	= UnitMana(unit)
+	if playerList[UnitName(unit)] then		
+		playerList[UnitName(unit)]['health'] 	= UnitHealth(unit)
+		playerList[UnitName(unit)]['mana'] 		= UnitMana(unit)
 		refreshUnits = true
 	end
 end
 
 --	attempt to get enemy info from raid's targets
+-- 	check one every frame rather than all every other frame
 local function getRaidMembersTarget()
 	local numRaidMembers = GetNumRaidMembers()
 	
-	for i = 1, numRaidMembers, 1 do
-		verifyUnitInfo('raid' .. i .. 'target')
-	end
+	verifyUnitInfo('raid' .. raidMemberIndex .. 'target')
+	raidMemberIndex = raidMemberIndex < numRaidMembers and raidMemberIndex + 1 or 1
 end
 
 -- find hostile players by combat log actions 
@@ -155,39 +144,53 @@ end
 local function updatePlayerListInfo()
 	local nextCheck = GetTime() + nextPlayerCheck
 
-	for k, v in pairs(nearbyUnitsInfo) do
-		v['castinfo'] 	= SPELLCASTINGCOREgetCast(v['name'])
-		v['buff'] 		= SPELLCASTINGCOREgetPrioBuff(v['name'])
-		
-		if v['castinfo'] or v['buff'] then	nearbyUnitsInfo[v['name']]['nextCheck'] = nextCheck	end
-		
-		--if not v['health'] 	then 	v['health'] = 100 end
-		--if not v['mana'] 	then 	v['mana'] 	= 100 end
-	end
-	--[[
 	for k, v in pairs(playerList) do
 		v['castinfo'] 	= SPELLCASTINGCOREgetCast(v['name'])
 		v['buff'] 		= SPELLCASTINGCOREgetPrioBuff(v['name'])
 		
 		if v['castinfo'] or v['buff'] then	
-			if nearbyUnitsInfo[v['name']] --~= nil then
-		--[[		addNearbyPlayers({v['name']}, true)
-			else
-				nearbyUnitsInfo[v['name']]--['nextCheck'] = nextCheck	
-			--	nearbyUnitsInfo[v['name']]['castinfo'] = v['castinfo']	nearbyUnitsInfo[v['name']]['buff'] = v['buff']
-			--[[	refreshUnits = true
-			end
+			v['nextCheck'] 	= nextCheck	
+			-- set health to 100 for newly nearby players
+			if v['nearby'] == false then	v['health'] = 100	end
+			v['nearby'] = true
+			refreshUnits 	= true
 		end
-	end]]--
-	
-	-- remove inactive players
-	for k,v in pairs(nearbyUnitsInfo) do
-		if GetTime() > v['nextCheck'] then	
-			refreshUnits = true 	
-			nearbyUnitsInfo[v['name']] = nil
-		end		
+		
+		-- remove inactive player
+		if v['nextCheck'] then
+			if GetTime() > v['nextCheck'] then	
+				refreshUnits 	= true 	
+				v['nearby'] 	= false
+				v['health']		= 100
+			end	
+		end
+		
+		-- verify if unit died and update health correctly
+		--if rip[v['name']] ~= nil then print('rip in piss ' .. v['name'])	
+		--	nearbyUnitsInfo[v['name']]['health'] = 0
+		--end
 	end
 end
+
+--- GLOBAL ACCESS ---
+function ENEMYFRAMESCOREGetUnitsInfo()
+	local list = refreshUnits and playerList or nil
+	
+	return list
+end
+
+function ENEMYFRAMECOREUpdateFlagCarriers(fc)
+	for k, v in pairs(playerList) do
+		-- no carriers
+		if fc[playerFaction] == nil then
+			v['fc'] = false
+		else
+			v['fc'] = (v['name'] == fc[playerFaction]) and true or false
+		end
+	end
+	refreshUnits = true
+end
+---------------------
 
 local function enemyFramesCoreOnUpdate()
 	-- get battleground members on UPDATE_BATTLEFIELD_SCORE
@@ -217,7 +220,6 @@ local function initializeValues()
 	playerFaction = UnitFactionGroup('player')
 		
 	playerList = {}
-	nearbyUnitsInfo = {}
 	
 	local maxUnits = bgs[GetZoneText()]
 	if maxUnits then
@@ -298,7 +300,7 @@ f:SetScript('OnEvent', eventHandler)
 SLASH_ENEMYFRAMECORE1 = '/efc'
 SlashCmdList["ENEMYFRAMECORE"] = function(msg)
 	for k, v in pairs(playerList) do
-		print(v['name'])
+		print(v['name'] .. ' ' .. v['rank'])
 	end
 end
 

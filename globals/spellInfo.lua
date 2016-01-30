@@ -49,6 +49,11 @@
 		return dir .. class		
 	end
 	
+	GET_RANK_ICON = function(rank)	
+		local dir = [[Interface\PvPRankBadges\PvPRank]]
+		local a = rank < 10 and '0' or ''
+		return dir .. a .. rank
+	end
 
 	SPELLINFO_TRADECASTS_TO_TRACK = {
 		-- ALCHEMY
@@ -409,6 +414,7 @@
 		["Gouge"] 					= {['icon'] = [[Interface\Icons\Ability_gouge]], 					['duration'] = 5, 	['type'] = 'physical', 	['prio'] = 2},
 		['Kick - Silenced'] 		= {['icon'] = [[Interface\Icons\Ability_kick]], 					['duration'] = 2, 	['type'] = 'physical', 	['prio'] = 1},
 		["Sap"] 					= {['icon'] = [[Interface\Icons\Ability_sap]], 						['duration'] = 12, 	['type'] = 'physical', 	['prio'] = 3},
+		['Sprint']					= {['icon'] = [[Interface\Icons\Ability_rogue_sprint]],				['duration'] = 15,							['prio'] = 1},
 		
 		     -- WARLOCK
 		['Death Coil']				= {['icon'] = [[Interface\Icons\Spell_shadow_deathcoil]],			['duration'] = 3,	['type'] = 'magic',		['prio'] = 1},
@@ -423,4 +429,8 @@
 
     }
     
+	SPELLINFO_WSG_FLAGS = {
+		['Alliance'] 	= {['icon'] = [[Interface\Icons\inv_bannerpvp_02]]},
+		['Horde'] 		= {['icon'] = [[Interface\Icons\inv_bannerpvp_01]]},
+	}
 	--
