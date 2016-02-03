@@ -22,6 +22,12 @@
 		['holy'] 		= {.9, .4, .9}
 	}
 
+	RGB_FACTION_COLORS = 
+	{
+		['Alliance'] = {['r'] = 0, ['g'] = .68, ['b'] = .94}, 
+		['Horde'] = {['r'] = 1, ['g'] = .1, ['b'] = .1}
+	}
+	
 	local RGB_POWER_COLORS =
 	{
 		['energy']		= {1, 1, 0},
@@ -30,6 +36,7 @@
 		['rage']		= {1, 0, 0},
 		
 	}
+		
 	GET_RGB_POWER_COLORS_BY_CLASS = function(class)
 		return class == 'ROGUE' and RGB_POWER_COLORS['energy'] or class == 'WARRIOR' and RGB_POWER_COLORS['rage'] or RGB_POWER_COLORS['mana']
 	end
@@ -44,17 +51,20 @@
 		['poison'] 		= {0, .6, 0},		
 	}
 	
-	GET_CLASS_ICON = function(class)	
-		local dir = [[Interface\AddOns\enemyFrames\globals\ClassIcons\ClassIcon_]]
-		return dir .. class		
+	local iconFolders = 
+	{
+		['class'] 		= [[Interface\AddOns\enemyFrames\globals\resources\ClassIcons\ClassIcon_]],
+		['rank']  		= [[Interface\PvPRankBadges\PvPRank]],
+		['portrait'] 	= [[Interface\characterframe\TEMPORARYPORTRAIT-]],
+	}
+
+	GET_DEFAULT_ICON = function(op, value)
+		local dir = iconFolders[op]
+		-- rank file hack
+		local a = op == 'rank' and value < 10 and '0' or ''
+		return dir .. a .. value
 	end
 	
-	GET_RANK_ICON = function(rank)	
-		local dir = [[Interface\PvPRankBadges\PvPRank]]
-		local a = rank < 10 and '0' or ''
-		return dir .. a .. rank
-	end
-
 	SPELLINFO_TRADECASTS_TO_TRACK = {
 		-- ALCHEMY
 		['Greater Healing Potion']					= {['icon'] = [[Interface\Icons\Inv_potion_52]], ['casttime'] = 3},
@@ -240,23 +250,23 @@
         ['Create Soulstone']        = {['icon'] = [[Interface\Icons\Spell_shadow_soulgem]], ['casttime'] = 3},
 --        ['Drain Life']              = {[[Interface\Icons\Spell_shadow_lifedrain02]], 5},
  --       ['Drain Mana']              = {[[Interface\Icons\Spell_shadow_siphonmana]], 5},
-        ['Enslave Demon']           = {['icon'] = [[Interface\Icons\Spell_shadow_enslavedemon]], ['casttime'] = 3},
-        ['Fear']                    = {['icon'] = [[Interface\Icons\Spell_shadow_possession]], ['casttime'] = 1.5, ['type'] = 'dmg', ['school'] = 'shadow', ['class'] = 'WARLOCK'},
-        ['Howl of Terror']          = {['icon'] = [[Interface\Icons\Ability_warlock_howlofterror]], ['casttime'] = 2, ['type'] = 'dmg', ['school'] = 'shadow', ['class'] = 'WARLOCK'},
-        ['Immolate']                = {['icon'] = [[Interface\Icons\Spell_fire_immolation]], ['casttime'] = 1.5, ['type'] = 'dmg', ['school'] = 'fire', ['class'] = 'WARLOCK'},
-        ['Inferno']                 = {['icon'] = [[Interface\Icons\Spell_fire_incinerate]], ['casttime'] = 2},
-        ['Ritual of Doom']          = {['icon'] = [[Interface\Icons\Spell_shadow_antimagicshell]], ['casttime'] = 10},
-        ['Ritual of Summoning']     = {['icon'] = [[Interface\Icons\Spell_shadow_twilight]], ['casttime'] = 5},
-        ['Searing Pain']            = {['icon'] = [[Interface\Icons\Spell_fire_soulburn]], ['casttime'] = 1.5, ['type'] = 'dmg', ['school'] = 'fire', ['class'] = 'WARLOCK'},
-        ['Seduction']               = {['icon'] = [[Interface\Icons\Spell_shadow_mindsteal]], ['casttime'] = 1.5, ['type'] = 'dmg', ['school'] = 'shadow', ['class'] = 'WARLOCK'},
-        ['Shadow Bolt']             = {['icon'] = [[Interface\Icons\Spell_shadow_shadowbolt]], ['casttime'] = 2.5, ['type'] = 'dmg', ['school'] = 'shadow', ['class'] = 'WARLOCK'},
-        ['Soul Fire']               = {['icon'] = [[Interface\Icons\Spell_fire_fireball02]], ['casttime'] = 4, ['type'] = 'dmg', ['school'] = 'fire', ['class'] = 'WARLOCK'},
-        ['Summon Dreadsteed']       = {['icon'] = [[Interface\Icons\Ability_mount_dreadsteed]], ['casttime'] = 3},
+        ['Enslave Demon']           = {['icon'] = [[Interface\Icons\Spell_shadow_enslavedemon]], 	['casttime'] = 3},
+        ['Fear']                    = {['icon'] = [[Interface\Icons\Spell_shadow_possession]], 		['casttime'] = 1.5, ['type'] = 'dmg', ['school'] = 'shadow', ['class'] = 'WARLOCK'},
+        ['Howl of Terror']          = {['icon'] = [[Interface\Icons\Spell_shadow_deathscream]], 	['casttime'] = 2, ['type'] = 'dmg', ['school'] = 'shadow', ['class'] = 'WARLOCK'},
+        ['Immolate']                = {['icon'] = [[Interface\Icons\Spell_fire_immolation]], 		['casttime'] = 1.5, ['type'] = 'dmg', ['school'] = 'fire', ['class'] = 'WARLOCK'},
+        ['Inferno']                 = {['icon'] = [[Interface\Icons\Spell_fire_incinerate]], 		['casttime'] = 2},
+        ['Ritual of Doom']          = {['icon'] = [[Interface\Icons\Spell_shadow_antimagicshell]], 	['casttime'] = 10},
+        ['Ritual of Summoning']     = {['icon'] = [[Interface\Icons\Spell_shadow_twilight]], 		['casttime'] = 5},
+        ['Searing Pain']            = {['icon'] = [[Interface\Icons\Spell_fire_soulburn]], 			['casttime'] = 1.5, ['type'] = 'dmg', ['school'] = 'fire', ['class'] = 'WARLOCK'},
+        ['Seduction']               = {['icon'] = [[Interface\Icons\Spell_shadow_mindsteal]], 		['casttime'] = 1.5, ['type'] = 'dmg', ['school'] = 'shadow', ['class'] = 'WARLOCK'},
+        ['Shadow Bolt']             = {['icon'] = [[Interface\Icons\Spell_shadow_shadowbolt]], 		['casttime'] = 2.5, ['type'] = 'dmg', ['school'] = 'shadow', ['class'] = 'WARLOCK'},
+        ['Soul Fire']               = {['icon'] = [[Interface\Icons\Spell_fire_fireball02]], 		['casttime'] = 4, ['type'] = 'dmg', ['school'] = 'fire', ['class'] = 'WARLOCK'},
+        ['Summon Dreadsteed']       = {['icon'] = [[Interface\Icons\Ability_mount_dreadsteed]], 	['casttime'] = 3},
         ['Summon Felhunter']        = {['icon'] = [[Interface\Icons\Spell_shadow_summonfelhunter]], ['casttime'] = 10},
-        ['Summon Felsteed']         = {['icon'] = [[Interface\Icons\Spell_nature_swiftness]], ['casttime'] = 3},
-        ['Summon Imp']              = {['icon'] = [[Interface\Icons\Spell_shadow_summonimp]], ['casttime'] = 10},
-        ['Summon Succubus']         = {['icon'] = [[Interface\Icons\Spell_shadow_summonsuccubus]], ['casttime'] = 10},
-        ['Summon Voidwalker']       = {['icon'] = [[Interface\Icons\Spell_shadow_summonvoidwalker]], ['casttime'] = 10},
+        ['Summon Felsteed']         = {['icon'] = [[Interface\Icons\Spell_nature_swiftness]], 		['casttime'] = 3},
+        ['Summon Imp']              = {['icon'] = [[Interface\Icons\Spell_shadow_summonimp]], 		['casttime'] = 10},
+        ['Summon Succubus']         = {['icon'] = [[Interface\Icons\Spell_shadow_summonsuccubus]], 	['casttime'] = 10},
+        ['Summon Voidwalker']       = {['icon'] = [[Interface\Icons\Spell_shadow_summonvoidwalker]],['casttime'] = 10},
     }
 
     SPELLINFO_INTERRUPTS_TO_TRACK = {
@@ -299,6 +309,9 @@
 	SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK = {
 		-- MISC
 		['Fishing']					= {['icon'] = [[Interface\Icons\Trade_Fishing]], ['casttime'] = 30},
+		
+		-- DRUID
+		['Hurricane']				= {['icon'] = [[Interface\Icons\Spell_nature_cyclone]], ['casttime'] = 9.5, ['tick'] = 1},
 		
 		-- HUNTER
 		['Eagle Eye']      			= {['icon'] = [[Interface\Icons\Ability_hunter_eagleeye]], ['casttime'] = 60},
@@ -384,8 +397,9 @@
     	['Nature\'s Grasp']        	= {['icon'] = [[Interface\Icons\Spell_nature_natureswrath]], 		['type'] = 'magic', ['duration'] = 45},
 		
 		--[[	HUNTER 	]]--
+		['Scatter Shot']			= {['icon'] = [[Interface\Icons\Ability_golemstormbolt]],			['duration'] = 4, 	['type'] = 'physical',	['prio'] = 2},
 		["Scare Beast"] 			= {['icon'] = [[Interface\Icons\Ability_druid_cower]], 				['duration'] = 10, 	['type'] = 'magic', 	['prio'] = 2},
-		["Freezing Trap Effect"] 	= {['icon'] = [[Interface\Icons\Spell_frost_chainsofice]], 			['duration'] = 10, 	['type'] = 'magic'},
+		["Freezing Trap Effect"] 	= {['icon'] = [[Interface\Icons\Spell_frost_chainsofice]], 			['duration'] = 10, 	['type'] = 'magic',		['prio'] = 3},
 		['Viper Sting']				= {['icon'] = [[Interface\Icons\Ability_hunter_aimedshot]], 		['duration'] = 8, 	['type'] = 'poison', 	['prio'] = 1},
 		
             -- MAGE
@@ -397,7 +411,7 @@
 		["Polymorph"] 				= {['icon'] = [[Interface\Icons\Spell_nature_polymorph]], 			['duration'] = 12, 	['type'] = 'magic', 	['prio'] = 3},
 		
             -- PALADIN
-    	['Blessing of Protection'] 	= {['icon'] = [[Interface\Icons\Spell_holy_sealofprotection]], 		['duration'] = 8, 	['type'] = 'magic', ['prio'] = 2},
+    	['Blessing of Protection'] 	= {['icon'] = [[Interface\Icons\Spell_holy_sealofprotection]], 		['duration'] = 8, 	['type'] = 'magic', 	['prio'] = 2},
     	['Blessing of Freedom']    	= {['icon'] = [[Interface\Icons\Spell_holy_sealofvalor]], 			['duration'] = 10, 	['type'] = 'magic'},
     	['Divine Protection']      	= {['icon'] = [[Interface\Icons\Spell_holy_restoration]], 			['duration'] = 8, 	['prio'] = 4},
 		['Divine Shield']			= {['icon'] = [[Interface\Icons\Spell_holy_divineintervention]], 	['duration'] = 10, 	['prio'] = 4},
@@ -423,6 +437,7 @@
     	['Shadow Trance'] 			= {['icon'] = [[Interface\Icons\Spell_shadow_twilight]], 			['duration'] = 10, 	['type'] = 'magic'},
 		
 		--[[	WARRRIOR 	]]--
+		['Berserker Rage']			= {['icon'] = [[Interface\Icons\Spell_nature_ancestralguardian]],	['duration'] = 10,							['prio'] = 1},
 		["Disarm"] 					= {['icon'] = [[Interface\Icons\Ability_warrior_disarm]], 			['duration'] = 8, 	['type'] = 'physical', 	['prio'] = 1},
 		["Hamstring"] 				= {['icon'] = [[Interface\Icons\Ability_shockwave]], 				['duration'] = 15, 	['type'] = 'physical', 	['prio'] = 0},		
 		['Intimidating Shout']		= {['icon'] = [[Interface\Icons\Ability_golemthunderclap]], 		['duration'] = 8, 	['type'] = 'physical', 	['prio'] = 2},

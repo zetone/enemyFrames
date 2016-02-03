@@ -7,12 +7,13 @@ local bgs = {['Warsong Gulch'] = 10,
 -- TIMERS
 local playerListInterval, playerListRefresh, enemyNearbyInterval, enemyNearbyRefresh = 45, 0, .3, 0
 local raidMemberIndex = 1
-local nextPlayerCheck = 4
+local nextPlayerCheck = 3	-- timer since last seen in seconds
 local refreshUnits = true
 -- LISTS
 local playerList = {}
 local targetQueue = {}
 
+-- 
 
 local function fillPlayerList()
 	local f
@@ -22,9 +23,10 @@ local function fillPlayerList()
 	if UnitFactionGroup('player') == 'Alliance' then f = 0 else f = 1 end
 	-- get opposing faction players
 	for i=1, GetNumBattlefieldScores() do
-		name, killingBlows, honorableKills, deaths, honorGained, faction, rank, race, class = GetBattlefieldScore(i)
+		local name, killingBlows, honorableKills, deaths, honorGained, faction, rank, race, class = GetBattlefieldScore(i)
 		if faction == f then
-			l[name] = {['name'] = name, ['class'] = string.upper(class), ['rank'] = rank-4} -- rank starts at -4 apparently
+			race = race == 'Undead' and 'SCOURGE' or race == 'Night Elf' and 'nightelf' or race
+			l[name] = {['name'] = name, ['class'] = string.upper(class), ['rank'] = rank-4, ['race'] = string.upper(race), ['sex'] = 'MALE'} -- rank starts at -4 apparently
 			gotData = true
 		end
 	end	
@@ -42,31 +44,38 @@ local function fillPlayerList()
 end
 
 -- confirm hostile nearbyPlayers
-local function addNearbyPlayers(players, isTarget)
+local function addNearbyPlayers(players)
 	local nextCheck = GetTime() + nextPlayerCheck
 	
 	for k, v in pairs(players) do
-		if playerList[v] then
-			--if nearbyUnitsInfo[v] == nil then		refreshUnits =  true		nearbyUnitsInfo[v] = playerList[v]	end
-			playerList[v]['nextCheck'] = nextCheck
-			playerList[v]['nearby'] = true
-			refreshUnits =  true
+		if playerList[v['name']] then
+			playerList[v['name']]['health'] 	= v['health']
+			--playerList[v['name']]['mana'] 		= v['mana']
+
+			if v['sex']	then
+				playerList[v['name']]['sex']	= v['sex'] 
+			end
+			
+			playerList[v['name']]['nextCheck'] 	= nextCheck
+			playerList[v['name']]['nearby'] 	= true
+			refreshUnits = true
 		end
 	end
 end
 
 local function verifyUnitInfo(unit)
 	if UnitExists(unit) and UnitIsPlayer(unit) then
-		addNearbyPlayers({UnitName(unit)}, true)
-	end
+		local u = {}
+		u['name']		= UnitName(unit)
+		u['health'] 	= UnitHealth(unit)
+		u['mana'] 		= UnitMana(unit)
+		local s = UnitSex(unit)
+		u['sex']		= (s == 1 or s == 2) and 'MALE' or s == 3 and 'FEMALE' 
 
-	-- update unit's stats
-	if playerList[UnitName(unit)] then		
-		playerList[UnitName(unit)]['health'] 	= UnitHealth(unit)
-		playerList[UnitName(unit)]['mana'] 		= UnitMana(unit)
-		refreshUnits = true
+		addNearbyPlayers({u})
 	end
 end
+
 
 --	attempt to get enemy info from raid's targets
 -- 	check one every frame rather than all every other frame
@@ -74,6 +83,7 @@ local function getRaidMembersTarget()
 	local numRaidMembers = GetNumRaidMembers()
 	
 	verifyUnitInfo('raid' .. raidMemberIndex .. 'target')
+
 	raidMemberIndex = raidMemberIndex < numRaidMembers and raidMemberIndex + 1 or 1
 end
 
@@ -150,9 +160,9 @@ local function updatePlayerListInfo()
 		
 		if v['castinfo'] or v['buff'] then	
 			v['nextCheck'] 	= nextCheck	
-			-- set health to 100 for newly nearby players
+			-- set health to 100 for newly seen players
 			if v['nearby'] == false then	v['health'] = 100	end
-			v['nearby'] = true
+			v['nearby'] 	= true
 			refreshUnits 	= true
 		end
 		
@@ -165,18 +175,12 @@ local function updatePlayerListInfo()
 			end	
 		end
 		
-		-- verify if unit died and update health correctly
-		--if rip[v['name']] ~= nil then print('rip in piss ' .. v['name'])	
-		--	nearbyUnitsInfo[v['name']]['health'] = 0
-		--end
 	end
 end
 
 --- GLOBAL ACCESS ---
 function ENEMYFRAMESCOREGetUnitsInfo()
-	local list = refreshUnits and playerList or nil
-	
-	return list
+	return refreshUnits and playerList or nil
 end
 
 function ENEMYFRAMECOREUpdateFlagCarriers(fc)
@@ -190,6 +194,11 @@ function ENEMYFRAMECOREUpdateFlagCarriers(fc)
 	end
 	refreshUnits = true
 end
+
+function ENEMYFRAMECORESetPlayersData(list)
+	addNearbyPlayers(list)
+end
+--#################--
 ---------------------
 
 local function enemyFramesCoreOnUpdate()
@@ -226,6 +235,7 @@ local function initializeValues()
 		f:SetScript('OnUpdate', enemyFramesCoreOnUpdate)
 		-- enable ui elements
 		ENEMYFRAMESInitialize(maxUnits)
+		namePlatesHandlerInit()
 	else
 		-- nil value to disable ui elements
 		ENEMYFRAMESInitialize(nil)
@@ -244,10 +254,6 @@ local function eventHandler()
 				playerListRefresh = now + playerListInterval
 			end
 		end	
-	--elseif event == 'PLAYER_TARGET_CHANGED' then
-	--	addCurrentTarget('target')
-	--else
-	--	processCombatLog()
 	end
 end
 
@@ -300,7 +306,7 @@ f:SetScript('OnEvent', eventHandler)
 SLASH_ENEMYFRAMECORE1 = '/efc'
 SlashCmdList["ENEMYFRAMECORE"] = function(msg)
 	for k, v in pairs(playerList) do
-		print(v['name'] .. ' ' .. v['rank'])
+		print(v['name'] .. ' ' .. v['race'])
 	end
 end
 

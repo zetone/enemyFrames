@@ -8,7 +8,6 @@ local eventHandler = function()
 	local drop 	= 'The (.+) (.+) was dropped by (.+)!'
 	local score = 'captured the (.+) (.+)!'
 	
-
 	if string.find(arg1, pick) then
 		local flag 		= gsub(arg1, pick, '%1')
 		local carrier 	= gsub(arg1, pick, '%3')
@@ -29,16 +28,10 @@ local eventHandler = function()
 	ENEMYFRAMECOREUpdateFlagCarriers(flagCarriers)
 end
 
-
 local f = CreateFrame'Frame'
 f:RegisterEvent'PLAYER_ENTERING_WORLD'
 f:RegisterEvent'CHAT_MSG_BG_SYSTEM_ALLIANCE' 
 f:RegisterEvent'CHAT_MSG_BG_SYSTEM_HORDE'
-f:RegisterEvent'CHAT_MSG_BG_SYSTEM_NEUTRAL'
-f:SetScript('OnEvent', function() 
-						if event == 'PLAYER_ENTERING_WORLD' then
-							flagCarriers = {}
-						else
-							eventHandler()
-						end
+f:SetScript('OnEvent', function()	if event == 'PLAYER_ENTERING_WORLD' then	flagCarriers = {}
+									else	eventHandler()	end
 						end)

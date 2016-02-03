@@ -437,6 +437,9 @@ local playerDeath = function()
 		
 		forceHideTableItem(casts, c, nil)
 		forceHideTableItem(buffList, c, nil)
+		
+		-- send dead player data
+		ENEMYFRAMECORESetPlayersData({[c] = {['name'] = c, ['health']  = 0}})
 	end
 	
 	return fdies
@@ -594,11 +597,5 @@ end)
 	
 SLASH_PROCESSCAST1 = '/pct'
 SlashCmdList["PROCESSCAST"] = function(msg)
-	local i = 0
-	for k, v in pairs(casts) do
-		i = i + 1
-	end
-	
-	print(i)
-	print(tlength(casts))
+
 end

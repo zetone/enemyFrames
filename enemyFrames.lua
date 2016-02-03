@@ -12,9 +12,8 @@ local moduiLoaded = false
 ---
 
 ------------ UI ELEMENTS ------------------
-local TEXTURE = [[Interface\AddOns\enemyFrames\globals\barTexture.tga]]
+local TEXTURE = [[Interface\AddOns\enemyFrames\globals\resources\barTexture.tga]]
 local BACKDROP = {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]],}
-local factionRGB = {['Alliance'] = {['r'] = 0, ['g'] = .68, ['b'] = .94}, ['Horde'] = {['r'] = 1, ['g'] = .1, ['b'] = .1}}
 local defaultIcon = 'rank'
 local enemyFactionColor
 
@@ -58,26 +57,45 @@ local 	enemyFrame = CreateFrame('Frame', 'enemyFrameDisplay', UIParent)
 		enemyFrame.bottom:SetBackdrop(BACKDROP)
 		enemyFrame.bottom:SetBackdropColor(0, 0, 0, .6)
 		
-		-- class or rank option
-		enemyFrame.bottom.classText = enemyFrame.bottom:CreateFontString(nil, 'OVERLAY')
-		enemyFrame.bottom.classText:SetFont(STANDARD_TEXT_FONT, 12, 'OUTLINE')
-		enemyFrame.bottom.classText:SetText('class')
-		
-		enemyFrame.bottom.classButton = CreateFrame('Button', nil, enemyFrame.bottom)
-		
-		enemyFrame.bottom.rankText = enemyFrame.bottom:CreateFontString(nil, 'OVERLAY')
-		enemyFrame.bottom.rankText:SetFont(STANDARD_TEXT_FONT, 12, 'OUTLINE')
-		enemyFrame.bottom.rankText:SetText('rank')
-		
-		enemyFrame.bottom.rankButton = CreateFrame('Button', nil, enemyFrame.bottom)
+		-- setttings button
+
+
 		
 		--enemyFrame.bottom:Hide()
+		-- class
+		enemyFrame.bottom.classButton = CreateFrame('Button', nil, enemyFrame.bottom)
+		enemyFrame.bottom.classButton:SetHeight(enemyFrame:GetHeight()-4)	enemyFrame.bottom.classButton:SetWidth(enemyFrame:GetHeight()-4)
+		enemyFrame.bottom.classButton:SetPoint('LEFT', enemyFrame.bottom, 'LEFT', 8, 0)
+		
+		enemyFrame.bottom.classIcon = enemyFrame.bottom.classButton:CreateTexture(nil, 'ARTWORK')
+		enemyFrame.bottom.classIcon:SetAllPoints()
+		enemyFrame.bottom.classIcon:SetTexture(GET_DEFAULT_ICON('class', 'WARRIOR'))
+		enemyFrame.bottom.classIcon:SetTexCoord(.1, .9, .25, .75)
+		
+		-- rank
+		enemyFrame.bottom.rankButton = CreateFrame('Button', nil, enemyFrame.bottom)
+		enemyFrame.bottom.rankButton:SetHeight(enemyFrame:GetHeight()-4)	enemyFrame.bottom.rankButton:SetWidth(enemyFrame:GetHeight()-4)
+		enemyFrame.bottom.rankButton:SetPoint('LEFT', enemyFrame.bottom.classButton, 'RIGHT', 8, 0)
+		
+		enemyFrame.bottom.rankIcon = enemyFrame.bottom.rankButton:CreateTexture(nil, 'ARTWORK')
+		enemyFrame.bottom.rankIcon:SetAllPoints()
+		enemyFrame.bottom.rankIcon:SetTexture(GET_DEFAULT_ICON('rank', 10))
+		enemyFrame.bottom.rankIcon:SetTexCoord(.1, .9, .25, .75)
+		
+		-- race
+		enemyFrame.bottom.raceButton = CreateFrame('Button', nil, enemyFrame.bottom)
+		enemyFrame.bottom.raceButton:SetHeight(enemyFrame:GetHeight()-4)	enemyFrame.bottom.raceButton:SetWidth(enemyFrame:GetHeight()-4)
+		enemyFrame.bottom.raceButton:SetPoint('LEFT', enemyFrame.bottom.rankButton, 'RIGHT', 8, 0)
+		
+		enemyFrame.bottom.raceIcon = enemyFrame.bottom.raceButton:CreateTexture(nil, 'ARTWORK')
+		enemyFrame.bottom.raceIcon:SetAllPoints()
+		enemyFrame.bottom.raceIcon:SetTexCoord(.1, .9, .25, .75)
 
 		
 local unitWidth, unitHeight, castBarHeight, ccIconWidth, ccIconHeight = 64, 20, 10, 28, 24
 for i = 1, unitLimit do
 	-- health statusbar
-	units[i] = CreateFrame('StatusBar', nil, enemyFrame)
+	units[i] = CreateFrame('StatusBar', 'enemyFrameUnit'..i, enemyFrame)
 	units[i]:SetFrameLevel(0)
 	units[i]:SetStatusBarTexture(TEXTURE)
 	units[i]:SetWidth(unitWidth)	units[i]:SetHeight(unitHeight)
@@ -131,7 +149,7 @@ for i = 1, unitLimit do
 	units[i].castbar.iconborder:SetWidth(units[i].castbar:GetHeight()+1)	units[i].castbar.iconborder:SetHeight(units[i].castbar:GetHeight()+1)
 	units[i].castbar.iconborder:SetPoint('RIGHT', units[i].castbar, 'LEFT')
 	
-	units[i].castbar.icon = units[i].castbar.iconborder:CreateTexture()
+	units[i].castbar.icon = units[i].castbar.iconborder:CreateTexture(nil, 'ARTWORK')
 	units[i].castbar.icon:SetTexture([[Interface\Icons\Inv_misc_gem_sapphire_01]])
 	units[i].castbar.icon:SetTexCoord(.078, .92, .079, .937)
 	units[i].castbar.icon:SetAllPoints()
@@ -143,7 +161,8 @@ for i = 1, unitLimit do
 	units[i].castbar.text:SetShadowOffset(1, -1)
 	units[i].castbar.text:SetShadowColor(0, 0, 0)
 	units[i].castbar.text:SetPoint('LEFT', units[i].castbar, 'LEFT', 2, 1)
-	units[i].castbar.text:SetText('Frostbolt')
+	units[i].castbar.text:SetText('Entangling Roots')
+	units[i].castbar.text:SetText(string.sub(units[i].castbar.text:GetText(), 1, 11))
 	
 	--[[
 	units[i].castbar.timer = units[i].castbar:CreateFontString(nil, 'OVERLAY')
@@ -167,7 +186,7 @@ for i = 1, unitLimit do
 	units[i].cc:SetPoint('TOPLEFT', units[i],'TOPRIGHT', 4, -1)
 
 	units[i].cc.icon = units[i].cc:CreateTexture(nil, 'ARTWORK')
-	units[i].cc.icon:SetTexture([[Interface\Icons\Inv_misc_gem_sapphire_01]])
+	units[i].cc.icon:SetTexture([[Interface\characterframe\TEMPORARYPORTRAIT-MALE-ORC]])
 	units[i].cc.icon:SetAllPoints()
 	units[i].cc.icon:SetTexCoord(.1, .9, .25, .75)
 	
@@ -187,6 +206,46 @@ for i = 1, unitLimit do
 	units[i].Button = CreateFrame('Button', nil, units[i])
 	units[i].Button:SetAllPoints()
 	units[i].Button:SetPoint('CENTER', units[i])
+end
+
+local function setccIcon(p)
+	local d = p == 'class' and 'MAGE' or p == 'rank' and 6 or p == 'portrait' and ( playerFaction == 'Alliance' and 'MALE-ORC' or 'MALE-HUMAN')
+	for i = 1, unitLimit do
+		units[i].cc.icon:SetTexture(GET_DEFAULT_ICON(p, d))
+	end
+end
+ 
+local function arrangeUnits()
+	unitGroup = 5--ENEMYFRAMESPLAYERDATA['groupsize']
+	
+	for i = 1, unitLimit do	
+		if ENEMYFRAMESPLAYERDATA['layout'] == 'horizontal' then
+			if i == 1 then	
+				units[i]:SetPoint('TOPLEFT', enemyFrame, 'BOTTOMLEFT', 0, -6)
+			else			
+				units[i]:SetPoint('TOPLEFT', units[i-1].cc, 'TOPRIGHT', 6, 1)
+			end	
+		end
+		if ENEMYFRAMESPLAYERDATA['layout'] == 'block' then
+			local pos = math.mod(i,unitGroup)
+			if pos == 1 then
+				if i == 1 then	
+					units[i]:SetPoint('TOPLEFT', enemyFrame, 'BOTTOMLEFT', 0, -6)
+				else			
+					units[i]:SetPoint('TOPLEFT', units[i-unitGroup].cc, 'TOPRIGHT', 6, 1)
+				end			
+			else
+				units[i]:SetPoint('TOPLEFT', units[i-1].castbar.icon, 'BOTTOMLEFT', 1, -6)
+			end	
+		end
+		if ENEMYFRAMESPLAYERDATA['layout'] == 'vertical' then
+			if i == 1 then	
+				units[i]:SetPoint('TOPLEFT', enemyFrame, 'BOTTOMLEFT', 0, -6)
+			else			
+				units[i]:SetPoint('TOPLEFT', units[i-1].castbar.icon, 'BOTTOMLEFT', 1, -6)
+			end	
+		end
+	end
 end
 
 -- use modui to reskin some ui elements
@@ -251,10 +310,10 @@ local function SetupTitle(maxUnits)
 	playerFaction = UnitFactionGroup('player')
 	
 	if playerFaction == 'Alliance' then 
-		enemyFactionColor = factionRGB['Horde']
+		enemyFactionColor = RGB_FACTION_COLORS['Horde']
 		enemyFrame.Title:SetText('Horde')
 	else 
-		enemyFactionColor = factionRGB['Alliance']
+		enemyFactionColor = RGB_FACTION_COLORS['Alliance']
 		enemyFrame.Title:SetText('Alliance')		
 	end
 	
@@ -263,7 +322,7 @@ local function SetupTitle(maxUnits)
 	enemyFrame.totalPlayers:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
 		
 	-- width of the draggable frame
-	local rows = maxUnits / unitGroup
+	local rows = maxUnits / ENEMYFRAMESPLAYERDATA['groupsize']
 	enemyFrame:SetWidth((unitWidth + ccIconWidth)*rows +  8*rows)
 	
 	enemyFrame.Title:SetPoint('CENTER', enemyFrame, 0, 1)
@@ -287,34 +346,70 @@ local function SetupTitle(maxUnits)
 		
 	-- bottom frame
 	enemyFrame.bottom:SetWidth(enemyFrame:GetWidth())
-	enemyFrame.bottom:SetPoint('CENTER', enemyFrame, 0, -((unitHeight + castBarHeight + 15) * unitGroup))
+	--enemyFrame.bottom:SetPoint('CENTER', enemyFrame, 0, -((unitHeight + castBarHeight + 15) * unitGroup))
+	enemyFrame.bottom:SetPoint('TOPLEFT', units[maxUnits < ENEMYFRAMESPLAYERDATA['groupsize'] and maxUnits or ENEMYFRAMESPLAYERDATA['groupsize']].castbar.icon, 'BOTTOMLEFT', 1, -6)
 	
 	if defaultIcon == 'class' then
-		enemyFrame.bottom.classText:SetTextColor(1, 1, 1, .9)
-		enemyFrame.bottom.rankText:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
+		enemyFrame.bottom.classIcon:SetBlendMode('BLEND')
+		enemyFrame.bottom.classIcon:SetVertexColor(1, 1, 1)
+		enemyFrame.bottom.rankIcon:SetBlendMode('ADD')
+		enemyFrame.bottom.rankIcon:SetVertexColor(.3, .3, .3)
+		enemyFrame.bottom.raceIcon:SetBlendMode('ADD')
+		enemyFrame.bottom.raceIcon:SetVertexColor(.3, .3, .3)
+	elseif defaultIcon == 'rank' then
+		enemyFrame.bottom.classIcon:SetBlendMode('ADD')
+		enemyFrame.bottom.classIcon:SetVertexColor(.3, .3, .3)
+		enemyFrame.bottom.rankIcon:SetBlendMode('BLEND')
+		enemyFrame.bottom.rankIcon:SetVertexColor(1, 1, 1)
+		enemyFrame.bottom.raceIcon:SetBlendMode('ADD')
+		enemyFrame.bottom.raceIcon:SetVertexColor(.3, .3, .3)
 	else
-		enemyFrame.bottom.classText:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
-		enemyFrame.bottom.rankText:SetTextColor(1, 1, 1, .9)
+		enemyFrame.bottom.classIcon:SetBlendMode('ADD')
+		enemyFrame.bottom.classIcon:SetVertexColor(.3, .3, .3)
+		enemyFrame.bottom.rankIcon:SetBlendMode('ADD')
+		enemyFrame.bottom.rankIcon:SetVertexColor(.3, .3, .3)
+		enemyFrame.bottom.raceIcon:SetBlendMode('BLEND')
+		enemyFrame.bottom.raceIcon:SetVertexColor(1, 1, 1)
 	end
 	
-	enemyFrame.bottom.classText:SetPoint('LEFT', enemyFrame.bottom, 'LEFT', 8, 1)
-	enemyFrame.bottom.rankText:SetPoint('LEFT', enemyFrame.bottom.classText, 'RIGHT', 6, 0)
-	
-	-- class/rank buttons
-	enemyFrame.bottom.classButton:SetHeight(enemyFrame.bottom:GetHeight())	enemyFrame.bottom.classButton:SetWidth(enemyFrame.bottom.classText:GetWidth())
-	enemyFrame.bottom.classButton:SetPoint('CENTER', enemyFrame.bottom.classText, 'CENTER')
+	-- class/rank/race buttons
 	enemyFrame.bottom.classButton:SetScript('OnClick', function()
 			defaultIcon = 'class'
-			enemyFrame.bottom.classText:SetTextColor(1, 1, 1, .9)
-			enemyFrame.bottom.rankText:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
+			ENEMYFRAMESPLAYERDATA['defaultIcon'] = 'class'
+			
+			enemyFrame.bottom.classIcon:SetBlendMode('BLEND')
+			enemyFrame.bottom.classIcon:SetVertexColor(1, 1, 1)
+			enemyFrame.bottom.rankIcon:SetBlendMode('ADD')
+			enemyFrame.bottom.rankIcon:SetVertexColor(.3, .3, .3)
+			enemyFrame.bottom.raceIcon:SetBlendMode('ADD')
+			enemyFrame.bottom.raceIcon:SetVertexColor(.3, .3, .3)
 		end)
 	
-	enemyFrame.bottom.rankButton:SetHeight(enemyFrame.bottom:GetHeight())		enemyFrame.bottom.rankButton:SetWidth(enemyFrame.bottom.rankText:GetWidth())
-	enemyFrame.bottom.rankButton:SetPoint('CENTER', enemyFrame.bottom.rankText, 'CENTER')
 	enemyFrame.bottom.rankButton:SetScript('OnClick', function()
 			defaultIcon = 'rank'
-			enemyFrame.bottom.classText:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
-			enemyFrame.bottom.rankText:SetTextColor(1, 1, 1, .9)
+			ENEMYFRAMESPLAYERDATA['defaultIcon'] = 'rank'
+			
+			enemyFrame.bottom.classIcon:SetBlendMode('ADD')
+			enemyFrame.bottom.classIcon:SetVertexColor(.3, .3, .3)
+			enemyFrame.bottom.rankIcon:SetBlendMode('BLEND')
+			enemyFrame.bottom.rankIcon:SetVertexColor(1, 1, 1)
+			enemyFrame.bottom.raceIcon:SetBlendMode('ADD')
+			enemyFrame.bottom.raceIcon:SetVertexColor(.3, .3, .3)
+		end)
+		
+	local r = playerFaction == 'Alliance' and 'MALE-ORC' or 'MALE-HUMAN'
+	enemyFrame.bottom.raceIcon:SetTexture(GET_DEFAULT_ICON('portrait', r))
+	enemyFrame.bottom.raceButton:SetScript('OnClick', function()
+			defaultIcon = 'portrait'
+			ENEMYFRAMESPLAYERDATA['defaultIcon'] = 'portrait'
+
+						
+			enemyFrame.bottom.classIcon:SetBlendMode('ADD')
+			enemyFrame.bottom.classIcon:SetVertexColor(.3, .3, .3)
+			enemyFrame.bottom.rankIcon:SetBlendMode('ADD')
+			enemyFrame.bottom.rankIcon:SetVertexColor(.3, .3, .3)
+			enemyFrame.bottom.raceIcon:SetBlendMode('BLEND')
+			enemyFrame.bottom.raceIcon:SetVertexColor(1, 1, 1)
 		end)
 	
 end
@@ -375,6 +470,14 @@ local getTimerLeft = function(tEnd)
 	if t > 5 then return round(t, 0) else return round(t, 1) end
 end
 	
+local function SetDefaultIconTex(p)
+	--return v['rank'] < 0 and  GET_PORTRAIT_ICON(v['portrait']) or _G['GET_'..string.upper(defaultIcon)..'_ICON'](v[defaultIcon])
+	p['portrait']	= p['sex'] .. '-' .. p['race']
+	local d = defaultIcon
+	if d == 'rank' and p['rank'] < 0 then d = 'portrait' end
+	return GET_DEFAULT_ICON(d, p[d])
+end
+
 -- health, castbar, cc etc
 local function updateUnits()
 	local i = 1
@@ -410,7 +513,8 @@ local function updateUnits()
 			units[i].castbar:Show()		
 		end
 		
-		if v['health'] 	then 	units[i]:SetValue(v['health']) 			end
+		units[i]:SetValue(v['health'] and v['health'] or not v['nearby'] and 100 or 100)
+		--if v['health'] 	then 	units[i]:SetValue(v['health']) 			end
 		--if v['mana']	then	units[i].manabar:SetValue(v['mana'])	end
 		
 		-- CC type
@@ -422,8 +526,12 @@ local function updateUnits()
 			if moduiLoaded then modSkinColor(units[i].cc, r, g, b) end
 		else
 			-- signal FC or class / rank
-			--if v['rank'] == 0 then print(v['name'] .. ' r0') end
-			units[i].cc.icon:SetTexture(v['fc'] and SPELLINFO_WSG_FLAGS[playerFaction]['icon'] or v['rank'] < 0 and  GET_CLASS_ICON(v['class']) or _G['GET_'..string.upper(defaultIcon)..'_ICON'](v[defaultIcon]))
+			units[i].cc.icon:SetTexture(v['fc'] and SPELLINFO_WSG_FLAGS[playerFaction]['icon'] or SetDefaultIconTex(v))
+			-- show target player portrait
+			if UnitName('target') == v['name'] and not v['fc'] and defaultIcon == 'portrait' then
+				SetPortraitTexture(units[i].cc.icon, 'target')
+			end
+
 			if moduiLoaded then modSkinColor(units[i].cc, .2, .2, .2)	end
 			units[i].cc.duration:SetText('')
 		end
@@ -432,8 +540,6 @@ local function updateUnits()
 		if i > unitLimit then return end
 	end
 end
-
----######################################--
 
 local function enemyFramesOnUpdate()
 	-- get updated units from core
@@ -450,6 +556,7 @@ end
 function ENEMYFRAMESInitialize(maxUnits)
 		
 	if maxUnits then
+		defaultIcon = ENEMYFRAMESPLAYERDATA['defaultIcon']
 		SetupTitle(maxUnits)
 		
 		enemyFrame:Show()
@@ -457,6 +564,11 @@ function ENEMYFRAMESInitialize(maxUnits)
 	else
 		enemyFrame:SetScript('OnUpdate', nil)
 	end
+end
+
+function ENEMYFRAMESsettings()
+	SetupTitle(15)
+	arrangeUnits()
 end
 ---------------------
 
@@ -480,8 +592,10 @@ enemyFrame:SetScript('OnEvent', eventHandler)
 SLASH_ENEMYFRAMES1 = '/efd'
 SlashCmdList["ENEMYFRAMES"] = function(msg)
 	SetupTitle(15)
+	arrangeUnits()
 	enemyFrame:Show()	
 
+	enemyFrame:SetScale(ENEMYFRAMESPLAYERDATA['scale'])
 	--[[
 	icon = UIParent:CreateTexture(nil, 'ARTWORK')
 	icon:SetTexture(GET_RANK_ICON(7))
