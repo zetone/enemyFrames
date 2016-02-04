@@ -99,13 +99,13 @@ local 	enemyFrame = CreateFrame('Frame', 'enemyFrameDisplay', UIParent)
 		enemyFrame.killTargetFrame = CreateFrame('Frame', nil, enemyFrame)
 		enemyFrame.killTargetFrame:SetFrameLevel(2)
 		enemyFrame.killTargetFrame:SetHeight(36)	enemyFrame.killTargetFrame:SetWidth(36)
-		enemyFrame.killTargetFrame:SetPoint('CENTER', UIParent, 0, 150)
+		enemyFrame.killTargetFrame:SetPoint('CENTER', UIParent,'CENTER', 0, 160)
 		enemyFrame.killTargetFrame:Hide()
 
 		enemyFrame.killTargetFrame.text = enemyFrame.killTargetFrame:CreateFontString(nil, 'OVERLAY')
 		enemyFrame.killTargetFrame.text:SetFont(STANDARD_TEXT_FONT, 18, 'OUTLINE')
 		enemyFrame.killTargetFrame.text:SetTextColor(.8, .8, .8, .8)
-		enemyFrame.killTargetFrame.text:SetPoint('CENTER', killTargetFrame)
+		enemyFrame.killTargetFrame.text:SetPoint('CENTER', enemyFrame.killTargetFrame)
 		enemyFrame.killTargetFrame.text:SetText('Player')
 	
 		enemyFrame.killTargetFrame.iconl = enemyFrame.killTargetFrame:CreateTexture(nil, 'OVERLAY')
@@ -129,24 +129,6 @@ for i = 1, unitLimit,1 do
 	units[i]:SetStatusBarTexture(TEXTURE)
 	units[i]:SetWidth(unitWidth)	units[i]:SetHeight(unitHeight)
 	units[i]:SetMinMaxValues(0, 100)
-	--[[
-	local pos = math.mod(i,unitGroup)
-	if pos == 1 then
-		if i == 1 then	
-			units[i]:SetPoint('TOPLEFT', enemyFrame, 'BOTTOMLEFT', 0, -6)
-		else			
-			units[i]:SetPoint('TOPLEFT', units[i-unitGroup].cc, 'TOPRIGHT', 6, 1)
-		end			
-	else
-		units[i]:SetPoint('TOPLEFT', units[i-1].castbar.icon, 'BOTTOMLEFT', 1, -6)
-	end	]]--	
-	
-	--if i == 1 then	
-	--	units[i]:SetPoint('TOPLEFT', enemyFrame, 'BOTTOMLEFT', 0, -6)
-	--else			
-	--	units[i]:SetPoint('TOPLEFT', units[i-1].castbar.iconborder, 'BOTTOMLEFT', 1, -6)
-	--end	
-	--units[i]:SetPoint('TOPLEFT', enemyFrame, 'BOTTOMLEFT', 0, -(6 + unitHeight + castBarHeight)*(i-1)+6)
 	
 	units[i]:SetBackdrop(BACKDROP)
 	units[i]:SetBackdropColor(0, 0, 0, .6)
@@ -219,7 +201,7 @@ for i = 1, unitLimit,1 do
 	---- KILL TARGET
 	units[i].killTarget = CreateFrame('Frame', nil, units[i])
 	units[i].killTarget:SetWidth(ccIconWidth-2) units[i].killTarget:SetHeight(ccIconHeight-2)
-	units[i].killTarget:SetPoint('CENTER', units[i],'TOPRIGHT', 0, -6)
+	units[i].killTarget:SetPoint('CENTER', units[i],'TOPRIGHT', 0, -4)
 	units[i].killTarget:SetFrameLevel(2)
 	
 	units[i].killTarget.icon = units[i].killTarget:CreateTexture(nil, 'ARTWORK')
@@ -623,6 +605,11 @@ local function enemyFramesOnUpdate()
 	-- update units
 	if visible then updateUnits()	
 		killTargetName = ENEMYFRAMECOREGetKillTarget()	
+	end
+	
+	-- manages killTarget announcement
+	if GetTime() > ktEndtime then
+		enemyFrame.killTargetFrame:Hide()
 	end
 end
 

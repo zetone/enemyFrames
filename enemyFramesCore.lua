@@ -205,8 +205,10 @@ function  ENEMYFRAMECORESendKillTarget(name)
 	if KillTargetName == name or name == nil then
 		KillTargetName = nil
 	else
-		KillTargetName = name
-		sendMSG(KillTargetName)
+		if playerList[name] then
+			KillTargetName = name
+			sendMSG(KillTargetName)
+		end
 	end
 end
 function  ENEMYFRAMECORESetKillTarget(sender, tar)

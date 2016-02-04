@@ -1,0 +1,4 @@
+<Bindings>
+	<Binding name="SETKT"  	header="EFKHEADER"	>setKTbind()</Binding>
+	<Binding name="GETKT"  						>getKTbind()</Binding>
+</Bindings>

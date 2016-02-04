@@ -1,19 +1,20 @@
 
-local msgPrefix = {'BGEFKT',}
+--local msgPrefix = {'BGEFKT',}
 
 function sendMSG(d)
 	d = UnitName'player' .. '/' .. d
-	SendAddonMessage(msgPrefix[1], d, 'BATTLEGROUND')
+	SendAddonMessage('BGEFKT', d, 'BATTLEGROUND')
 end
 
 local function eventHandler()
 	local m = '(.+)/(.+)'
-	if msgPrefix[arg1] then
-		print(arg2)
+	if arg1 == 'BGEFKT' then
 		local p = gsub(arg2, m, '%1')
 		local t = gsub(arg2, m, '%2')
-		
-		ENEMYFRAMECORESetKillTarget(p, t)
+		--print(p .. ' sets ' .. t .. ' as killtarget')
+		if p ~= UnitName'player' then
+			ENEMYFRAMECORESetKillTarget(p, t)
+		end
 	end
 end
 
