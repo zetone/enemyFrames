@@ -2,13 +2,17 @@
 local playerFaction
 -- TIMERS
 local refreshUnits = true
+local ktInterval, ktEndtime = 3, 0
 -- LISTS
 local playerList = {}
 local unitLimit, unitGroup = 15, 5
 local units = {}
+
 local visible = true
 local moduiLoaded = false
+local enabled = false
 
+local killTargetName = ''
 ---
 
 ------------ UI ELEMENTS ------------------
@@ -64,7 +68,7 @@ local 	enemyFrame = CreateFrame('Frame', 'enemyFrameDisplay', UIParent)
 		--enemyFrame.bottom:Hide()
 		-- class
 		enemyFrame.bottom.classButton = CreateFrame('Button', nil, enemyFrame.bottom)
-		enemyFrame.bottom.classButton:SetHeight(enemyFrame:GetHeight()-4)	enemyFrame.bottom.classButton:SetWidth(enemyFrame:GetHeight()-4)
+		enemyFrame.bottom.classButton:SetHeight(enemyFrame:GetHeight()-6)	enemyFrame.bottom.classButton:SetWidth(enemyFrame:GetHeight()-4)
 		enemyFrame.bottom.classButton:SetPoint('LEFT', enemyFrame.bottom, 'LEFT', 8, 0)
 		
 		enemyFrame.bottom.classIcon = enemyFrame.bottom.classButton:CreateTexture(nil, 'ARTWORK')
@@ -74,7 +78,7 @@ local 	enemyFrame = CreateFrame('Frame', 'enemyFrameDisplay', UIParent)
 		
 		-- rank
 		enemyFrame.bottom.rankButton = CreateFrame('Button', nil, enemyFrame.bottom)
-		enemyFrame.bottom.rankButton:SetHeight(enemyFrame:GetHeight()-4)	enemyFrame.bottom.rankButton:SetWidth(enemyFrame:GetHeight()-4)
+		enemyFrame.bottom.rankButton:SetHeight(enemyFrame:GetHeight()-6)	enemyFrame.bottom.rankButton:SetWidth(enemyFrame:GetHeight()-4)
 		enemyFrame.bottom.rankButton:SetPoint('LEFT', enemyFrame.bottom.classButton, 'RIGHT', 8, 0)
 		
 		enemyFrame.bottom.rankIcon = enemyFrame.bottom.rankButton:CreateTexture(nil, 'ARTWORK')
@@ -84,23 +88,48 @@ local 	enemyFrame = CreateFrame('Frame', 'enemyFrameDisplay', UIParent)
 		
 		-- race
 		enemyFrame.bottom.raceButton = CreateFrame('Button', nil, enemyFrame.bottom)
-		enemyFrame.bottom.raceButton:SetHeight(enemyFrame:GetHeight()-4)	enemyFrame.bottom.raceButton:SetWidth(enemyFrame:GetHeight()-4)
+		enemyFrame.bottom.raceButton:SetHeight(enemyFrame:GetHeight()-6)	enemyFrame.bottom.raceButton:SetWidth(enemyFrame:GetHeight()-4)
 		enemyFrame.bottom.raceButton:SetPoint('LEFT', enemyFrame.bottom.rankButton, 'RIGHT', 8, 0)
 		
 		enemyFrame.bottom.raceIcon = enemyFrame.bottom.raceButton:CreateTexture(nil, 'ARTWORK')
 		enemyFrame.bottom.raceIcon:SetAllPoints()
 		enemyFrame.bottom.raceIcon:SetTexCoord(.1, .9, .25, .75)
+		
+		----- killTarget
+		enemyFrame.killTargetFrame = CreateFrame('Frame', nil, enemyFrame)
+		enemyFrame.killTargetFrame:SetFrameLevel(2)
+		enemyFrame.killTargetFrame:SetHeight(36)	enemyFrame.killTargetFrame:SetWidth(36)
+		enemyFrame.killTargetFrame:SetPoint('CENTER', UIParent, 0, 150)
+		enemyFrame.killTargetFrame:Hide()
+
+		enemyFrame.killTargetFrame.text = enemyFrame.killTargetFrame:CreateFontString(nil, 'OVERLAY')
+		enemyFrame.killTargetFrame.text:SetFont(STANDARD_TEXT_FONT, 18, 'OUTLINE')
+		enemyFrame.killTargetFrame.text:SetTextColor(.8, .8, .8, .8)
+		enemyFrame.killTargetFrame.text:SetPoint('CENTER', killTargetFrame)
+		enemyFrame.killTargetFrame.text:SetText('Player')
+	
+		enemyFrame.killTargetFrame.iconl = enemyFrame.killTargetFrame:CreateTexture(nil, 'OVERLAY')
+		enemyFrame.killTargetFrame.iconl:SetTexture([[Interface\TargetingFrame\UI-RaidTargetingIcons]])
+		enemyFrame.killTargetFrame.iconl:SetTexCoord(.75, 1, 0.25, .5)
+		enemyFrame.killTargetFrame.iconl:SetHeight(36)	enemyFrame.killTargetFrame.iconl:SetWidth(36)
+		enemyFrame.killTargetFrame.iconl:SetPoint('RIGHT', enemyFrame.killTargetFrame.text, 'LEFT', -6, 0)
+		
+		enemyFrame.killTargetFrame.iconr = enemyFrame.killTargetFrame:CreateTexture(nil, 'OVERLAY')
+		enemyFrame.killTargetFrame.iconr:SetTexture([[Interface\TargetingFrame\UI-RaidTargetingIcons]])
+		enemyFrame.killTargetFrame.iconr:SetTexCoord(.75, 1, 0.25, .5)
+		enemyFrame.killTargetFrame.iconr:SetHeight(36)	enemyFrame.killTargetFrame.iconr:SetWidth(36)
+		enemyFrame.killTargetFrame.iconr:SetPoint('LEFT', enemyFrame.killTargetFrame.text, 'RIGHT', 6, 0)
 
 		
 local unitWidth, unitHeight, castBarHeight, ccIconWidth, ccIconHeight = 64, 20, 10, 28, 24
-for i = 1, unitLimit do
+for i = 1, unitLimit,1 do
 	-- health statusbar
 	units[i] = CreateFrame('StatusBar', 'enemyFrameUnit'..i, enemyFrame)
 	units[i]:SetFrameLevel(0)
 	units[i]:SetStatusBarTexture(TEXTURE)
 	units[i]:SetWidth(unitWidth)	units[i]:SetHeight(unitHeight)
 	units[i]:SetMinMaxValues(0, 100)
-	
+	--[[
 	local pos = math.mod(i,unitGroup)
 	if pos == 1 then
 		if i == 1 then	
@@ -110,7 +139,14 @@ for i = 1, unitLimit do
 		end			
 	else
 		units[i]:SetPoint('TOPLEFT', units[i-1].castbar.icon, 'BOTTOMLEFT', 1, -6)
-	end		
+	end	]]--	
+	
+	--if i == 1 then	
+	--	units[i]:SetPoint('TOPLEFT', enemyFrame, 'BOTTOMLEFT', 0, -6)
+	--else			
+	--	units[i]:SetPoint('TOPLEFT', units[i-1].castbar.iconborder, 'BOTTOMLEFT', 1, -6)
+	--end	
+	--units[i]:SetPoint('TOPLEFT', enemyFrame, 'BOTTOMLEFT', 0, -(6 + unitHeight + castBarHeight)*(i-1)+6)
 	
 	units[i]:SetBackdrop(BACKDROP)
 	units[i]:SetBackdropColor(0, 0, 0, .6)
@@ -180,6 +216,18 @@ for i = 1, unitLimit do
 	units[i].name:SetPoint('CENTER', units[i])	
 	units[i].name:SetText('Player' .. i)
 	
+	---- KILL TARGET
+	units[i].killTarget = CreateFrame('Frame', nil, units[i])
+	units[i].killTarget:SetWidth(ccIconWidth-2) units[i].killTarget:SetHeight(ccIconHeight-2)
+	units[i].killTarget:SetPoint('CENTER', units[i],'TOPRIGHT', 0, -6)
+	units[i].killTarget:SetFrameLevel(2)
+	
+	units[i].killTarget.icon = units[i].killTarget:CreateTexture(nil, 'ARTWORK')
+	units[i].killTarget.icon:SetTexture([[Interface\TargetingFrame\UI-RaidTargetingIcons]])
+	units[i].killTarget.icon:SetTexCoord(.75, 1, 0.25, .5)
+	units[i].killTarget.icon:SetAllPoints()
+	
+	
 	---- CC ------
 	units[i].cc = CreateFrame('Frame', nil, units[i])
 	units[i].cc:SetWidth(ccIconWidth) units[i].cc:SetHeight(ccIconHeight)
@@ -206,14 +254,18 @@ for i = 1, unitLimit do
 	units[i].Button = CreateFrame('Button', nil, units[i])
 	units[i].Button:SetAllPoints()
 	units[i].Button:SetPoint('CENTER', units[i])
+	units[i].Button:RegisterForClicks('LeftButtonUp', 'RightButtonUp')
 end
 
+-- function for settings use
 local function setccIcon(p)
-	local d = p == 'class' and 'MAGE' or p == 'rank' and 6 or p == 'portrait' and ( playerFaction == 'Alliance' and 'MALE-ORC' or 'MALE-HUMAN')
+	local d = p == 'class' and 'WARRIOR' or p == 'rank' and 6 or p == 'portrait' and ( playerFaction == 'Alliance' and 'MALE-ORC' or 'MALE-HUMAN')
 	for i = 1, unitLimit do
 		units[i].cc.icon:SetTexture(GET_DEFAULT_ICON(p, d))
 	end
 end
+ 
+ if not enabled then setccIcon(defaultIcon)	end
  
 local function arrangeUnits()
 	unitGroup = 5--ENEMYFRAMESPLAYERDATA['groupsize']
@@ -235,14 +287,14 @@ local function arrangeUnits()
 					units[i]:SetPoint('TOPLEFT', units[i-unitGroup].cc, 'TOPRIGHT', 6, 1)
 				end			
 			else
-				units[i]:SetPoint('TOPLEFT', units[i-1].castbar.icon, 'BOTTOMLEFT', 1, -6)
+				units[i]:SetPoint('TOPLEFT', units[i-1].castbar.iconborder, 'BOTTOMLEFT', 1, -6)
 			end	
 		end
 		if ENEMYFRAMESPLAYERDATA['layout'] == 'vertical' then
 			if i == 1 then	
 				units[i]:SetPoint('TOPLEFT', enemyFrame, 'BOTTOMLEFT', 0, -6)
 			else			
-				units[i]:SetPoint('TOPLEFT', units[i-1].castbar.icon, 'BOTTOMLEFT', 1, -6)
+				units[i]:SetPoint('TOPLEFT', units[i-1].castbar.iconborder, 'BOTTOMLEFT', 1, -6)
 			end	
 		end
 	end
@@ -383,6 +435,8 @@ local function SetupTitle(maxUnits)
 			enemyFrame.bottom.rankIcon:SetVertexColor(.3, .3, .3)
 			enemyFrame.bottom.raceIcon:SetBlendMode('ADD')
 			enemyFrame.bottom.raceIcon:SetVertexColor(.3, .3, .3)
+			
+			if not enabled then setccIcon(defaultIcon)	end
 		end)
 	
 	enemyFrame.bottom.rankButton:SetScript('OnClick', function()
@@ -395,6 +449,8 @@ local function SetupTitle(maxUnits)
 			enemyFrame.bottom.rankIcon:SetVertexColor(1, 1, 1)
 			enemyFrame.bottom.raceIcon:SetBlendMode('ADD')
 			enemyFrame.bottom.raceIcon:SetVertexColor(.3, .3, .3)
+			
+			if not enabled then setccIcon(defaultIcon)	end
 		end)
 		
 	local r = playerFaction == 'Alliance' and 'MALE-ORC' or 'MALE-HUMAN'
@@ -410,6 +466,8 @@ local function SetupTitle(maxUnits)
 			enemyFrame.bottom.rankIcon:SetVertexColor(.3, .3, .3)
 			enemyFrame.bottom.raceIcon:SetBlendMode('BLEND')
 			enemyFrame.bottom.raceIcon:SetVertexColor(1, 1, 1)
+			
+			if not enabled then setccIcon(defaultIcon)	end
 		end)
 	
 end
@@ -446,7 +504,10 @@ local function drawUnits(list)
 		
 		-- button function to target unit
 		units[i].Button.tar = v['name']
-		units[i].Button:SetScript('OnClick', function()	TargetByName(this.tar, true)	end)
+		units[i].Button:SetScript('OnClick', function()	if arg1 == 'LeftButton'  then  	TargetByName(this.tar, true)			end
+														if arg1 == 'RightButton' then	enemyFrame.killTargetFrame:Hide()
+																						ENEMYFRAMECORESendKillTarget(this.tar)	end
+														end)
 		
 		units[i]:Show()
 		i = i + 1
@@ -517,6 +578,13 @@ local function updateUnits()
 		--if v['health'] 	then 	units[i]:SetValue(v['health']) 			end
 		--if v['mana']	then	units[i].manabar:SetValue(v['mana'])	end
 		
+		-- KILL TARGET
+		if killTargetName == v['name'] then
+			units[i].killTarget:Show()
+		else
+			units[i].killTarget:Hide()
+		end
+		
 		-- CC type
 		local b = v['buff']--
 		if b ~= nil then
@@ -539,6 +607,11 @@ local function updateUnits()
 		i = i + 1
 		if i > unitLimit then return end
 	end
+	
+	-- killTarget
+	if ktEndtime < GetTime() then
+		enemyFrame.killTargetFrame:Hide()
+	end
 end
 
 local function enemyFramesOnUpdate()
@@ -548,16 +621,27 @@ local function enemyFramesOnUpdate()
 	if list then 	drawUnits(list) end
 	
 	-- update units
-	if visible then updateUnits()	end
+	if visible then updateUnits()	
+		killTargetName = ENEMYFRAMECOREGetKillTarget()	
+	end
 end
 
 
 --- GLOBAL ACCESS ---
+function ENEMYFRAMESAnnounceKT(kt)
+	enemyFrame.killTargetFrame.text:SetText(kt['name'])
+	enemyFrame.killTargetFrame.text:SetTextColor(RAID_CLASS_COLORS[kt['class']].r, RAID_CLASS_COLORS[kt['class']].g, RAID_CLASS_COLORS[kt['class']].b)
+	enemyFrame.killTargetFrame:Show()
+	ktEndtime = GetTime() + ktInterval
+end
+
 function ENEMYFRAMESInitialize(maxUnits)
 		
 	if maxUnits then
 		defaultIcon = ENEMYFRAMESPLAYERDATA['defaultIcon']
 		SetupTitle(maxUnits)
+		arrangeUnits()
+		enabled = true
 		
 		enemyFrame:Show()
 		enemyFrame:SetScript('OnUpdate', enemyFramesOnUpdate)
@@ -574,6 +658,7 @@ end
 
 local function eventHandler()
 	if event == 'PLAYER_ENTERING_WORLD' or event == 'ZONE_CHANGED_NEW_AREA' then
+		enabled = false
 		enemyFrame:Hide()
 		--
 	elseif event == 'ADDON_LOADED' then

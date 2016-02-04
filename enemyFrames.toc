@@ -7,8 +7,10 @@ globals\spellCastingCore.lua
 globals\spellInfo.lua
 globals\wsgHandler.lua
 globals\settings.lua
+globals\commHandler.lua
 
 UIElements\nameplatesHandler.lua
+UIElements\targetframe.lua
 
 enemyFrames.lua
 enemyFramesCore.lua

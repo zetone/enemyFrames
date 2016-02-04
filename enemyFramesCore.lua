@@ -13,6 +13,7 @@ local refreshUnits = true
 local playerList = {}
 local targetQueue = {}
 
+local KillTargetName = ''
 -- 
 
 local function fillPlayerList()
@@ -178,6 +179,7 @@ local function updatePlayerListInfo()
 	end
 end
 
+
 --- GLOBAL ACCESS ---
 function ENEMYFRAMESCOREGetUnitsInfo()
 	return refreshUnits and playerList or nil
@@ -197,6 +199,24 @@ end
 
 function ENEMYFRAMECORESetPlayersData(list)
 	addNearbyPlayers(list)
+end
+
+function  ENEMYFRAMECORESendKillTarget(name)
+	if KillTargetName == name or name == nil then
+		KillTargetName = nil
+	else
+		KillTargetName = name
+		sendMSG(KillTargetName)
+	end
+end
+function  ENEMYFRAMECORESetKillTarget(sender, tar)
+	if playerList[tar] then
+		ENEMYFRAMESAnnounceKT(playerList[tar])
+		KillTargetName = tar
+	end
+end
+function  ENEMYFRAMECOREGetKillTarget()
+	return KillTargetName
 end
 --#################--
 ---------------------
@@ -236,6 +256,7 @@ local function initializeValues()
 		-- enable ui elements
 		ENEMYFRAMESInitialize(maxUnits)
 		namePlatesHandlerInit()
+		targetframeInit()
 	else
 		-- nil value to disable ui elements
 		ENEMYFRAMESInitialize(nil)

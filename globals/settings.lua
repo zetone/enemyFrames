@@ -13,15 +13,10 @@ ENEMYFRAMESPLAYERDATA =
 }
 
 
-local playerFaction = UnitFactionGroup'player'
+local playerFaction
 ------------ UI ELEMENTS ------------------
-local factionRGB 	= RGB_FACTION_COLORS
+local enemyFactionColor
 
-if playerFaction == 'Alliance' then 
-	enemyFactionColor = factionRGB['Horde']
-else 
-	enemyFactionColor = factionRGB['Alliance']	
-end
 
 local menu = CreateFrame('Frame', 'enemyFramesSettings', UIParent)
 menu:SetWidth(280) menu:SetHeight(260)
@@ -50,7 +45,7 @@ menu.header:SetVertexColor(.2, .2, .2)
 menu.header.t = menu:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
 menu.header.t:SetPoint('TOP', menu.header, 0, -14)
 menu.header.t:SetText'enemyFrames Settings'
-menu.header.t:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
+
 
 -- scale
 
@@ -64,9 +59,8 @@ menu.scaleSlider:SetPoint('LEFT', menu.scale, 'LEFT', 0, -30)
 menu.scaleSlider:SetMinMaxValues(0.8, 1.4)
 menu.scaleSlider:SetValueStep(.1)
 _G[menu.scaleSlider:GetName()..'Low']:SetText'0.8'
-_G[menu.scaleSlider:GetName()..'Low']:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
 _G[menu.scaleSlider:GetName()..'High']:SetText'1.4'
-_G[menu.scaleSlider:GetName()..'High']:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
+
 
 menu.scaleSlider:SetScript('OnValueChanged', function() 
 	ENEMYFRAMESPLAYERDATA['scale'] = this:GetValue() 
@@ -86,9 +80,8 @@ menu.layoutSlider:SetPoint('LEFT', menu.layout, 'LEFT', 0, -30)
 menu.layoutSlider:SetMinMaxValues(0, 2)
 menu.layoutSlider:SetValueStep(1)
 _G[menu.layoutSlider:GetName()..'Low']:SetText'horizontal'
-_G[menu.layoutSlider:GetName()..'Low']:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
 _G[menu.layoutSlider:GetName()..'High']:SetText'vertical'
-_G[menu.layoutSlider:GetName()..'High']:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
+
 
 menu.layoutSlider:SetScript('OnValueChanged', function() 
 	local a = this:GetValue() == 0 and 'horizontal' or this:GetValue() == 1 and 'block' or this:GetValue() == 2 and 'vertical'
@@ -100,10 +93,27 @@ end)
 	
 -------------------------------------------
 
+
+function setupSettings()
+	playerFaction = UnitFactionGroup'player'
+	if playerFaction == 'Alliance' then 
+		enemyFactionColor = RGB_FACTION_COLORS['Horde']
+	else 
+		enemyFactionColor = RGB_FACTION_COLORS['Alliance']	
+	end
+	menu.header.t:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
+	_G[menu.scaleSlider:GetName()..'Low']:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
+	_G[menu.scaleSlider:GetName()..'High']:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
+	_G[menu.layoutSlider:GetName()..'Low']:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
+	_G[menu.layoutSlider:GetName()..'High']:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
+
+	menu.scaleSlider:SetValue(ENEMYFRAMESPLAYERDATA['scale'])
+	menu.layoutSlider:SetValue(ENEMYFRAMESPLAYERDATA['layout'] == 'horizontal' and 0 or ENEMYFRAMESPLAYERDATA['layout'] == 'block' and 1 or 2)
+	menu:Show()
+end
+
 SLASH_ENEMYFRAMESSETTINGS1 = '/efs'
 SlashCmdList["ENEMYFRAMESSETTINGS"] = function(msg)
-	menu.scaleSlider:SetValue(ENEMYFRAMESPLAYERDATA['scale'])
-	menu.layoutSlider:SetValue(ENEMYFRAMESPLAYERDATA['groupsize'])
-	menu:Show()
+	setupSettings()
 	_G['enemyFrameDisplay']:Show()
 end

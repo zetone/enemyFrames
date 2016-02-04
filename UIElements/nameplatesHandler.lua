@@ -15,6 +15,7 @@ local f = CreateFrame'Frame'
     
 local function namePlateHandlerOnUpdate()
 	local nt, nmo = UnitName'target', UnitName'mouseover'
+	killTargetName = ENEMYFRAMECOREGetKillTarget()
 	local list = {}
 	local frames = {WorldFrame:GetChildren()}
 	for _, plate in ipairs(frames) do
@@ -35,7 +36,7 @@ local function namePlateHandlerOnUpdate()
 				plate.killTarget:SetHeight(38)	plate.killTarget:SetWidth(38)
 				plate.killTarget:SetPoint('BOTTOM', name, 'TOP', 0, 5)
 			end
-			if n ~= killTargetName then plate.killTarget:Hide() end
+			if n ~= killTargetName then plate.killTarget:Hide() else plate.killTarget:Show() end
 		end
 	end
 	
@@ -54,10 +55,6 @@ function namePlatesHandlerInit()
 			timerRefresh = now + timerInterval
 		end
 	end)
-end
-
-function namePlatesHandlerSetKillTarget(kt)
-	killTargetName = kt
 end
 	
 local function eventHandler()
