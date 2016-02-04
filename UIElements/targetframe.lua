@@ -26,7 +26,7 @@
 	local f = CreateFrame'Frame'
 	
 	function targetframeInit()
-		f:SetScript('OnUpdate', killTargetOnUpdate())
+		f:SetScript('OnUpdate', killTargetOnUpdate)
 	end
 
 
