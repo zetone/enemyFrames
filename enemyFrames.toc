@@ -15,6 +15,5 @@ UIElements\targetframe.lua
 
 enemyFrames.lua
 enemyFramesCore.lua
-Bindings.xml
 
 

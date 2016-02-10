@@ -192,9 +192,9 @@ local forceHideTableItem = function(tab, caster, spell)
 	local time = GetTime()
 	for k, v in pairs(tab) do
 		if (time < v.timeEnd) and (v.caster == caster) then
-			if (spell ~= nil) then if v.spell == spell then	v.timeEnd = time - 10000 end 
+			if (spell ~= nil) then if v.spell == spell then	v.timeEnd = time end-- 10000 end 
 			else
-				v.timeEnd = time - 10000 -- force hide
+				v.timeEnd = time -- 10000 -- force hide
 			end
 		end
 	end
@@ -564,6 +564,7 @@ f:RegisterEvent'CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE'
 f:RegisterEvent'CHAT_MSG_SPELL_FRIENDLYPLAYER_BUFF'
 f:RegisterEvent'CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE'
 f:RegisterEvent'CHAT_MSG_SPELL_HOSTILEPLAYER_BUFF'
+f:RegisterEvent'CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF'
 f:RegisterEvent'CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE'
 f:RegisterEvent'CHAT_MSG_SPELL_CREATURE_VS_PARTY_BUFF'
 f:RegisterEvent'CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE'

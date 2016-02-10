@@ -1,4 +1,8 @@
 <Bindings>
-	<Binding name="SETKT"  	header="EFKHEADER"	>setKTbind()</Binding>
+	<Binding name="SETKT"  	header="EFKHEADER"	>setIconBind('skull')</Binding>
 	<Binding name="GETKT"  						>getKTbind()</Binding>
+	
+	<Binding name="SETMOON"  					>setIconBind('moon')</Binding>
+	<Binding name="SETSQUARE"  					>setIconBind('square')</Binding>
+	<Binding name="SETTRIANGLE"  				>setIconBind('triangle')</Binding>
 </Bindings>

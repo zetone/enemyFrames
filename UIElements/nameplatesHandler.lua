@@ -15,7 +15,7 @@ local f = CreateFrame'Frame'
     
 local function namePlateHandlerOnUpdate()
 	local nt, nmo = UnitName'target', UnitName'mouseover'
-	killTargetName = ENEMYFRAMECOREGetKillTarget()
+	local raidTargets = ENEMYFRAMECOREGetRaidTarget()
 	local list = {}
 	local frames = {WorldFrame:GetChildren()}
 	for _, plate in ipairs(frames) do
@@ -28,15 +28,18 @@ local function namePlateHandlerOnUpdate()
 				list[n] = {['name'] = n, ['health'] = h}
 			end
 			
-			if not plate.killTarget then
+			if not plate.raidTarget then
 				-- set killtarget icon
-				plate.killTarget = plate:CreateTexture(nil, 'OVERLAY')
-				plate.killTarget:SetTexture([[Interface\TargetingFrame\UI-RaidTargetingIcons]])
-				plate.killTarget:SetTexCoord(.75, 1, 0.25, .5)
-				plate.killTarget:SetHeight(38)	plate.killTarget:SetWidth(38)
-				plate.killTarget:SetPoint('BOTTOM', name, 'TOP', 0, 5)
+				plate.raidTarget = plate:CreateTexture(nil, 'OVERLAY')
+				plate.raidTarget:SetTexture([[Interface\TargetingFrame\UI-RaidTargetingIcons]])
+				plate.raidTarget:SetHeight(38)	plate.raidTarget:SetWidth(38)
+				plate.raidTarget:SetPoint('BOTTOM', name, 'TOP', 0, 5)
 			end
-			if n ~= killTargetName then plate.killTarget:Hide() else plate.killTarget:Show() end
+			if raidTargets[n] then 
+				local tCoords = RAID_TARGET_TCOORDS[raidTargets[n]['icon']]
+				plate.raidTarget:SetTexCoord(tCoords[1], tCoords[2], tCoords[3], tCoords[4])
+				plate.raidTarget:Show() 
+			else plate.raidTarget:Hide() end
 		end
 	end
 	

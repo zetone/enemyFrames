@@ -3,66 +3,94 @@ _G = getfenv(0)
 
 print = function(m) DEFAULT_CHAT_FRAME:AddMessage(m) end
 
+tlength = function(t)	local i = 0 for k, j in ipairs(t) do i = i + 1 end return i end
 
 ENEMYFRAMESPLAYERDATA = 
 {
-	['defaultIcon'] = 'rank',
-	['scale']		= 1,
-	['groupsize']	= 5,
-	['layout']		= 'block'
+	['defaultIcon'] 		= 'rank',
+	['scale']				= 1,
+	['groupsize']			= 5,
+	['layout']				= 'block',
+	['frameMovable'] 		= true,
+	['displayNames']		= true,
+	['displayManabar']		= false,
+	['displayOnlyNearby']	= false,
 }
 
 
 local playerFaction
 ------------ UI ELEMENTS ------------------
 local enemyFactionColor
+local checkBoxOptionalsN, checkBoxOptionals  =3,{[1] = {['id'] = 'displayNames', 		['label'] = 'display names'}, 
+												 [2] = {['id'] = 'displayManabar', 		['label'] = 'display mana bar'},
+												 [3] = {['id'] = 'displayOnlyNearby', 	['label'] = 'only display nearby units'},}
+local enemyFramesDisplayShow = false
 
-
-local menu = CreateFrame('Frame', 'enemyFramesSettings', UIParent)
-menu:SetWidth(280) menu:SetHeight(260)
-menu:SetPoint('CENTER', UIParent)
-menu:SetBackdrop({bgFile   = [[Interface\Tooltips\UI-Tooltip-Background]],
+local settings = CreateFrame('Frame', 'enemyFramesSettings', UIParent)
+settings:ClearAllPoints()
+settings:SetWidth(280) settings:SetHeight(320)
+settings:SetPoint('CENTER', UIParent, -UIParent:GetWidth()/3, 0)
+settings:SetBackdrop({bgFile   = [[Interface\Tooltips\UI-Tooltip-Background]],
 				  edgeFile = [[Interface\DialogFrame\UI-DialogBox-Border]],
 				  insets   = {left = 11, right = 12, top = 12, bottom = 11}})
-menu:SetBackdropColor(0, 0, 0, 1)
-menu:SetBackdropBorderColor(.2, .2, .2)
-menu:SetMovable(true) menu:SetUserPlaced(true)
-menu:RegisterForDrag'LeftButton' menu:EnableMouse(true)
-menu:SetScript('OnDragStart', function() menu:StartMoving() end)
-menu:SetScript('OnDragStop', function() menu:StopMovingOrSizing() end)
-menu:Hide()
+settings:SetBackdropColor(0, 0, 0, 1)
+settings:SetBackdropBorderColor(.2, .2, .2)
+settings:SetMovable(true) settings:SetUserPlaced(true)
+settings:SetClampedToScreen(true)
+settings:RegisterForDrag'LeftButton' settings:EnableMouse(true)
+settings:SetScript('OnDragStart', function() settings:StartMoving() end)
+settings:SetScript('OnDragStop', function() settings:StopMovingOrSizing() end)
+--tinsert(UISpecialFrames, 'enemyFramesSettings')
+settings:Hide()
 
-menu.x = CreateFrame('Button', 'enemyFramesSettingsCloseButton', menu, 'UIPanelCloseButton')
-menu.x:SetPoint('TOPRIGHT', -6, -6)
-menu.x:SetScript('OnClick', function() menu:Hide() _G['enemyFrameDisplay']:Hide() end)
+settings.x = CreateFrame('Button', 'enemyFramesSettingsCloseButton', settings, 'UIPanelCloseButton')
+settings.x:SetPoint('TOPRIGHT',  -6, -6)
+settings.x:SetScript('OnClick', function() settings:Hide() if not enemyFramesDisplayShow then _G['enemyFrameDisplay']:Hide() end end)
 
-menu.header = menu:CreateTexture(nil, 'ARTWORK')
-menu.header:SetWidth(320) menu.header:SetHeight(64)
-menu.header:SetPoint('TOP', menu, 0, 12)
-menu.header:SetTexture[[Interface\DialogFrame\UI-DialogBox-Header]]
-menu.header:SetVertexColor(.2, .2, .2)
+settings.header = settings:CreateTexture(nil, 'ARTWORK')
+settings.header:SetWidth(320) settings.header:SetHeight(64)
+settings.header:SetPoint('TOP', settings, 0, 12)
+settings.header:SetTexture[[Interface\DialogFrame\UI-DialogBox-Header]]
+settings.header:SetVertexColor(.2, .2, .2)
 
-menu.header.t = menu:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
-menu.header.t:SetPoint('TOP', menu.header, 0, -14)
-menu.header.t:SetText'enemyFrames Settings'
+settings.header.t = settings:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
+settings.header.t:SetPoint('TOP', settings.header, 0, -14)
+settings.header.t:SetText'enemyFrames Settings'
 
+-- container
+
+settings.containerScrollframe = CreateFrame('ScrollFrame', 'enemyFramesSettingsScrollframe', settings, 'UIPanelScrollFrameTemplate')
+settings.containerScrollframe:SetFrameLevel(3)
+settings.containerScrollframe:SetPoint('TOPLEFT', settings, -7, -36)
+settings.containerScrollframe:SetPoint('BOTTOMRIGHT', settings, -37, 18)
+settings.containerScrollframe:Raise()
+settings.containerScrollframe:SetToplevel()
+
+settings.container = CreateFrame('Frame', nil, settings.containerScrollframe)
+settings.container:SetWidth(settings:GetWidth()) settings.container:SetHeight(settings:GetHeight())
+settings.container:SetPoint('CENTER', settings)
+settings.container:EnableMouse(true)
+settings.container:EnableMouseWheel(true)
+
+settings.containerScrollframe.content = settings.container
+settings.containerScrollframe:SetScrollChild(settings.container)
 
 -- scale
 
-menu.scale = menu:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
-menu.scale:SetPoint('LEFT', menu, 'TOPLEFT', 40, -50)
-menu.scale:SetText'scale'
+settings.container.scale = settings.container:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
+settings.container.scale:SetPoint('LEFT', settings.container, 'TOPLEFT', 40, -30)
+settings.container.scale:SetText'scale'
 
-menu.scaleSlider = CreateFrame('Slider', 'enemyFramesScaleSlider', menu, 'OptionsSliderTemplate')
-menu.scaleSlider:SetWidth(200) 	menu.scaleSlider:SetHeight(14)
-menu.scaleSlider:SetPoint('LEFT', menu.scale, 'LEFT', 0, -30)
-menu.scaleSlider:SetMinMaxValues(0.8, 1.4)
-menu.scaleSlider:SetValueStep(.1)
-_G[menu.scaleSlider:GetName()..'Low']:SetText'0.8'
-_G[menu.scaleSlider:GetName()..'High']:SetText'1.4'
+settings.container.scaleSlider = CreateFrame('Slider', 'enemyFramesScaleSlider', settings.container, 'OptionsSliderTemplate')
+settings.container.scaleSlider:SetWidth(200) 	settings.container.scaleSlider:SetHeight(14)
+settings.container.scaleSlider:SetPoint('LEFT', settings.container.scale, 'LEFT', 0, -30)
+settings.container.scaleSlider:SetMinMaxValues(0.8, 1.4)
+settings.container.scaleSlider:SetValueStep(.05)
+_G[settings.container.scaleSlider:GetName()..'Low']:SetText'0.8'
+_G[settings.container.scaleSlider:GetName()..'High']:SetText'1.4'
 
 
-menu.scaleSlider:SetScript('OnValueChanged', function() 
+settings.container.scaleSlider:SetScript('OnValueChanged', function() 
 	ENEMYFRAMESPLAYERDATA['scale'] = this:GetValue() 
 	_G['enemyFrameDisplay']:SetScale(ENEMYFRAMESPLAYERDATA['scale'])
 end)
@@ -70,27 +98,53 @@ end)
 
 -- layout
 
-menu.layout = menu:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
-menu.layout:SetPoint('LEFT', menu.scaleSlider, 'LEFT', 0, -40)
-menu.layout:SetText'layout'
+settings.container.layout = settings.container:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
+settings.container.layout:SetPoint('LEFT', settings.container.scaleSlider, 'LEFT', 0, -40)
+settings.container.layout:SetText'layout'
 
-menu.layoutSlider = CreateFrame('Slider', 'enemyFramesLayoutSlider', menu, 'OptionsSliderTemplate')
-menu.layoutSlider:SetWidth(200) 	menu.layoutSlider:SetHeight(14)
-menu.layoutSlider:SetPoint('LEFT', menu.layout, 'LEFT', 0, -30)
-menu.layoutSlider:SetMinMaxValues(0, 2)
-menu.layoutSlider:SetValueStep(1)
-_G[menu.layoutSlider:GetName()..'Low']:SetText'horizontal'
-_G[menu.layoutSlider:GetName()..'High']:SetText'vertical'
+settings.container.layoutSlider = CreateFrame('Slider', 'enemyFramesLayoutSlider', settings.container, 'OptionsSliderTemplate')
+settings.container.layoutSlider:SetWidth(200) 	settings.container.layoutSlider:SetHeight(14)
+settings.container.layoutSlider:SetPoint('LEFT', settings.container.layout, 'LEFT', 0, -30)
+settings.container.layoutSlider:SetMinMaxValues(0, 3)
+settings.container.layoutSlider:SetValueStep(1)
+_G[settings.container.layoutSlider:GetName()..'Low']:SetText'horizontal'
+_G[settings.container.layoutSlider:GetName()..'High']:SetText'vertical'
 
 
-menu.layoutSlider:SetScript('OnValueChanged', function() 
-	local a = this:GetValue() == 0 and 'horizontal' or this:GetValue() == 1 and 'block' or this:GetValue() == 2 and 'vertical'
-	local g = this:GetValue() == 0 and 1 or this:GetValue() == 1 and 5 or this:GetValue() == 2 and 15
+settings.container.layoutSlider:SetScript('OnValueChanged', function() 
+	local v = this:GetValue()
+	local a = v == 0 and 'horizontal' or v == 1 and 'hblock' or v == 2 and 'block' or 'vertical'
+	local g = v == 0 and 1 or (v == 1 or v == 2) and 5 or 15
 	ENEMYFRAMESPLAYERDATA['layout'] 	= a
 	ENEMYFRAMESPLAYERDATA['groupsize']  = g
 	ENEMYFRAMESsettings()
 end)
 	
+	
+-- optionals
+
+settings.container.optionals = settings.container:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
+settings.container.optionals:SetPoint('LEFT', settings.container.layoutSlider, 'LEFT', 0, -50)
+settings.container.optionals:SetText'optional'
+
+settings.container.optinalsList = {}
+for i = 1, checkBoxOptionalsN, 1 do
+	settings.container.optinalsList[i] = CreateFrame('CheckButton', 'enemyFramesCheckButton'..i, settings.container, 'UICheckButtonTemplate')
+	settings.container.optinalsList[i]:SetHeight(20) 	settings.container.optinalsList[i]:SetWidth(20)
+	settings.container.optinalsList[i]:SetPoint('LEFT', i == 1 and settings.container.optionals or settings.container.optinalsList[i-1], 'LEFT', 0, i == 1 and -30 or -20)
+	_G[settings.container.optinalsList[i]:GetName()..'Text']:SetText(checkBoxOptionals[i]['label'])
+	_G[settings.container.optinalsList[i]:GetName()..'Text']:SetPoint('LEFT', settings.container.optinalsList[i], 'RIGHT', 4, 0)
+	settings.container.optinalsList[i].i = i
+	settings.container.optinalsList[i]:SetScript('OnClick', function()
+		if this:GetChecked() then
+			ENEMYFRAMESPLAYERDATA[checkBoxOptionals[this.i]['id']]	= true
+		else
+			ENEMYFRAMESPLAYERDATA[checkBoxOptionals[this.i]['id']]	= false
+		end
+		ENEMYFRAMESsettings()
+	end)
+end
+
 -------------------------------------------
 
 
@@ -101,19 +155,47 @@ function setupSettings()
 	else 
 		enemyFactionColor = RGB_FACTION_COLORS['Alliance']	
 	end
-	menu.header.t:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
-	_G[menu.scaleSlider:GetName()..'Low']:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
-	_G[menu.scaleSlider:GetName()..'High']:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
-	_G[menu.layoutSlider:GetName()..'Low']:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
-	_G[menu.layoutSlider:GetName()..'High']:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
+	settings.header.t:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
+	_G[settings.container.scaleSlider:GetName()..'Low']:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
+	_G[settings.container.scaleSlider:GetName()..'High']:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
+	_G[settings.container.layoutSlider:GetName()..'Low']:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
+	_G[settings.container.layoutSlider:GetName()..'High']:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
+	
+	--optionals
+	for i = 1, checkBoxOptionalsN do
+		_G[settings.container.optinalsList[i]:GetName()..'Text']:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
+		settings.container.optinalsList[i]:SetChecked(ENEMYFRAMESPLAYERDATA[checkBoxOptionals[i]['id']])
+	end
 
-	menu.scaleSlider:SetValue(ENEMYFRAMESPLAYERDATA['scale'])
-	menu.layoutSlider:SetValue(ENEMYFRAMESPLAYERDATA['layout'] == 'horizontal' and 0 or ENEMYFRAMESPLAYERDATA['layout'] == 'block' and 1 or 2)
-	menu:Show()
+	settings.container.scaleSlider:SetValue(ENEMYFRAMESPLAYERDATA['scale'])
+	settings.container.layoutSlider:SetValue(ENEMYFRAMESPLAYERDATA['layout'] == 'horizontal' and 0 or ENEMYFRAMESPLAYERDATA['layout'] == 'hblock' and 1 or ENEMYFRAMESPLAYERDATA['layout'] == 'block' and 2 or 3)
+		
+	settings:Show()
+	
+	if _G['enemyFrameDisplay']:IsShown() then
+		enemyFramesDisplayShow = true
+	else
+		enemyFramesDisplayShow = false
+		_G['enemyFrameDisplay']:Show()
+		--tinsert(UISpecialFrames, 'enemyFrameDisplay')
+	end
+	
+	ENEMYFRAMESsettings()
 end
+
+local function eventHandler()
+	playerFaction = UnitFactionGroup'player'
+	local tc = playerFaction == 'Alliance' and 'FF1A1A' or '00ADF0'
+	print('|cff' ..tc.. '[enemyFrames] loaded. |cffffffff/efs|cff' ..tc.. ' for menu settings.')
+	_G['enemyFrameDisplay']:SetScale(ENEMYFRAMESPLAYERDATA['scale'])
+end
+
+local f = CreateFrame'Frame'
+f:RegisterEvent'PLAYER_LOGIN'
+f:SetScript('OnEvent', eventHandler)
 
 SLASH_ENEMYFRAMESSETTINGS1 = '/efs'
 SlashCmdList["ENEMYFRAMESSETTINGS"] = function(msg)
 	setupSettings()
-	_G['enemyFrameDisplay']:Show()
+	
 end

@@ -65,6 +65,18 @@
 		return dir .. a .. value
 	end
 	
+	RAID_TARGET_TCOORDS = 
+	{
+		['star']		= {0, .25, 0, .25},
+		['circle']		= {.25, .5, 0, .25},
+		['diamond']		= {.5, .75, 0, .25},
+		['triangle']	= {.75, 1, 0, .25},
+		
+		['moon']		= {0, .25, .25, .5},
+		['square']		= {.25, .5, .25, .5},
+		['cross']		= {.5, .75, .25, .5},
+		['skull'] 		= {.75, 1, .25, .5},
+	}
 	SPELLINFO_TRADECASTS_TO_TRACK = {
 		-- ALCHEMY
 		['Greater Healing Potion']					= {['icon'] = [[Interface\Icons\Inv_potion_52]], ['casttime'] = 3},
@@ -279,7 +291,7 @@
 		['Intimidation'] = true, ['Scatter Shot'] = true, ['Wyvern Sting'] = true,
 		-- MAGE
 		['Blink'] = true, ['Counterspell - Silenced'] = true, ['Fire Ward'] = true, ['Frost Ward'] = true, ['Ice Barrier'] = true, 
-		['Ice Block'] = true, ['Impact'] = true, ['Mana Shield'] = true, ['Polymorph'] = true,
+		['Ice Block'] = true, ['Impact'] = true, ['Mana Shield'] = true, ['Polymorph'] = true, ['Polymorph: Pig'] = true, ['Polymorph: Turtle'] = true,
 		-- PALADIN
 		['Divine Intervention'] = true, ['Divine Protection'] = true, ['Divine Shield'] = true, ['Hammer of Justice'] = true, 
 		['Seal of the Crusader'] = true, ['Seal of Righteousness'] = true,
@@ -379,7 +391,7 @@
 	
         -- MISC
     	['Free Action Potion']     	= {['icon'] = [[Interface\Icons\Inv_potion_04]], 					['duration'] = 30, 	['type'] = 'magic'},
-		['Invulnerability']        	= {['icon'] = [[Interface\Icons\Spell_holy_divineintervention]], 	['duration'] = 6, 	['type'] = 'magic'},
+		['Invulnerability']        	= {['icon'] = [[Interface\Icons\Spell_holy_divineintervention]], 	['duration'] = 6, 	['type'] = 'magic',		['prio'] = 4},
 		["Reckless Charge"] 		= {['icon'] = [[Interface\Icons\Spell_nature_astralrecal]], 		['duration'] = 12, 	['type'] = 'magic', 	['prio'] = 3},
 		["Sleep"] 					= {['icon'] = [[Interface\Icons\Spell_nature_sleep]], 				['duration'] = 12, 	['type'] = 'magic', 	['prio'] = 3},
     	['Will of the Forsaken']   	= {['icon'] = [[Interface\Icons\Spell_shadow_raisedead]], 			['duration'] = 5},

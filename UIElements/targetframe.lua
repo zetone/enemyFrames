@@ -1,24 +1,24 @@
 
-	local killTargetName = ''
-
-	local killTargetFrame = CreateFrame('Frame', nil, TargetFrame)
-	killTargetFrame:SetFrameLevel(2)
-	killTargetFrame:SetHeight(36)	killTargetFrame:SetWidth(36)
-	killTargetFrame:SetPoint('CENTER', TargetPortrait, 'TOP')
-	killTargetFrame:Hide()
+	local raidTargetFrame = CreateFrame('Frame', nil, TargetFrame)
+	raidTargetFrame:SetFrameLevel(2)
+	raidTargetFrame:SetHeight(36)	raidTargetFrame:SetWidth(36)
+	raidTargetFrame:SetPoint('CENTER', TargetPortrait, 'TOP')
+	--raidTargetFrame:Hide()
 	
-	killTargetFrame.icon = killTargetFrame:CreateTexture(nil, 'OVERLAY')
-	killTargetFrame.icon:SetTexture([[Interface\TargetingFrame\UI-RaidTargetingIcons]])
-	killTargetFrame.icon:SetTexCoord(.75, 1, 0.25, .5)
-	killTargetFrame.icon:SetAllPoints()
+	raidTargetFrame.icon = raidTargetFrame:CreateTexture(nil, 'OVERLAY')
+	raidTargetFrame.icon:SetTexture([[Interface\TargetingFrame\UI-RaidTargetingIcons]])
+	--raidTargetFrame.icon:SetTexCoord(.75, 1, 0.25, .5)
+	raidTargetFrame.icon:SetAllPoints()
 	
-	local function killTargetOnUpdate()
-		local kt = ENEMYFRAMECOREGetKillTarget()
+	local function raidTargetOnUpdate()
+		local rt = ENEMYFRAMECOREGetRaidTarget()
 
-		if kt and UnitExists'target' and UnitName'target' == kt then
-			killTargetFrame:Show()
+		if UnitExists'target' and rt[UnitName'target'] then
+			local tCoords = RAID_TARGET_TCOORDS[rt[UnitName'target']['icon']]
+			raidTargetFrame.icon:SetTexCoord(tCoords[1], tCoords[2], tCoords[3], tCoords[4])
+			raidTargetFrame:Show()
 		else
-			killTargetFrame:Hide()
+			raidTargetFrame:Hide()
 		end
 
 	end
@@ -26,14 +26,16 @@
 	local f = CreateFrame'Frame'
 	
 	function targetframeInit()
-		f:SetScript('OnUpdate', killTargetOnUpdate)
+		f:SetScript('OnUpdate', raidTargetOnUpdate)
 	end
 
 
 	local function eventHandler()
-		f:SetScript('OnUpdate', nil)
+		--f:SetScript('OnUpdate', nil)
 	end
 		
 	f:RegisterEvent'PLAYER_ENTERING_WORLD'
 	f:RegisterEvent'ZONE_CHANGED_NEW_AREA'
 	f:SetScript('OnEvent', eventHandler)
+	
+	f:SetScript('OnUpdate', raidTargetOnUpdate)
