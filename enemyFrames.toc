@@ -3,6 +3,7 @@
 ## Notes: by kuurtzen
 ## SavedVariablesPerCharacter: ENEMYFRAMESPLAYERDATA
 
+globals\actionHandler.lua
 globals\spellCastingCore.lua
 globals\spellInfo.lua
 globals\wsgHandler.lua

@@ -14,7 +14,7 @@ local raidIcons, raidIconsN = {[1] = 'skull', [2] = 'moon', [3] = 'square', [4] 
 local moduiLoaded = false
 local enabled = false
 
-local killTargetName = ''
+MOUSEOVERUNINAME = nil
 ---
 
 ------------ UI ELEMENTS ------------------
@@ -434,7 +434,7 @@ local function moduiReSkin()
 		modSkinColor(units[i].castbar.iconborder, .2, .2, .2)
 		
 		-- cc icon
-		modSkin(units[i].cc, 10)
+		modSkin(units[i].cc, 12)
 		modSkinPadding(units[i].cc, 2)
 	end
 	
@@ -639,10 +639,12 @@ local function drawUnits(list)
 				units[i].Button:SetScript('OnEnter', function()	
 					units[this.index].name:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'])	
 					this.mo = true
+					MOUSEOVERUNINAME = this.tar
 				end)
 				units[i].Button:SetScript('OnLeave', function()
 					units[this.index].name:SetTextColor(colour.r, colour.g, colour.b)
 					this.mo = false
+					MOUSEOVERUNINAME = nil
 				end)
 							
 			else
@@ -661,7 +663,7 @@ local function drawUnits(list)
 			end
 					
 			units[i].name:SetText(v['name'])
-			units[i].name:SetText(string.sub(units[i].name:GetText(), 1, 8))
+			units[i].name:SetText(string.sub(units[i].name:GetText(), 1, 7))
 			
 			-- button function to target unit
 			units[i].Button.tar = v['name']
@@ -696,7 +698,7 @@ end
 
 -- target indicator, raid icons, optionals
 local function updateUnits()
-	-- killTarget
+	-- killTarget announcement
 	if ktEndtime < GetTime() then
 		enemyFrame.raidTargetFrame:Hide()
 	end

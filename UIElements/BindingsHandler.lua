@@ -6,10 +6,10 @@
 	BINDING_NAME_SETKT 			= "Assign Skull to Target"
 	BINDING_NAME_GETKT 			= "Target Skull"
 	
-	BINDING_NAME_SETSTAR 		= "Assign Star to target"
-	BINDING_NAME_SETMOON		= "Assign Moon to target"
-	BINDING_NAME_SETSQUARE		= "Assign Square to target"
-	BINDING_NAME_SETTRIANGLE	= "Assign Triangle to target"
+	BINDING_NAME_SETSTAR 		= "Assign Star to Target"
+	BINDING_NAME_SETMOON		= "Assign Moon to Target"
+	BINDING_NAME_SETSQUARE		= "Assign Square to Target"
+	BINDING_NAME_SETTRIANGLE	= "Assign Triangle to Target"
 	
 	
 	function getKTbind()

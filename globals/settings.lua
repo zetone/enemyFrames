@@ -15,20 +15,24 @@ ENEMYFRAMESPLAYERDATA =
 	['displayNames']		= true,
 	['displayManabar']		= false,
 	['displayOnlyNearby']	= false,
+	['mouseOver']			= false,
 }
 
 
 local playerFaction
 ------------ UI ELEMENTS ------------------
 local enemyFactionColor
-local checkBoxOptionalsN, checkBoxOptionals  =3,{[1] = {['id'] = 'displayNames', 		['label'] = 'display names'}, 
-												 [2] = {['id'] = 'displayManabar', 		['label'] = 'display mana bar'},
-												 [3] = {['id'] = 'displayOnlyNearby', 	['label'] = 'only display nearby units'},}
+local checkBoxOptionalsN, checkBoxOptionals  = 4, { [1] = {['id'] = 'displayNames', 		['label'] = 'display names'}, 
+													[2] = {['id'] = 'displayManabar', 		['label'] = 'display mana bar'},
+													[3] = {['id'] = 'displayOnlyNearby', 	['label'] = 'only display nearby units'},
+													[4] = {['id'] = 'mouseOver', 			['label'] = 'mouseover cast on frames'},
+													}
 local enemyFramesDisplayShow = false
 
 local settings = CreateFrame('Frame', 'enemyFramesSettings', UIParent)
 settings:ClearAllPoints()
 settings:SetWidth(280) settings:SetHeight(320)
+--settings:SetFrameLevel(6)
 settings:SetPoint('CENTER', UIParent, -UIParent:GetWidth()/3, 0)
 settings:SetBackdrop({bgFile   = [[Interface\Tooltips\UI-Tooltip-Background]],
 				  edgeFile = [[Interface\DialogFrame\UI-DialogBox-Border]],

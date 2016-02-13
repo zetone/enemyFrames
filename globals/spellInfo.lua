@@ -227,22 +227,22 @@
         ['Shackle Undead']          = {['icon'] = [[Interface\Icons\Spell_nature_slow]], ['casttime'] = 1.5},
         ['Smite']                   = {['icon'] = [[Interface\Icons\Spell_holy_holysmite]], ['casttime'] = 2.5, ['type'] = 'dmg', ['school'] = 'holy', ['class'] = 'PRIEST'},
             -- ROGUE
-        ['Disarm Trap']             = {['icon'] = [[Interface\Icons\Spell_shadow_grimward]], ['casttime'] = 5},
-        ['Mind-numbing Poison']     = {['icon'] = [[Interface\Icons\Spell_nature_nullifydisease]], ['casttime'] = 3},
-        ['Mind-numbing Poison II']  = {['icon'] = [[Interface\Icons\Spell_nature_nullifydisease]], ['casttime'] = 3},
-        ['Mind-numbing Poison III'] = {['icon'] = [[Interface\Icons\Spell_nature_nullifydisease]], ['casttime'] = 3},
+        ['Disarm Trap']             = {['icon'] = [[Interface\Icons\Spell_shadow_grimward]], 		['casttime'] = 5},
+        ['Mind-numbing Poison']     = {['icon'] = [[Interface\Icons\Spell_nature_nullifydisease]], 	['casttime'] = 3},
+        ['Mind-numbing Poison II']  = {['icon'] = [[Interface\Icons\Spell_nature_nullifydisease]], 	['casttime'] = 3},
+        ['Mind-numbing Poison III'] = {['icon'] = [[Interface\Icons\Spell_nature_nullifydisease]], 	['casttime'] = 3},
         ['Instant Poison']          = {['icon'] = [[Interface\Icons\Spell_nature_corrosivebreath]], ['casttime'] = 3},
         ['Instant Poison II']       = {['icon'] = [[Interface\Icons\Spell_nature_corrosivebreath]], ['casttime'] = 3},
         ['Instant Poison III']      = {['icon'] = [[Interface\Icons\Spell_nature_corrosivebreath]], ['casttime'] = 3},
         ['Instant Poison IV']       = {['icon'] = [[Interface\Icons\Spell_nature_corrosivebreath]], ['casttime'] = 3},
         ['Instant Poison V']        = {['icon'] = [[Interface\Icons\Spell_nature_corrosivebreath]], ['casttime'] = 3},
         ['Instant Poison VI']       = {['icon'] = [[Interface\Icons\Spell_nature_corrosivebreath]], ['casttime'] = 3},
-        ['Deadly Poison']           = {['icon'] = [[Interface\Icons\Ability_rogue_dualweild]], ['casttime'] = 3},
-        ['Deadly Poison II']        = {['icon'] = [[Interface\Icons\Ability_rogue_dualweild]], ['casttime'] = 3},
-        ['Deadly Poison III']       = {['icon'] = [[Interface\Icons\Ability_rogue_dualweild]], ['casttime'] = 3},
-        ['Deadly Poison IV']        = {['icon'] = [[Interface\Icons\Ability_rogue_dualweild]], ['casttime'] = 3},
-        ['Deadly Poison V']         = {['icon'] = [[Interface\Icons\Ability_rogue_dualweild]], ['casttime'] = 3},
-        ['Crippling Poison']        = {['icon'] = [[Interface\Icons\Ability_poisonsting]], ['casttime'] = 3},
+        ['Deadly Poison']           = {['icon'] = [[Interface\Icons\Ability_rogue_dualweild]], 		['casttime'] = 3},
+        ['Deadly Poison II']        = {['icon'] = [[Interface\Icons\Ability_rogue_dualweild]], 		['casttime'] = 3},
+        ['Deadly Poison III']       = {['icon'] = [[Interface\Icons\Ability_rogue_dualweild]], 		['casttime'] = 3},
+        ['Deadly Poison IV']        = {['icon'] = [[Interface\Icons\Ability_rogue_dualweild]], 		['casttime'] = 3},
+        ['Deadly Poison V']         = {['icon'] = [[Interface\Icons\Ability_rogue_dualweild]], 		['casttime'] = 3},
+        ['Crippling Poison']        = {['icon'] = [[Interface\Icons\Ability_poisonsting]], 			['casttime'] = 3},
         ['Pick Lock']               = {['icon'] = [[Interface\Icons\Spell_nature_moonkey]], ['casttime'] = 5},
             -- SHAMAN
         ['Ancestral Spirit']        = {['icon'] = [[Interface\Icons\Spell_nature_regenerate]], ['casttime'] = 10},
@@ -460,4 +460,29 @@
 		['Alliance'] 	= {['icon'] = [[Interface\Icons\inv_bannerpvp_02]]},
 		['Horde'] 		= {['icon'] = [[Interface\Icons\inv_bannerpvp_01]]},
 	}
+	
+	-- used to check if mouseover cast should be aimed at mouseover
+	SPELLINFO_SINGLE_TARGET_BUFF_SPELLS = {
+		-- DRUID
+		['Abolish Poison'] = true, 	['Cure Poison'] = true, 	['Healing Touch'] = true, ['Mark of the Wild'] = true, ['Rebirth'] = true, 
+		['Regrowth'] = true,		['Rejuvenation'] = true, 	['Remove Curse'] = true,
+		
+		-- MAGE
+		['Amplify Magic'] = true, ['Arcane Intellect'] = true, ['Dampen Magic'] = true, ['Remove Lesser Curse'] = true, 
+		
+		-- PALADIN
+		['Blessing of Protection'] = true, 	['Blessing of Freedom'] = true, 	['Blessing of Kings'] = true, 	['Blessing of Might'] = true, 
+		['Blessing of Sanctuary'] = true,	['Blessing of Sacrifice'] = true,	['Blessing of Wisdom'] = true, 	['Cleanse'] = true, 
+		['Divine Intervention'] = true, 	['Flash of Light'] = true, 			['Holy Light'] = true, 			['Lay on Hands'] = true, 
+		['Purify'] = true, 
+		
+		-- PRIEST
+		['Cure Disease'] = true, 		['Divine Spirit'] = true, 	['Greater Heal'] = true, 	['Fear Ward'] = true, ['Flash Heal'] = true, 
+		['Heal'] = true, 				['Lesser Heal'] = true, 	['Power Infusion'] = true, 	['Power Word: Fortitude'] = true,	
+		['Power Word: Shield'] = true, 	['Renew'] = true, 			['Shadow Protection'] = true,
+		
+		-- SHAMAN
+		['Chain Heal'] = true, ['Healing Wave'] = true, ['Lesser Healing Wave'] = true,
+	}
+	
 	--

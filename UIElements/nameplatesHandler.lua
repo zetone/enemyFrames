@@ -1,6 +1,5 @@
 
 local timerRefresh, timerInterval = 0, (1/60)
-local killTargetName = ''
 
 local isPlate = function(frame)     -- GO FISH
 	local overlayRegion = frame:GetRegions()
