@@ -1,5 +1,6 @@
 
 local playerFaction
+local insideBG = false
 -- TIMERS
 local refreshUnits = true
 local ktInterval, ktEndtime = 3, 0
@@ -168,7 +169,7 @@ local 	enemyFrame = CreateFrame('Frame', 'enemyFrameDisplay', UIParent)
 		-- raidTarget menu
 		local rtMenuIconsize = 26
 		enemyFrame.raidTargetMenu = CreateFrame('Frame', nil, enemyFrame)
-		enemyFrame.raidTargetMenu:SetFrameLevel(2)
+		enemyFrame.raidTargetMenu:SetFrameLevel(3)
 		enemyFrame.raidTargetMenu:SetHeight(rtMenuIconsize+4)	enemyFrame.raidTargetMenu:SetWidth(rtMenuIconsize*raidIconsN+10)
 		enemyFrame.raidTargetMenu:SetBackdrop(BACKDROP)
 		enemyFrame.raidTargetMenu:SetBackdropColor(0, 0, 0, .6)
@@ -199,18 +200,29 @@ local 	enemyFrame = CreateFrame('Frame', 'enemyFrameDisplay', UIParent)
 		end
 
 		
-local unitWidth, unitHeight, castBarHeight, ccIconWidth, ccIconHeight, manaBarHeight = 64, 24, 10, 28, 24, 4
-local leftSpacing = 15
+local unitWidth, unitHeight, castBarHeight, ccIconWidth, manaBarHeight = 66, 22, 8, 28, 4
+local leftSpacing = 5
 for i = 1, unitLimit,1 do
-	-- health statusbar
-	units[i] = CreateFrame('StatusBar', 'enemyFrameUnit'..i, enemyFrame)
-	units[i]:SetFrameLevel(0)
-	units[i]:SetStatusBarTexture(TEXTURE)
+	-- unit button
+	units[i] = CreateFrame('Button', 'enemyFrameUnit'..i, enemyFrame)
+	--units[i]:SetFrameLevel(0)
 	units[i]:SetWidth(unitWidth)	units[i]:SetHeight(unitHeight)
-	units[i]:SetMinMaxValues(0, 100)
+	units[i]:RegisterForClicks('LeftButtonUp', 'RightButtonUp')
+	units[i].index = i
+	units[i].mo = false
+		
 	
-	units[i]:SetBackdrop(BACKDROP)
-	units[i]:SetBackdropColor(0, 0, 0, .6)
+	-- health statusbar
+	units[i].hpbar = CreateFrame('StatusBar', nil, units[i])
+	units[i].hpbar:SetFrameLevel(1)
+	units[i].hpbar:SetStatusBarTexture(TEXTURE)
+	units[i].hpbar:SetWidth(unitWidth)	units[i].hpbar:SetHeight(unitHeight)
+	units[i].hpbar:SetMinMaxValues(0, 100)
+	units[i].hpbar:SetPoint('TOPLEFT', units[i], 'TOPLEFT')
+	
+	units[i].hpbar:SetBackdrop(BACKDROP)
+	units[i].hpbar:SetBackdropColor(0, 0, 0, .6)
+	
 	
 	
 	-- mana statusbar
@@ -219,7 +231,7 @@ for i = 1, unitLimit,1 do
 	units[i].manabar:SetStatusBarTexture(TEXTURE)
 	units[i].manabar:SetHeight(manaBarHeight)
 	units[i].manabar:SetWidth(unitWidth)		
-	units[i].manabar:SetPoint('TOPLEFT', units[i], 'BOTTOMLEFT', 0, -1)
+	units[i].manabar:SetPoint('TOPLEFT', units[i].hpbar, 'BOTTOMLEFT')
 	
 	units[i].manabar:SetBackdrop(BACKDROP)
 	units[i].manabar:SetBackdropColor(0, 0, 0)
@@ -227,7 +239,7 @@ for i = 1, unitLimit,1 do
 	
 	-- cast bar --
 	units[i].castbar = CreateFrame('StatusBar', nil, units[i])
-	units[i].castbar:SetFrameLevel(0)
+	--units[i].castbar:SetFrameLevel(0)
 	units[i].castbar:SetStatusBarTexture(TEXTURE)
 	units[i].castbar:SetHeight(castBarHeight)
 	units[i].castbar:SetWidth((unitWidth + ccIconWidth + 4) - (units[i].castbar:GetHeight()))	
@@ -249,10 +261,10 @@ for i = 1, unitLimit,1 do
 	
 	units[i].castbar.text = units[i].castbar:CreateFontString(nil, 'OVERLAY')
 	units[i].castbar.text:SetTextColor(1, 1, 1)
-	units[i].castbar.text:SetFont(STANDARD_TEXT_FONT, 8)
-	units[i].castbar.text:SetShadowOffset(1, -1)
-	units[i].castbar.text:SetShadowColor(0, 0, 0)
-	units[i].castbar.text:SetPoint('LEFT', units[i].castbar, 'LEFT', 2, 1)
+	units[i].castbar.text:SetFont(STANDARD_TEXT_FONT, 8, 'OUTLINE')
+	--units[i].castbar.text:SetShadowOffset(1, -1)
+	units[i].castbar.text:SetShadowColor(0.4, 0.4, 0.4)
+	units[i].castbar.text:SetPoint('LEFT', units[i].castbar, 'LEFT', 1, 1)
 	
 	
 	--[[
@@ -268,14 +280,14 @@ for i = 1, unitLimit,1 do
 	units[i].name = units[i]:CreateFontString(nil, 'OVERLAY')
 	units[i].name:SetFont(STANDARD_TEXT_FONT, 11, 'OUTLINE')
 	units[i].name:SetTextColor(.8, .8, .8, .8)
-	units[i].name:SetPoint('CENTER', units[i])	
+	units[i].name:SetPoint('CENTER', units[i].hpbar)	
 	
 	
 	---- RAID TARGET
 	units[i].raidTarget = CreateFrame('Frame', nil, units[i])
-	units[i].raidTarget:SetWidth(ccIconWidth-2) units[i].raidTarget:SetHeight(ccIconHeight-2)
+	units[i].raidTarget:SetWidth(ccIconWidth-2) units[i].raidTarget:SetHeight(unitHeight-2)
 	units[i].raidTarget:SetPoint('CENTER', units[i],'TOPRIGHT', 0, -4)
-	units[i].raidTarget:SetFrameLevel(2)
+	units[i].raidTarget:SetFrameLevel(4)
 	
 	units[i].raidTarget.icon = units[i].raidTarget:CreateTexture(nil, 'ARTWORK')
 	units[i].raidTarget.icon:SetTexture([[Interface\TargetingFrame\UI-RaidTargetingIcons]])
@@ -284,8 +296,8 @@ for i = 1, unitLimit,1 do
 	
 	---- CC ------
 	units[i].cc = CreateFrame('Frame', nil, units[i])
-	units[i].cc:SetWidth(ccIconWidth) units[i].cc:SetHeight(ccIconHeight)
-	units[i].cc:SetPoint('TOPLEFT', units[i],'TOPRIGHT', 4, -1)
+	units[i].cc:SetWidth(ccIconWidth) units[i].cc:SetHeight(unitHeight)
+	units[i].cc:SetPoint('TOPLEFT', units[i],'TOPRIGHT', 4, 0)
 
 	units[i].cc.icon = units[i].cc:CreateTexture(nil, 'ARTWORK')
 	units[i].cc.icon:SetAllPoints()
@@ -296,20 +308,13 @@ for i = 1, unitLimit,1 do
 	units[i].cc.bg:SetAllPoints()
 
 	units[i].cc.duration = units[i].cc:CreateFontString(nil, 'OVERLAY')--, 'GameFontNormalSmall')
-	units[i].cc.duration:SetFont(STANDARD_TEXT_FONT, 13)
+	units[i].cc.duration:SetFont(STANDARD_TEXT_FONT, 10, 'OUTLINE')
 	units[i].cc.duration:SetTextColor(.9, .9, .2, 1)
-	units[i].cc.duration:SetShadowOffset(1, -2)
+	units[i].cc.duration:SetShadowOffset(1, -1)
 	units[i].cc.duration:SetShadowColor(0, 0, 0)
-	units[i].cc.duration:SetPoint('BOTTOMRIGHT', units[i].cc, 'BOTTOMRIGHT', 12, 2)
+	units[i].cc.duration:SetPoint('BOTTOM', units[i].cc, 'BOTTOM', 0, 1)
 	
-	
-	------- EXTRAS
-	units[i].Button = CreateFrame('Button', nil, units[i])
-	units[i].Button:SetAllPoints()
-	units[i].Button:SetPoint('CENTER', units[i])
-	units[i].Button:RegisterForClicks('LeftButtonUp', 'RightButtonUp')
-	units[i].Button.index = i
-	units[i].Button.mo = false
+
 end
 
 
@@ -325,7 +330,7 @@ local function defaultVisuals()
 		units[i].raidTarget.icon:SetTexCoord(.75, 1, 0.25, .5)
 		
 		units[i].cc.icon:SetTexture([[Interface\characterframe\TEMPORARYPORTRAIT-MALE-ORC]])
-		units[i].cc.duration:SetText('1.4')
+		units[i].cc.duration:SetText('2.8')
 		
 		units[i]:Show()
 	end
@@ -342,15 +347,11 @@ local function optionals()
 		
 		-- display mana bar
 		if not ENEMYFRAMESPLAYERDATA['displayManabar'] then
-			units[i]:SetHeight(unitHeight)
-			units[i].name:SetPoint('CENTER', units[i])
+			units[i].hpbar:SetHeight(unitHeight)
 			units[i].manabar:Hide()
-			units[i].castbar:SetPoint('TOPLEFT', units[i], 'BOTTOMLEFT', units[i].castbar:GetHeight(), -3)
 		else
-			units[i]:SetHeight(unitHeight - manaBarHeight)
-			units[i].name:SetPoint('CENTER', units[i])
+			units[i].hpbar:SetHeight(unitHeight - manaBarHeight)
 			units[i].manabar:Show()
-			units[i].castbar:SetPoint('TOPLEFT', units[i].manabar, 'BOTTOMLEFT', units[i].castbar:GetHeight(), -3)
 		end
 	end
 end
@@ -381,11 +382,11 @@ local function arrangeUnits()
 				if ENEMYFRAMESPLAYERDATA['layout'] == 'hblock' then
 					units[i]:SetPoint('TOPLEFT', units[i-unitGroup].castbar.iconborder, 'BOTTOMLEFT', 1, -5)
 				else
-					units[i]:SetPoint('TOPLEFT', units[i-unitGroup].cc, 'TOPRIGHT', leftSpacing, 1)
+					units[i]:SetPoint('TOPLEFT', units[i-unitGroup].cc, 'TOPRIGHT', leftSpacing, 0)
 				end
 			else
 				if ENEMYFRAMESPLAYERDATA['layout'] == 'hblock' then
-					units[i]:SetPoint('TOPLEFT', units[i-1].cc, 'TOPRIGHT', leftSpacing, 1)					
+					units[i]:SetPoint('TOPLEFT', units[i-1].cc, 'TOPRIGHT', leftSpacing, 0)					
 				else
 					units[i]:SetPoint('TOPLEFT', units[i-1].castbar.iconborder, 'BOTTOMLEFT', 1, -5)
 				end
@@ -410,10 +411,11 @@ local function moduiReSkin()
 	
 	-- individual unit ui
 	for i = 1, unitLimit do
+		modSkin(units[i], 12)
+		modSkinPadding(units[i], 2)
+		
 		-- health bar
-		units[i]:SetStatusBarTexture(TEXTURE)
-		modSkin(units[i], 8)
-		modSkinPadding(units[i], 1)
+		units[i].hpbar:SetStatusBarTexture(TEXTURE)
 		
 		-- mana bar
 		units[i].manabar:SetStatusBarTexture(TEXTURE)
@@ -608,7 +610,6 @@ local getTimerLeft = function(tEnd)
 end
 
 local function SetDefaultIconTex(p)
-	--return v['rank'] < 0 and  GET_PORTRAIT_ICON(v['portrait']) or _G['GET_'..string.upper(defaultIcon)..'_ICON'](v[defaultIcon])
 	p['portrait']	= p['sex'] .. '-' .. p['race']
 	local d = ENEMYFRAMESPLAYERDATA['defaultIcon']
 	if d == 'rank' and p['rank'] < 0 then d = 'portrait' end
@@ -622,66 +623,68 @@ local function drawUnits(list)
 	
 	for k,v in pairs(playerList) do
 		-- set for redrawn
-		--if v['refresh'] then
-			--print(v['name'] .. ' refresh true')
-			local colour = RAID_CLASS_COLORS[v['class']]
-			local powerColor = GET_RGB_POWER_COLORS_BY_CLASS(v['class'])
+		--if i > unitLimit then	next	end
+		
+		local colour = RAID_CLASS_COLORS[v['class']]
+		local powerColor = GET_RGB_POWER_COLORS_BY_CLASS(v['class'])
+		
+		-- hightlight nearby unit
+		if v['nearby'] then		
+			units[i].hpbar:SetStatusBarColor(colour.r, colour.g, colour.b)
+			if not units[i].mo then
+				units[i].name:SetTextColor(colour.r, colour.g, colour.b)	
+			end			
+			units[i].manabar:SetStatusBarColor(powerColor[1], powerColor[2], powerColor[3])			
+			units[i].cc.icon:SetVertexColor(1, 1, 1, 1)
 			
-			-- hightlight nearby unit
-			if v['nearby'] then		
-				units[i]:SetStatusBarColor(colour.r, colour.g, colour.b)
-				if not units[i].Button.mo then
-					units[i].name:SetTextColor(colour.r, colour.g, colour.b)	
-				end			
-				units[i].manabar:SetStatusBarColor(powerColor[1], powerColor[2], powerColor[3])			
-				units[i].cc.icon:SetVertexColor(1, 1, 1, 1)
+			units[i]:SetScript('OnEnter', function()	
+				units[this.index].name:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'])	
+				this.mo = true
+				MOUSEOVERUNINAME = this.tar
+			end)
+			units[i]:SetScript('OnLeave', function()
+				units[this.index].name:SetTextColor(colour.r, colour.g, colour.b)
+				this.mo = false
+				MOUSEOVERUNINAME = nil
+			end)
+						
+		else
+			units[i].hpbar:SetStatusBarColor(colour.r / 2, colour.g / 2, colour.b / 2, .6)
+			units[i].manabar:SetStatusBarColor(powerColor[1] / 2, powerColor[2] / 2, powerColor[3] / 2)
+			if not units[i].mo then
+				units[i].name:SetTextColor(colour.r / 2, colour.g / 2, colour.b / 2, .6)
+			end		
+			--units[i].cc.icon:SetTexture(v['fc'] and SPELLINFO_WSG_FLAGS[playerFaction]['icon'] or SetDefaultIconTex(v))
+			units[i].cc.icon:SetVertexColor(.4, .4, .4, .6)
+			
+			units[i]:SetScript('OnEnter', nil)
+			units[i]:SetScript('OnLeave', function()
+				units[this.index].name:SetTextColor(colour.r / 2, colour.g / 2, colour.b / 2, .6)
+				this.mo = false
+			end)
+		end
 				
-				units[i].Button:SetScript('OnEnter', function()	
-					units[this.index].name:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'])	
-					this.mo = true
-					MOUSEOVERUNINAME = this.tar
-				end)
-				units[i].Button:SetScript('OnLeave', function()
-					units[this.index].name:SetTextColor(colour.r, colour.g, colour.b)
-					this.mo = false
-					MOUSEOVERUNINAME = nil
-				end)
-							
-			else
-				units[i]:SetStatusBarColor(colour.r / 2, colour.g / 2, colour.b / 2, .6)
-				units[i].manabar:SetStatusBarColor(powerColor[1] / 2, powerColor[2] / 2, powerColor[3] / 2)
-				if not units[i].Button.mo then
-					units[i].name:SetTextColor(colour.r / 2, colour.g / 2, colour.b / 2, .6)
-				end		
-				units[i].cc.icon:SetVertexColor(.4, .4, .4, .6)
-				
-				units[i].Button:SetScript('OnEnter', nil)
-				units[i].Button:SetScript('OnLeave', function()
-					units[this.index].name:SetTextColor(colour.r / 2, colour.g / 2, colour.b / 2, .6)
-					this.mo = false
-				end)
-			end
-					
-			units[i].name:SetText(v['name'])
-			units[i].name:SetText(string.sub(units[i].name:GetText(), 1, 7))
-			
-			-- button function to target unit
-			units[i].Button.tar = v['name']
-			units[i].Button:SetScript('OnClick', function()	if arg1 == 'LeftButton'  then  	TargetByName(this.tar, true)			end
-															if arg1 == 'RightButton' then	--enemyFrame.raidTargetFrame:Hide()
-															spawnRTMenu(this, this.tar)	end
-																							--ENEMYFRAMECORESendRaidTarget('skull', this.tar)	end
-															end)
-			
-			-- hp & mana
-			units[i]:SetValue(v['health'] and v['health'] or not v['nearby'] and 100 or 100)
-			units[i].manabar:SetMinMaxValues(0, v['maxmana'] and v['maxmana'] or 100)
-			units[i].manabar:SetValue(v['mana'] and v['mana'] or not (v['nearby'] and v['maxmana']) and v['maxmana'] or 100)
-			
+		units[i].name:SetText(v['name'])
+		units[i].name:SetText(string.sub(units[i].name:GetText(), 1, 8))
+		
+		-- button function to target unit
+		units[i].tar = v['name']
+		units[i]:SetScript('OnClick', function()	if arg1 == 'LeftButton'  then  	TargetByName(this.tar, true)			end
+														if arg1 == 'RightButton' then	--enemyFrame.raidTargetFrame:Hide()
+														spawnRTMenu(this, this.tar)	end
+																						--ENEMYFRAMECORESendRaidTarget('skull', this.tar)	end
+														end)
+		
+		-- hp & mana
+		units[i].hpbar:SetMinMaxValues(0, v['maxhealth'] and v['maxhealth'] or 100)
+		units[i].hpbar:SetValue(v['health'] and v['health'] or not (v['nearby'] and v['maxhealth']) and v['maxhealth'] or 100)
+		units[i].manabar:SetMinMaxValues(0, v['maxmana'] and v['maxmana'] or 100)
+		units[i].manabar:SetValue(v['mana'] and v['mana'] or not (v['nearby'] and v['maxmana']) and v['maxmana'] or 100)
+		
 
-			
-			units[i]:Show()
-		--end
+		
+		units[i]:Show()
+
 		
 		nearU = v['nearby'] and nearU + 1 or nearU
 		i = i + 1
@@ -693,7 +696,21 @@ local function drawUnits(list)
 		end
 	end
 
-	enemyFrame.totalPlayers:SetText(nearU .. ' / ' .. i-1)
+	i = i == 1 and 1 or i -1
+	enemyFrame.totalPlayers:SetText(nearU .. ' / ' .. i)
+	
+	if not insideBG then		
+		local unitPointBottom = ENEMYFRAMESPLAYERDATA['layout'] == 'vertical' and i or i > ENEMYFRAMESPLAYERDATA['groupsize'] and ENEMYFRAMESPLAYERDATA['groupsize'] or i
+		
+		if ENEMYFRAMESPLAYERDATA['layout'] == 'hblock' then
+			local a = math.floor(i/ENEMYFRAMESPLAYERDATA['groupsize'])
+			unitPointBottom = a  == 0 and 1 or (a * ENEMYFRAMESPLAYERDATA['groupsize']) +1
+		end
+		
+		enemyFrame.bottom:SetPoint('TOPLEFT', units[unitPointBottom].castbar.icon, 'BOTTOMLEFT', 1, -6)
+		
+		--/Script print(math.floor(4/5))
+	end
 end
 
 -- target indicator, raid icons, optionals
@@ -716,17 +733,15 @@ local function updateUnits()
 			if moduiLoaded then
 				modSkinColor(units[i], enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'])
 			end
-			units[i]:SetBackdropColor(enemyFactionColor['r'] - .6, enemyFactionColor['g'] - .6, enemyFactionColor['b'] - .6, .6)
+			units[i].hpbar:SetBackdropColor(enemyFactionColor['r'] - .6, enemyFactionColor['g'] - .6, enemyFactionColor['b'] - .6, .6)
+			units[i].manabar:SetBackdropColor(enemyFactionColor['r'] - .6, enemyFactionColor['g'] - .6, enemyFactionColor['b'] - .6, .6)
 			
-			-- show target player portrait
-			if v['buff'] == nil and not v['fc'] and ENEMYFRAMESPLAYERDATA['defaultIcon'] == 'portrait' then
-				SetPortraitTexture(units[i].cc.icon, 'target')
-			end
 		else
 			if moduiLoaded then
 				modSkinColor(units[i], .2, .2, .2)
 			end
-			units[i]:SetBackdropColor(0, 0, 0, .6)
+			units[i].hpbar:SetBackdropColor(0, 0, 0, .6)
+			units[i].manabar:SetBackdropColor(0, 0, 0, .6)
 		end
 
 		
@@ -749,7 +764,7 @@ local function updateUnits()
 		end
 			
 		-- CC type
-		local b = SPELLCASTINGCOREgetPrioBuff(v['name'])--v['buff']--
+		local b = SPELLCASTINGCOREgetPrioBuff(v['name'], 1)[1]--v['buff']--
 		if b ~= nil then
 			units[i].cc.icon:SetTexture(b.icon)
 			units[i].cc.duration:SetText(getTimerLeft(b.timeEnd))
@@ -763,6 +778,10 @@ local function updateUnits()
 				units[i].cc.icon:SetVertexColor(1, 1, 1, 1)
 			end
 			
+			-- show target player portrait
+			if UnitName'target' == v['name'] and not v['fc'] and (ENEMYFRAMESPLAYERDATA['defaultIcon'] == 'portrait' or (ENEMYFRAMESPLAYERDATA['defaultIcon'] == 'rank' and v['rank'] < 0)) then
+				SetPortraitTexture(units[i].cc.icon, 'target')
+			end
 
 			if moduiLoaded then modSkinColor(units[i].cc, .2, .2, .2)	end
 			units[i].cc.duration:SetText('')
@@ -793,10 +812,8 @@ local function enemyFramesOnUpdate()
 	if list then 	drawUnits(list)	--ENEMYFRAMESCOREListRefreshed()
 	end
 	-- update units
-	--if visible then 
 	raidTargets = ENEMYFRAMECOREGetRaidTarget()
 	updateUnits()
-	--end
 end
 
 
@@ -814,8 +831,8 @@ function ENEMYFRAMESAnnounceRT(rt, p)
 	ktEndtime = GetTime() + ktInterval
 end
 
-function ENEMYFRAMESInitialize(maxUnits)
-		
+function ENEMYFRAMESInitialize(maxUnits, isBG)
+	insideBG = isBG
 	if maxUnits then
 		SetupFrames(maxUnits)
 		arrangeUnits()
@@ -831,11 +848,12 @@ end
 
 function ENEMYFRAMESsettings()
 	optionals()
-	if not enabled then
+	if not enabled or not insideBG then
 		SetupFrames(15)
 		defaultVisuals()
 		setccIcon(ENEMYFRAMESPLAYERDATA['defaultIcon'])
 	end
+	
 	arrangeUnits()
 end
 ---------------------
@@ -860,6 +878,12 @@ enemyFrame:SetScript('OnEvent', eventHandler)
 
 SLASH_ENEMYFRAMES1 = '/efd'
 SlashCmdList["ENEMYFRAMES"] = function(msg)
+	for k, v in pairs(playerList) do
+		print(k..':')
+		for i, j in pairs(v) do
+			print(i .. ' ' .. tostring(j))
+		end
+	end
 end
 
 

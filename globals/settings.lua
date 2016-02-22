@@ -16,16 +16,21 @@ ENEMYFRAMESPLAYERDATA =
 	['displayManabar']		= false,
 	['displayOnlyNearby']	= false,
 	['mouseOver']			= false,
+	['enableOutdoors']		= false,
+	
+	['offX']				= 0,
+	['offY']				= 0,
 }
 
 
 local playerFaction
 ------------ UI ELEMENTS ------------------
 local enemyFactionColor
-local checkBoxOptionalsN, checkBoxOptionals  = 4, { [1] = {['id'] = 'displayNames', 		['label'] = 'display names'}, 
-													[2] = {['id'] = 'displayManabar', 		['label'] = 'display mana bar'},
-													[3] = {['id'] = 'displayOnlyNearby', 	['label'] = 'only display nearby units'},
-													[4] = {['id'] = 'mouseOver', 			['label'] = 'mouseover cast on frames'},
+local checkBoxOptionalsN, checkBoxOptionals  = 5, { [1] = {['id'] = 'enableOutdoors', 		['label'] = 'enable outside of BGs'},
+													[2] = {['id'] = 'mouseOver', 			['label'] = 'mouseover cast on frames'},													
+													[3] = {['id'] = 'displayNames', 		['label'] = 'display names'}, 
+													[4] = {['id'] = 'displayManabar', 		['label'] = 'display mana bar'},
+													[5] = {['id'] = 'displayOnlyNearby', 	['label'] = 'only display nearby units'},
 													}
 local enemyFramesDisplayShow = false
 
@@ -149,6 +154,7 @@ for i = 1, checkBoxOptionalsN, 1 do
 	end)
 end
 
+
 -------------------------------------------
 
 
@@ -188,14 +194,22 @@ function setupSettings()
 end
 
 local function eventHandler()
-	playerFaction = UnitFactionGroup'player'
-	local tc = playerFaction == 'Alliance' and 'FF1A1A' or '00ADF0'
-	print('|cff' ..tc.. '[enemyFrames] loaded. |cffffffff/efs|cff' ..tc.. ' for menu settings.')
-	_G['enemyFrameDisplay']:SetScale(ENEMYFRAMESPLAYERDATA['scale'])
+	if event == 'PLAYER_LOGIN' then
+		playerFaction = UnitFactionGroup'player'
+		local tc = playerFaction == 'Alliance' and 'FF1A1A' or '00ADF0'
+		print('|cff' ..tc.. '[enemyFrames] loaded. |cffffffff/efs|cff' ..tc.. ' for menu settings.')
+		_G['enemyFrameDisplay']:SetScale(ENEMYFRAMESPLAYERDATA['scale'])
+		_G['enemyFrameDisplay']:SetPoint('CENTER', UIParent, ENEMYFRAMESPLAYERDATA['offX'], ENEMYFRAMESPLAYERDATA['offY'])
+	elseif event == 'PLAYER_LOGOUT' then
+		local point, relativeTo, relativePoint, xOfs, yOfs = _G['enemyFrameDisplay']:GetPoint()
+		ENEMYFRAMESPLAYERDATA['offX'] = xOfs
+		ENEMYFRAMESPLAYERDATA['offY'] = yOfs
+	end
 end
 
 local f = CreateFrame'Frame'
 f:RegisterEvent'PLAYER_LOGIN'
+f:RegisterEvent'PLAYER_LOGOUT'
 f:SetScript('OnEvent', eventHandler)
 
 SLASH_ENEMYFRAMESSETTINGS1 = '/efs'

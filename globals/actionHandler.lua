@@ -29,3 +29,17 @@ function UseAction( slot, checkFlags, checkSelf )
 		else	TargetByName(currentTarget, true)	end
 	end	
 end
+
+CastSpellByNameAH = CastSpellByName;
+function CastSpellByName(spellName)
+	
+	local currentTarget = UnitExists'target' and UnitName'target' or nil
+	local b = castingChecks(spellName)
+
+	CastSpellByNameAH(spellName)
+	
+	if b then 
+		if currentTarget == nil then	ClearTarget()	
+		else	TargetByName(currentTarget, true)	end
+	end	
+end

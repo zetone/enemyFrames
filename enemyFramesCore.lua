@@ -7,6 +7,8 @@ local bgs = {['Warsong Gulch'] = 10,
 -- TIMERS
 local playerListInterval, playerListRefresh, enemyNearbyInterval, enemyNearbyRefresh = 45, 0, .3, 0
 local raidMemberIndex = 1
+local playerOutdoorLastseen = 60
+local insideBG = false
 local nextPlayerCheck = 5	-- timer since last seen in seconds
 local refreshUnits = true
 -- LISTS
@@ -56,34 +58,61 @@ end
 -- confirm hostile nearbyPlayers
 local function addNearbyPlayers(players)
 	local nextCheck = GetTime() + nextPlayerCheck
+	local nextSeen	= GetTime() + playerOutdoorLastseen
+	
 	
 	for k, v in pairs(players) do
-		if playerList[v['name']] then
-			if not playerList[v['name']]['nearby'] or playerList[v['name']]['health'] 	~= v['health'] or playerList[v['name']]['mana'] ~= v['mana'] then
-				refreshUnits = true
+		--if insideBG then
+			if playerList[v['name']] then
+				--if not playerList[v['name']]['nearby'] or playerList[v['name']]['health'] 	~= v['health'] or playerList[v['name']]['mana'] ~= v['mana'] then
+					refreshUnits = true
+					
+					playerList[v['name']]['health'] 	= v['health']
+					
+					if v['mmaxhealth']	then	playerList[v['name']]['maxhealth'] 	= v['maxhealth']		end
+					if v['mana']	then		playerList[v['name']]['mana'] 		= v['mana']				end
+					if v['maxmana']	then		playerList[v['name']]['maxmana'] 	= v['maxmana']			end
+
+					if v['sex']	then			playerList[v['name']]['sex']		= v['sex'] 				end
+					
+				--end
+
+				playerList[v['name']]['nextCheck'] 	= nextCheck
+				playerList[v['name']]['nearby'] 	= true			
 				
-				playerList[v['name']]['health'] 	= v['health']
-				playerList[v['name']]['mana'] 		= v['mana']
-				playerList[v['name']]['maxmana'] 	= v['maxmana']
-
-				if v['sex']	then
-					playerList[v['name']]['sex']	= v['sex'] 
-				end
-				playerList[v['name']]['refresh'] 	= true
-			end
-
-			playerList[v['name']]['nextCheck'] 	= nextCheck
-			playerList[v['name']]['nearby'] 	= true			
+			--end
+		else
+			refreshUnits = true
+			playerList[v['name']] = v
 			
+			playerList[v['name']]['nextCheck'] 	= nextCheck
+			playerList[v['name']]['nearby'] 	= true
+			if not insideBG then
+				playerList[v['name']]['lastSeen']	= nextSeen 
+			end
 		end
 	end
 end
 
+local function getRankbyTitle(title)
+	local n = '(.+) (.+)'
+
+	if string.find(title, n) then
+		return RANK_BY_TITLE[gsub(title, n, '%1')]
+	end
+	return -1
+end
+
 local function verifyUnitInfo(unit)
-	if UnitExists(unit) and UnitIsPlayer(unit) then
+	if UnitExists(unit) and UnitIsPlayer(unit) and UnitIsEnemy(unit, 'player') then
 		local u = {}
 		u['name']		= UnitName(unit)
+		u['class']		= string.upper(UnitClass(unit))
+		u['rank']		= getRankbyTitle(UnitPVPName(unit))
+		local r = UnitRace(unit)
+		u['race']		= r == 'Undead' and 'SCOURGE' or r == 'Night Elf' and 'NIGHTELF' or string.upper(r)
 		u['health'] 	= UnitHealth(unit)
+		u['maxhealth'] 	= UnitHealthMax(unit)
 		u['mana'] 		= UnitMana(unit)
 		u['maxmana']	= UnitManaMax(unit)
 		local s = UnitSex(unit)
@@ -97,7 +126,8 @@ end
 --	attempt to get enemy info from raid's targets
 -- 	check one every frame rather than all every other frame
 local function getRaidMembersTarget()
-	local numRaidMembers = GetNumRaidMembers()
+	local numRaidMembers = UnitInRaid('player') and GetNumRaidMembers() or GetNumPartyMembers() 
+	if numRaidMembers == 0 then return end
 	
 	verifyUnitInfo('raid' .. raidMemberIndex .. 'target')
 
@@ -111,12 +141,12 @@ local function updatePlayerListInfo()
 	for k, v in pairs(playerList) do
 		local c, b = v['castinfo'], v['buff'] 
 		v['castinfo'] 	= SPELLCASTINGCOREgetCast(v['name'])
-		v['buff'] 		= SPELLCASTINGCOREgetPrioBuff(v['name'])
+		v['buff'] 		= SPELLCASTINGCOREgetPrioBuff(v['name'], 1)[1]
 		
 		if v['castinfo'] or v['buff'] then	
 			v['nextCheck'] 	= nextCheck	
 			-- set health to 100 for newly seen players
-			if v['nearby'] == false then	v['health'] = 100	v['mana'] = v['maxmana'] and v['maxmana'] or 100	refreshUnits 	= true	v['refresh'] 	= true	end
+			if v['nearby'] == false then	v['health'] = v['maxhealth'] and v['maxhealth'] or 100	v['mana'] = v['maxmana'] and v['maxmana'] or 100	refreshUnits 	= true	v['refresh'] 	= true	end
 			v['nearby'] 	= true
 			
 			--refreshUnits 	= true
@@ -133,10 +163,18 @@ local function updatePlayerListInfo()
 			if GetTime() > v['nextCheck'] then	
 				refreshUnits 	= true 	
 				v['nearby'] 	= false
-				v['health']		= 100
-				v['mana'] 		= v['maxmana'] and v['maxmana'] or 100
+				v['health']		= v['maxhealth'] and v['maxhealth'] or 100
+				v['mana'] 		= v['class'] == 'WARRIOR' and 0 or v['maxmana'] and v['maxmana']  or 100
 				v['refresh'] 	= true 
 			end	
+		end
+		
+		-- outdoors
+		if not insideBG then
+			if GetTime() > v['lastSeen'] then
+				playerList[v['name']] 	= nil
+				refreshUnits 			= true
+			end
 		end
 		
 	end
@@ -162,7 +200,7 @@ end
 
 local function orderByClass(l, e)
 	for j, v in pairs(l) do
-		if e['class'] <= v['class'] then
+		if e['class'] < v['class'] or (e['class'] == v['class'] and e['name'] < v['name']) then
 			table.insert(l, j, e)
 			return l
 		end
@@ -234,7 +272,16 @@ function ENEMYFRAMECOREUpdateFlagCarriers(fc)
 end
 
 function ENEMYFRAMECORESetPlayersData(list)
-	addNearbyPlayers(list)
+	if insideBG then
+		addNearbyPlayers(list)
+	end
+	--local l = {}
+	--for k, v in pairs(list) do
+	--	if playerList[k] then
+	--		l[k] = v
+	--	end
+	--end
+	--addNearbyPlayers(l)
 end
 
 -- raid target functions
@@ -292,27 +339,44 @@ local function enemyFramesCoreOnUpdate()
 	-- add casts/buffs 
 	-- remove inactive players
 	updatePlayerListInfo()	
+	
+	-- hide if no horde while outdoors
+	 if not _G['enemyFramesSettings']:IsShown() then		
+		if not insideBG then
+			if tlength(playerList) == 0 then				
+					_G['enemyFrameDisplay']:Hide()
+			else
+				_G['enemyFrameDisplay']:Show()
+			end
+		end
+	end
 end
 
 -- DUMMY FRAME
 local f = CreateFrame('Frame', 'enemyFramesCore', UIParent)
 
 local function initializeValues()
+	insideBG = false
 	playerFaction = UnitFactionGroup('player')
 		
 	playerList = {}
 	raidTargets = {}
 	nearbyList, notnearbyList = {}, {}
 	
-	local maxUnits = bgs[GetZoneText()]
+	local maxUnits = bgs[GetZoneText()] and bgs[GetZoneText()] or ENEMYFRAMESPLAYERDATA['enableOutdoors'] and 15 or nil
 	if maxUnits then
+		--
+		insideBG = bgs[GetZoneText()] and true or false
+		
+		if insideBG then f:RegisterEvent'UPDATE_BATTLEFIELD_SCORE'	end
 		f:SetScript('OnUpdate', enemyFramesCoreOnUpdate)
 		-- enable ui elements
-		ENEMYFRAMESInitialize(maxUnits)
+		ENEMYFRAMESInitialize(maxUnits, insideBG)
 		namePlatesHandlerInit()
 		targetframeInit()
 		bindingsInit()
 	else
+		f:UnregisterEvent'UPDATE_BATTLEFIELD_SCORE'
 		-- nil value to disable ui elements
 		ENEMYFRAMESInitialize(nil)
 		f:SetScript('OnUpdate', nil)
@@ -336,7 +400,7 @@ end
 
 f:RegisterEvent'PLAYER_ENTERING_WORLD'
 f:RegisterEvent'ZONE_CHANGED_NEW_AREA'
-f:RegisterEvent'UPDATE_BATTLEFIELD_SCORE'
+
 
 f:SetScript('OnEvent', eventHandler)
 

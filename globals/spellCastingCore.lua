@@ -1,14 +1,14 @@
 
-local Cast 			= {} 		local casts 	= {}
-local Heal 			= {} 		local heals		= {}
-local InstaBuff 	= {} 		local iBuffs 	= {}
-local buff 			= {} 		local buffList 	= {}
-local dead 			= {} 		local deadList = {}
+local Cast 			= {} 		local casts 		= {}
+local Heal 			= {} 		local heals			= {}
+local InstaBuff 	= {} 		local iBuffs 		= {}
+local buff 			= {} 		local buffList 		= {}
+local dreturns 		= {} 		local dreturnsList 	= {}
 Cast.__index   		= modcast
 Heal.__index   		= Heal
 InstaBuff.__index 	= InstaBuff
 buff.__index 		= buff
-dead.__index 		= dead
+dreturns.__index	= dreturns
 
 
 Cast.create = function(caster, spell, info, timeMod, time, inv)
@@ -50,47 +50,75 @@ InstaBuff.create = function(c, b, list, time)
    return acnt
 end
 
-buff.create = function(tar, t, buffType, time)
+buff.create = function(tar, t, s, buffType, factor, time)
 	local acnt     = {}
 	setmetatable(acnt, buff)
 	acnt.target    	= tar
 	acnt.caster    	= tar	-- facilitate entry removal
 	acnt.spell      = t
+	acnt.stacks		= s
 	acnt.icon      	= buffType['icon']
 	acnt.timeStart 	= time
-	acnt.timeEnd   	= time + buffType['duration']
+	acnt.timeEnd   	= time + buffType['duration'] * factor
 	acnt.prio		= buffType['prio'] and buffType['prio'] or 0
 	acnt.border		= buffType['type'] and RGB_BORDER_DEBUFFS_COLOR[buffType['type']] or {.2, .2, .2}	-- border rgb values depending on type of buff/debuff
 	return acnt
 end
 
-local removeExpiredTableEntries = function(tab)
+dreturns.create = function(tar, t, tEnd)
+	local acnt = {}
+	setmetatable(acnt, dreturns)
+	acnt.target 	= tar
+	acnt.type 		= t
+	acnt.factor 	= 1
+	acnt.k 			= 15
+	acnt.timeEnd 	= tEnd + acnt.k
+	return acnt
+end
+local removeExpiredTableEntries = function(time, tab)
 	local i = 1
 	for k, v in pairs(tab) do
-		if GetTime() > v.timeEnd then
+		if time > v.timeEnd then
 			table.remove(tab, i)
 		end
 		i = i + 1
 	end
 end
+
+local updateDRtimers = function(time, drtab, bufftab)
+	for k, v in pairs(drtab) do
+		for i, j in pairs(bufftab) do
+			if j.target == v.target and SPELLINFO_BUFFS_TO_TRACK[j.spell]['dr'] then
+				if SPELLINFO_BUFFS_TO_TRACK[j.spell]['dr'] == v.type then
+					v.timeEnd = time + v.k
+				end
+			end
+		end
+	end
+end
+
 local tableMaintenance = function(reset)
 	if reset then
-		casts = {} heals = {} iBuffs = {} buffList = {}
+		casts = {} heals = {} iBuffs = {} buffList = {} dreturnsList = {}
 	else
 		-- CASTS -- casts have different removal parameter
+		local time = GetTime()
 		local i = 1
 		for k, v in pairs(casts) do
-			if GetTime() > v.timeEnd or GetTime() > v.nextTick then	-- channeling cast verification
+			if time > v.timeEnd or time > v.nextTick then	-- channeling cast verification
 				table.remove(casts, i)
 			end
 			i = i + 1
 		end
 		-- HEALS
-		removeExpiredTableEntries(heals)
+		removeExpiredTableEntries(time, heals)
 		--  CASTING SPEED BUFFS
-		removeExpiredTableEntries(iBuffs)
+		removeExpiredTableEntries(time, iBuffs)
 		-- BUFFS / DEBUFFS
-		removeExpiredTableEntries(buffList)
+		removeExpiredTableEntries(time, buffList)
+		-- DRS
+		updateDRtimers(time, dreturnsList, buffList)
+		removeExpiredTableEntries(time, dreturnsList)
 	end
 end
 
@@ -174,16 +202,52 @@ local newIBuff = function(caster, buff)
 	table.insert(iBuffs, b)
 end
 
-local function newbuff(tar, t)
-	local time = GetTime()
-	local n = buff.create(tar, t, SPELLINFO_BUFFS_TO_TRACK[t], time)
-	table.insert(buffList, n)
+local function manageDR(time, tar, b, castOn)
+	if not SPELLINFO_BUFFS_TO_TRACK[b]['dr'] then return 1 end
+	
+	for k, v in pairs(dreturnsList) do
+		if v.target == tar and v.type == SPELLINFO_BUFFS_TO_TRACK[b]['dr'] then
+			v.factor = v.factor > .25 and v.factor / 2 or 0
+			--if v.factor > 0 then
+			--	v.timeEnd = time + SPELLINFO_BUFFS_TO_TRACK[b]['duration'] * v.factor + v.k
+			--end
+			return v.factor
+		end
+	end
+	
+	if castOn then return 0 end		-- avoids creating a new DR entry if none was found
+	local n = dreturns.create(tar, SPELLINFO_BUFFS_TO_TRACK[b]['dr'], SPELLINFO_BUFFS_TO_TRACK[b]['duration'] + time)
+	table.insert(dreturnsList, n)
+	return 1
 end
 
-local newDead =  function(caster)
+local function newbuff(tar, b, castOn)
 	local time = GetTime()
-	local n = dead.create(caster, time)
-	table.insert(deadList, n)
+	
+	local drf = manageDR(time, tar, b, s, castOn)
+	
+	if drf > 0 then		
+		-- remove buff if it exists
+		for k, v in pairs(buffList) do
+			if v.caster == tar and v.spell == b then
+				table.remove(buffList, k)
+			end
+		end
+		
+		local n = buff.create(tar, b, s, SPELLINFO_BUFFS_TO_TRACK[b], drf, time)
+		table.insert(buffList, n)
+	end
+end
+
+local function refreshBuff(tar, b, s)
+	-- refresh if it exists
+	for i, j in pairs(SPELLINFO_DEBUFF_REFRESHING_SPELLS[b]) do
+		for k, v in pairs(buffList) do
+			if v.caster == tar and v.spell == j then
+				newbuff(tar, j, s, false)
+			end
+		end
+	end
 end
 
 -----handleCast subfunctions-----------------------------------------------
@@ -206,6 +270,9 @@ local CastCraftPerform = function()
 	local perform = '(.+) performs (.+).' 							local fperform = string.find(arg1, perform)
 	local bperform = '(.+) begins to perform (.+).' 				local fbperform = string.find(arg1, bperform)
 	
+	local pcastFin 	= 'You cast (.+) on (.+).'						local fpcastFin = string.find(arg1, pcastFin)
+	local castFin 	= '(.+) casts (.+) on (.+).'					local fcastFin = string.find(arg1, castFin)
+	
 	if fcast or fcraft then
 		local m = fcast and cast or fcraft and craft or fperform and perform
 		local c = gsub(arg1, m, '%1')
@@ -218,9 +285,35 @@ local CastCraftPerform = function()
 		local c = gsub(arg1, m, '%1')
 		local s = gsub(arg1, m, '%2')
 		newCast(c, s, true)
+		
+		--on standby
+		--[[ finished casts CC(?)	
+	elseif fpcastFin or fcastFin then
+		local m = fpcastFin and pcastFin or fcastFin and castFin
+		local t = fpcastFin and gsub(arg1, m, '%2') or gsub(arg1, m, '%3')
+		local s = fpcastFin and gsub(arg1, m, '%1') or gsub(arg1, m, '%2')
+		
+		if SPELLINFO_BUFFS_TO_TRACK[s] then
+			newbuff(t, s, true)
+		end]]--
 	end
 	
-	return fcast or fcraftor or fperform
+	return fcast or fcraftor or fperform or fpcastFin or fcastFin
+end
+
+local DirectInterrupt = function()
+	local pintrr 	= 'You interrupt (.+)\'s (.+).'			local fpintrr  	= string.find(arg1, pintrr)
+	local intrr 	= '(.+) interrupts (.+)\'s (.+).'		local fintrr  	= string.find(arg1, pintrr)
+
+	if fpintrr  or fintrr then
+		local m = fpintrr and pintrr or intrr
+		local t = fpintrr and gsub(arg1, m, '%1') or gsub(arg1, m, '%2') 
+		local s = fpintrr and gsub(arg1, m, '%2') or gsub(arg1, m, '%3') 
+		
+		forceHideTableItem(casts, t, nil)
+	end	
+	
+	return fpintrr  or fintrr 
 end
 
 local GainFadeAfflict = function()
@@ -237,7 +330,7 @@ local GainFadeAfflict = function()
 		
 		-- buffs/debuffs to be displayed
 		if SPELLINFO_BUFFS_TO_TRACK[s] then
-			newbuff(c, s)
+			newbuff(c, s, 0, false)
 		end
 		
 		-- self-cast buffs that interrupt cast (blink, ice block ...)
@@ -263,7 +356,7 @@ local GainFadeAfflict = function()
 		if SPELLINFO_BUFFS_TO_TRACK[s] then
 			forceHideTableItem(buffList, c, s)
 		end
-		
+		-- buff channeling casts fading
 		if SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[s] then
 			forceHideTableItem(casts, c, nil)
 		end
@@ -278,15 +371,23 @@ local GainFadeAfflict = function()
 		local c = gsub(arg1, m, '%1')
 		local s = gsub(arg1, m, '%2')
 		
+		local st = 0
+		if not SPELLINFO_BUFFS_TO_TRACK[s] then
+			local spellstacks = '(.+) ((.+))'	
+			if string.find(s, spellstacks) then s = gsub(s, spellstacks, '%1')	st = gsub(s, spellstacks, '%2')	end
+		end
 		-- debuffs to be displayed
 		if SPELLINFO_BUFFS_TO_TRACK[s] then
-			newbuff(c, s)
+			newbuff(c, s, st, false)
 		end
+		--/Script if string.find('Frost Nova', '(.+) ('%d')') then print('true') else print('false') end
+		s = gsub(arg1, m, '%2')
 		
 		-- spell interrupting debuffs (stuns, incapacitate ...)
 		if SPELLINFO_INTERRUPTS_TO_TRACK[s] then
 			forceHideTableItem(casts, c, nil)
 		end
+		
 		-- debuffs that slow spellcasting speed (tongues ...)
 		if SPELLINFO_TIME_MODIFIER_BUFFS_TO_TRACK[s] then
 			newIBuff(c, s)
@@ -340,6 +441,11 @@ local HitsCrits = function()
 		if SPELLINFO_INTERRUPTS_TO_TRACK[s] then
 			forceHideTableItem(casts, t, nil)
 		end
+		
+		-- spells that refresh debuffs
+		if SPELLINFO_DEBUFF_REFRESHING_SPELLS[s] then
+			refreshBuff(t, s)
+		end
 	end
 	
 	-- self hits/crits
@@ -351,6 +457,11 @@ local HitsCrits = function()
 		-- interrupt dmg spell
 		if SPELLINFO_INTERRUPTS_TO_TRACK[s] then
 			forceHideTableItem(casts, t, nil)
+		end
+		
+		-- spells that refresh debuffs
+		if SPELLINFO_DEBUFF_REFRESHING_SPELLS[s] then
+			refreshBuff(t, s)
 		end
 	end
 	
@@ -459,12 +570,14 @@ end
 ----------------------------------------------------------------------------
 local handleCast = function()
 	if not CastCraftPerform() then
-		if not GainFadeAfflict() then
-			if not HitsCrits() then
-				if not channelDot() then
-					if not channelHeal() then
-						if not playerDeath() then
-							fear()
+		if not DirectInterrupt() then
+			if not GainFadeAfflict() then
+				if not HitsCrits() then
+					if not channelDot() then
+						if not channelHeal() then
+							if not playerDeath() then
+								fear()
+							end
 						end
 					end
 				end
@@ -513,18 +626,31 @@ SPELLCASTINGCOREgetHeal = function(target)
 	return nil
 end
 
-SPELLCASTINGCOREgetPrioBuff = function(name)
-	local b = nil
-	local p = -1
-	for j, e in ipairs(buffList) do
-		if e.target == name then
-			if e.prio > p then
-				b = e 
-				p = e.prio 
-			end
+local function sortPriobuff(tab, b)
+	for k, v in pairs(tab) do
+		if b.prio > v.prio then	
+			table.insert(tab, k, b)
+			return tab
 		end
 	end
-	return b
+	table.insert(tab, b)
+	return tab
+end
+
+SPELLCASTINGCOREgetPrioBuff = function(name, n)
+	local b = {}
+	for j, e in pairs(buffList) do
+		if e.target == name then
+			b = sortPriobuff(b, e)
+		end
+	end
+	
+	local l = {}
+	for k, v in pairs(b) do
+		table.insert(l, v)
+		if k == n then return l end
+	end
+	return l
 end
 
 SPELLCASTINGCOREgetBuffs = function(name)
@@ -537,18 +663,17 @@ SPELLCASTINGCOREgetBuffs = function(name)
 	return list
 end
 
-SPELLCASTINGCOREgetActivePlayers = function()
-end
 
 -------------------------------------
 
 
-local f = CreateFrame'Frame'
+local f = CreateFrame('Frame', 'spellCastingCore', UIParent)
 f:SetScript('OnUpdate', function()
 	tableMaintenance(false)
 end)
 
 f:RegisterEvent'PLAYER_ENTERING_WORLD'
+f:RegisterEvent'CHAT_MSG_MONSTER_EMOTE'
 f:RegisterEvent'CHAT_MSG_COMBAT_SELF_HITS'
 f:RegisterEvent'CHAT_MSG_COMBAT_SELF_MISSES'
 f:RegisterEvent'CHAT_MSG_COMBAT_PARTY_HITS'
