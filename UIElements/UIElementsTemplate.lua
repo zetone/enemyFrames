@@ -6,9 +6,9 @@
 	UIElementsGetDimensions = function()
 		return unitWidth, unitHeight, castBarHeight, ccIconWidth, manaBarHeight
 	end
-	CreateEnemyUnitFrame = function(self, name, parentFrame)
+	CreateEnemyUnitFrame = function(name, parentFrame)
 		-- unit button
-		self = CreateFrame('Button', name, parentFrame)
+		local self = CreateFrame('Button', name, parentFrame)
 		--self:SetFrameLevel(0)
 		self:SetWidth(unitWidth)	self:SetHeight(unitHeight)
 		self:RegisterForClicks('LeftButtonUp', 'RightButtonUp')		

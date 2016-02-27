@@ -170,7 +170,7 @@ local 	enemyFrame = CreateFrame('Frame', 'enemyFrameDisplay', UIParent)
 		-- raidTarget menu
 		local rtMenuIconsize = 26
 		enemyFrame.raidTargetMenu = CreateFrame('Frame', nil, enemyFrame)
-		enemyFrame.raidTargetMenu:SetFrameLevel(3)
+		enemyFrame.raidTargetMenu:SetFrameLevel(7)
 		enemyFrame.raidTargetMenu:SetHeight(rtMenuIconsize+4)	enemyFrame.raidTargetMenu:SetWidth(rtMenuIconsize*raidIconsN+10)
 		enemyFrame.raidTargetMenu:SetBackdrop(BACKDROP)
 		enemyFrame.raidTargetMenu:SetBackdropColor(0, 0, 0, .6)
@@ -205,7 +205,7 @@ local unitWidth, unitHeight, castBarHeight, ccIconWidth, manaBarHeight = UIEleme
 local leftSpacing = 5
 -- draw player units
 for i = 1, unitLimit,1 do
-	units[i] = CreateEnemyUnitFrame(units[i], 'enemyFrameUnit'..i, enemyFrame)
+	units[i] = CreateEnemyUnitFrame('enemyFrameUnit'..i, enemyFrame)
 	units[i].index = i	
 end
 
