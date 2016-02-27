@@ -69,7 +69,7 @@ local function addNearbyPlayers(players)
 					
 					playerList[v['name']]['health'] 	= v['health']
 					
-					if v['mmaxhealth']	then	playerList[v['name']]['maxhealth'] 	= v['maxhealth']		end
+					if v['maxhealth']	then	playerList[v['name']]['maxhealth'] 	= v['maxhealth']		end
 					if v['mana']	then		playerList[v['name']]['mana'] 		= v['mana']				end
 					if v['maxmana']	then		playerList[v['name']]['maxmana'] 	= v['maxmana']			end
 
@@ -242,13 +242,13 @@ local function orderUnitsforOutput()
 end
 
 --- GLOBAL ACCESS ---
-function ENEMYFRAMESCOREGetUnitsInfo()
-	if refreshUnits then
-		refreshUnits = false
-		return orderUnitsforOutput()--playerList
-	end
-	return nil
-end
+--function ENEMYFRAMESCOREGetUnitsInfo()
+--	if refreshUnits then
+--		refreshUnits = false
+--		return orderUnitsforOutput()--playerList
+--	end
+--	return nil
+--end
 -- player list drawn
 function ENEMYFRAMESCOREListRefreshed()
 	for k, v in pairs(playerList) do
@@ -272,16 +272,16 @@ function ENEMYFRAMECOREUpdateFlagCarriers(fc)
 end
 
 function ENEMYFRAMECORESetPlayersData(list)
-	if insideBG then
-		addNearbyPlayers(list)
+	local nextCheck = GetTime() + nextPlayerCheck
+	
+	for k, v in pairs(list) do
+		if playerList[k] then
+			playerList[k]['health'] = v['health']
+			playerList[k]['nextCheck'] 	= nextCheck
+			playerList[k]['nearby'] 	= true
+			refreshUnits = true
+		end
 	end
-	--local l = {}
-	--for k, v in pairs(list) do
-	--	if playerList[k] then
-	--		l[k] = v
-	--	end
-	--end
-	--addNearbyPlayers(l)
 end
 
 -- raid target functions
@@ -339,6 +339,12 @@ local function enemyFramesCoreOnUpdate()
 	-- add casts/buffs 
 	-- remove inactive players
 	updatePlayerListInfo()	
+	
+	if refreshUnits then
+		refreshUnits = false
+		ENEMYFRAMESUpdatePlayers(orderUnitsforOutput())--playerList
+	end
+	
 	
 	-- hide if no horde while outdoors
 	 if not _G['enemyFramesSettings']:IsShown() then		

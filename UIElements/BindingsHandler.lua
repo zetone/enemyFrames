@@ -20,8 +20,9 @@
 		
 	function setIconBind(icon)
 		if enabled then
-			if UnitExists'target' then
-				ENEMYFRAMECORESendRaidTarget(icon, UnitName'target')
+			local tar = MOUSEOVERUNINAME and MOUSEOVERUNINAME or  UnitExists'target' and UnitName'target' or nil
+			if tar then
+				ENEMYFRAMECORESendRaidTarget(icon, tar)
 			end
 		end
 	end

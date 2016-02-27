@@ -14,12 +14,13 @@ local raidIcons, raidIconsN = {[1] = 'skull', [2] = 'moon', [3] = 'square', [4] 
 
 local moduiLoaded = false
 local enabled = false
+local maxUnits = 15
 
 MOUSEOVERUNINAME = nil
 ---
 
 ------------ UI ELEMENTS ------------------
-local TEXTURE = [[Interface\AddOns\enemyFrames\globals\resources\barTexture.tga]]
+--local TEXTURE = [[Interface\AddOns\enemyFrames\globals\resources\barTexture.tga]]
 local BACKDROP = {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]],}
 local enemyFactionColor
 
@@ -200,121 +201,12 @@ local 	enemyFrame = CreateFrame('Frame', 'enemyFrameDisplay', UIParent)
 		end
 
 		
-local unitWidth, unitHeight, castBarHeight, ccIconWidth, manaBarHeight = 66, 22, 8, 28, 4
+local unitWidth, unitHeight, castBarHeight, ccIconWidth, manaBarHeight = UIElementsGetDimensions()
 local leftSpacing = 5
+-- draw player units
 for i = 1, unitLimit,1 do
-	-- unit button
-	units[i] = CreateFrame('Button', 'enemyFrameUnit'..i, enemyFrame)
-	--units[i]:SetFrameLevel(0)
-	units[i]:SetWidth(unitWidth)	units[i]:SetHeight(unitHeight)
-	units[i]:RegisterForClicks('LeftButtonUp', 'RightButtonUp')
-	units[i].index = i
-	units[i].mo = false
-		
-	
-	-- health statusbar
-	units[i].hpbar = CreateFrame('StatusBar', nil, units[i])
-	units[i].hpbar:SetFrameLevel(1)
-	units[i].hpbar:SetStatusBarTexture(TEXTURE)
-	units[i].hpbar:SetWidth(unitWidth)	units[i].hpbar:SetHeight(unitHeight)
-	units[i].hpbar:SetMinMaxValues(0, 100)
-	units[i].hpbar:SetPoint('TOPLEFT', units[i], 'TOPLEFT')
-	
-	units[i].hpbar:SetBackdrop(BACKDROP)
-	units[i].hpbar:SetBackdropColor(0, 0, 0, .6)
-	
-	
-	
-	-- mana statusbar
-	units[i].manabar = CreateFrame('StatusBar', nil, units[i])
-	units[i].manabar:SetFrameLevel(1)
-	units[i].manabar:SetStatusBarTexture(TEXTURE)
-	units[i].manabar:SetHeight(manaBarHeight)
-	units[i].manabar:SetWidth(unitWidth)		
-	units[i].manabar:SetPoint('TOPLEFT', units[i].hpbar, 'BOTTOMLEFT')
-	
-	units[i].manabar:SetBackdrop(BACKDROP)
-	units[i].manabar:SetBackdropColor(0, 0, 0)
-	
-	
-	-- cast bar --
-	units[i].castbar = CreateFrame('StatusBar', nil, units[i])
-	--units[i].castbar:SetFrameLevel(0)
-	units[i].castbar:SetStatusBarTexture(TEXTURE)
-	units[i].castbar:SetHeight(castBarHeight)
-	units[i].castbar:SetWidth((unitWidth + ccIconWidth + 4) - (units[i].castbar:GetHeight()))	
-	units[i].castbar:SetStatusBarColor(1, .4, 0)
-	units[i].castbar:SetPoint('TOPLEFT', units[i], 'BOTTOMLEFT', units[i].castbar:GetHeight(), -3)
-	
-	units[i].castbar:SetBackdrop(BACKDROP)
-	units[i].castbar:SetBackdropColor(0, 0, 0, .6)
-	
-	
-	units[i].castbar.iconborder = CreateFrame('Frame', nil, units[i].castbar)
-	units[i].castbar.iconborder:SetWidth(units[i].castbar:GetHeight()+1)	units[i].castbar.iconborder:SetHeight(units[i].castbar:GetHeight()+1)
-	units[i].castbar.iconborder:SetPoint('RIGHT', units[i].castbar, 'LEFT')
-	
-	units[i].castbar.icon = units[i].castbar.iconborder:CreateTexture(nil, 'ARTWORK')
-	units[i].castbar.icon:SetTexCoord(.078, .92, .079, .937)
-	units[i].castbar.icon:SetAllPoints()
-	units[i].castbar.icon:SetPoint('CENTER', units[i].castbar.iconborder, 'CENTER')
-	
-	units[i].castbar.text = units[i].castbar:CreateFontString(nil, 'OVERLAY')
-	units[i].castbar.text:SetTextColor(1, 1, 1)
-	units[i].castbar.text:SetFont(STANDARD_TEXT_FONT, 8, 'OUTLINE')
-	--units[i].castbar.text:SetShadowOffset(1, -1)
-	units[i].castbar.text:SetShadowColor(0.4, 0.4, 0.4)
-	units[i].castbar.text:SetPoint('LEFT', units[i].castbar, 'LEFT', 1, 1)
-	
-	
-	--[[
-	units[i].castbar.timer = units[i].castbar:CreateFontString(nil, 'OVERLAY')
-	units[i].castbar.timer:SetFont(STANDARD_TEXT_FONT, 8)
-	units[i].castbar.timer:SetTextColor(1, 1, 1)
-	units[i].castbar.timer:SetShadowOffset(1, -1)
-	units[i].castbar.timer:SetShadowColor(0, 0, 0)
-	units[i].castbar.timer:SetPoint('LEFT', units[i].castbar, 'RIGHT', 2, 1)
-	units[i].castbar.timer:SetText('1.5s')]]--
-	--------------
-
-	units[i].name = units[i]:CreateFontString(nil, 'OVERLAY')
-	units[i].name:SetFont(STANDARD_TEXT_FONT, 11, 'OUTLINE')
-	units[i].name:SetTextColor(.8, .8, .8, .8)
-	units[i].name:SetPoint('CENTER', units[i].hpbar)	
-	
-	
-	---- RAID TARGET
-	units[i].raidTarget = CreateFrame('Frame', nil, units[i])
-	units[i].raidTarget:SetWidth(ccIconWidth-2) units[i].raidTarget:SetHeight(unitHeight-2)
-	units[i].raidTarget:SetPoint('CENTER', units[i],'TOPRIGHT', 0, -4)
-	units[i].raidTarget:SetFrameLevel(4)
-	
-	units[i].raidTarget.icon = units[i].raidTarget:CreateTexture(nil, 'ARTWORK')
-	units[i].raidTarget.icon:SetTexture([[Interface\TargetingFrame\UI-RaidTargetingIcons]])
-	units[i].raidTarget.icon:SetAllPoints()
-	
-	
-	---- CC ------
-	units[i].cc = CreateFrame('Frame', nil, units[i])
-	units[i].cc:SetWidth(ccIconWidth) units[i].cc:SetHeight(unitHeight)
-	units[i].cc:SetPoint('TOPLEFT', units[i],'TOPRIGHT', 4, 0)
-
-	units[i].cc.icon = units[i].cc:CreateTexture(nil, 'ARTWORK')
-	units[i].cc.icon:SetAllPoints()
-	units[i].cc.icon:SetTexCoord(.1, .9, .25, .75)
-	
-	units[i].cc.bg = units[i].cc:CreateTexture(nil, 'BACKGROUND')
-	units[i].cc.bg:SetTexture(0, 0, 0, .6)
-	units[i].cc.bg:SetAllPoints()
-
-	units[i].cc.duration = units[i].cc:CreateFontString(nil, 'OVERLAY')--, 'GameFontNormalSmall')
-	units[i].cc.duration:SetFont(STANDARD_TEXT_FONT, 10, 'OUTLINE')
-	units[i].cc.duration:SetTextColor(.9, .9, .2, 1)
-	units[i].cc.duration:SetShadowOffset(1, -1)
-	units[i].cc.duration:SetShadowColor(0, 0, 0)
-	units[i].cc.duration:SetPoint('BOTTOM', units[i].cc, 'BOTTOM', 0, 1)
-	
-
+	units[i] = CreateEnemyUnitFrame(units[i], 'enemyFrameUnit'..i, enemyFrame)
+	units[i].index = i	
 end
 
 
@@ -362,16 +254,15 @@ local function setccIcon(p)
 	end
 end
  
- --if not enabled then setccIcon(defaultIcon)	end
  
 local function arrangeUnits()
-	local unitGroup = ENEMYFRAMESPLAYERDATA['groupsize']
+	local unitGroup, layout = ENEMYFRAMESPLAYERDATA['groupsize'], ENEMYFRAMESPLAYERDATA['layout']
 	
 	-- adjust title
 	if playerFaction == 'Alliance' then 
-		enemyFrame.Title:SetText(ENEMYFRAMESPLAYERDATA['layout'] == 'vertical' and 'H' or 'Horde')
+		enemyFrame.Title:SetText(layout == 'vertical' and 'H' or 'Horde')
 	else 
-		enemyFrame.Title:SetText(ENEMYFRAMESPLAYERDATA['layout'] == 'vertical' and 'A' or 'Alliance')
+		enemyFrame.Title:SetText(layout == 'vertical' and 'A' or 'Alliance')
 	end
 	
 	for i = 1, unitLimit do	
@@ -379,13 +270,13 @@ local function arrangeUnits()
 				units[i]:SetPoint('TOPLEFT', enemyFrame, 'BOTTOMLEFT', 0, -4)
 		else
 			if i > unitGroup then
-				if ENEMYFRAMESPLAYERDATA['layout'] == 'hblock' then
+				if layout == 'hblock' or layout == 'vblock' then
 					units[i]:SetPoint('TOPLEFT', units[i-unitGroup].castbar.iconborder, 'BOTTOMLEFT', 1, -5)
 				else
 					units[i]:SetPoint('TOPLEFT', units[i-unitGroup].cc, 'TOPRIGHT', leftSpacing, 0)
 				end
 			else
-				if ENEMYFRAMESPLAYERDATA['layout'] == 'hblock' then
+				if layout == 'hblock' or layout == 'vblock' then
 					units[i]:SetPoint('TOPLEFT', units[i-1].cc, 'TOPRIGHT', leftSpacing, 0)					
 				else
 					units[i]:SetPoint('TOPLEFT', units[i-1].castbar.iconborder, 'BOTTOMLEFT', 1, -5)
@@ -416,6 +307,7 @@ local function moduiReSkin()
 		
 		-- health bar
 		units[i].hpbar:SetStatusBarTexture(TEXTURE)
+		table.insert(MODUI_RAIDBARS_TO_SMOOTH, units[i].hpbar)
 		
 		-- mana bar
 		units[i].manabar:SetStatusBarTexture(TEXTURE)
@@ -436,8 +328,8 @@ local function moduiReSkin()
 		modSkinColor(units[i].castbar.iconborder, .2, .2, .2)
 		
 		-- cc icon
-		modSkin(units[i].cc, 12)
-		modSkinPadding(units[i].cc, 2)
+		modSkin(units[i].cc.border, 13)
+		modSkinPadding(units[i].cc.border, 2)
 	end
 	
 	moduiLoaded = true
@@ -462,7 +354,8 @@ local function showHideBars()
 	end
 end
 
-local function SetupFrames(maxUnits)
+local function SetupFrames(maxU)
+	maxUnits = maxU
 	-- get player's faction
 	playerFaction = UnitFactionGroup('player')
 	
@@ -479,7 +372,7 @@ local function SetupFrames(maxUnits)
 	enemyFrame.totalPlayers:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
 		
 	-- width of the draggable frame
-	local col = ENEMYFRAMESPLAYERDATA['layout'] == 'hblock' and 5 or maxUnits / ENEMYFRAMESPLAYERDATA['groupsize']
+	local col = ENEMYFRAMESPLAYERDATA['layout'] == 'hblock' and 5 or ENEMYFRAMESPLAYERDATA['layout'] == 'vblock' and 2 or ENEMYFRAMESPLAYERDATA['layout'] == 'vertical' and 1 or maxUnits / ENEMYFRAMESPLAYERDATA['groupsize']
 	enemyFrame:SetWidth((unitWidth + ccIconWidth + 5)*col +  leftSpacing*(col-1))
 	
 	enemyFrame.top:SetWidth(enemyFrame:GetWidth())
@@ -503,7 +396,7 @@ local function SetupFrames(maxUnits)
 	-- bottom frame
 	enemyFrame.bottom:SetWidth(enemyFrame:GetWidth())
 	--enemyFrame.bottom:SetPoint('CENTER', enemyFrame, 0, -((unitHeight + castBarHeight + 15) * unitGroup))
-	local unitPointBottom = ENEMYFRAMESPLAYERDATA['layout'] == 'hblock' and maxUnits - 4 or maxUnits < ENEMYFRAMESPLAYERDATA['groupsize'] and maxUnits or ENEMYFRAMESPLAYERDATA['groupsize']
+	local unitPointBottom = ENEMYFRAMESPLAYERDATA['layout'] == 'hblock' and maxUnits - 4 or ENEMYFRAMESPLAYERDATA['layout'] == 'vblock' and (math.mod(maxUnits,2) == 0 and maxUnits - 1 or math.mod(maxUnits,2) ~= 0 and maxUnits) or maxUnits < ENEMYFRAMESPLAYERDATA['groupsize'] and maxUnits or ENEMYFRAMESPLAYERDATA['groupsize']
 	enemyFrame.bottom:SetPoint('TOPLEFT', units[unitPointBottom].castbar.icon, 'BOTTOMLEFT', 1, -6)
 	
 	if ENEMYFRAMESPLAYERDATA['defaultIcon'] == 'class' then
@@ -656,6 +549,7 @@ local function drawUnits(list)
 			end		
 			--units[i].cc.icon:SetTexture(v['fc'] and SPELLINFO_WSG_FLAGS[playerFaction]['icon'] or SetDefaultIconTex(v))
 			units[i].cc.icon:SetVertexColor(.4, .4, .4, .6)
+			units[i].cc.cd:Hide()
 			
 			units[i]:SetScript('OnEnter', nil)
 			units[i]:SetScript('OnLeave', function()
@@ -699,10 +593,10 @@ local function drawUnits(list)
 	i = i == 1 and 1 or i -1
 	enemyFrame.totalPlayers:SetText(nearU .. ' / ' .. i)
 	
-	if not insideBG then		
+	if not insideBG or ENEMYFRAMESPLAYERDATA['displayOnlyNearby'] then		
 		local unitPointBottom = ENEMYFRAMESPLAYERDATA['layout'] == 'vertical' and i or i > ENEMYFRAMESPLAYERDATA['groupsize'] and ENEMYFRAMESPLAYERDATA['groupsize'] or i
 		
-		if ENEMYFRAMESPLAYERDATA['layout'] == 'hblock' then
+		if ENEMYFRAMESPLAYERDATA['layout'] == 'hblock' or ENEMYFRAMESPLAYERDATA['layout'] == 'vblock' then
 			local a = math.floor(i/ENEMYFRAMESPLAYERDATA['groupsize'])
 			unitPointBottom = a  == 0 and 1 or (a * ENEMYFRAMESPLAYERDATA['groupsize']) +1
 		end
@@ -768,8 +662,12 @@ local function updateUnits()
 		if b ~= nil then
 			units[i].cc.icon:SetTexture(b.icon)
 			units[i].cc.duration:SetText(getTimerLeft(b.timeEnd))
+			
+			units[i].cc.cd:SetTimers(b.timeStart, b.timeEnd)
+			units[i].cc.cd:Show()
+			
 			local r, g, b = b.border[1], b.border[2], b.border[3]
-			if moduiLoaded then modSkinColor(units[i].cc, r, g, b) end
+			if moduiLoaded then modSkinColor(units[i].cc.border, r, g, b) end
 		else
 			-- signal FC or class / rank
 			units[i].cc.icon:SetTexture(v['fc'] and SPELLINFO_WSG_FLAGS[playerFaction]['icon'] or SetDefaultIconTex(v))
@@ -783,7 +681,7 @@ local function updateUnits()
 				SetPortraitTexture(units[i].cc.icon, 'target')
 			end
 
-			if moduiLoaded then modSkinColor(units[i].cc, .2, .2, .2)	end
+			if moduiLoaded then modSkinColor(units[i].cc.border, .2, .2, .2)	end
 			units[i].cc.duration:SetText('')
 		end
 		
@@ -806,11 +704,6 @@ local function updateUnits()
 end
 
 local function enemyFramesOnUpdate()
-	-- get updated units from core
-	local list = ENEMYFRAMESCOREGetUnitsInfo()
-	-- if theres anything new to draw do so
-	if list then 	drawUnits(list)	--ENEMYFRAMESCOREListRefreshed()
-	end
 	-- update units
 	raidTargets = ENEMYFRAMECOREGetRaidTarget()
 	updateUnits()
@@ -818,6 +711,9 @@ end
 
 
 --- GLOBAL ACCESS ---
+function ENEMYFRAMESUpdatePlayers(list)
+	drawUnits(list)
+end
 function ENEMYFRAMESAnnounceRT(rt, p)
 	raidTargets = rt
 	enemyFrame.raidTargetFrame.text:SetText(p['name'])
@@ -852,6 +748,8 @@ function ENEMYFRAMESsettings()
 		SetupFrames(15)
 		defaultVisuals()
 		setccIcon(ENEMYFRAMESPLAYERDATA['defaultIcon'])
+	else
+		SetupFrames(maxUnits)
 	end
 	
 	arrangeUnits()
@@ -876,13 +774,26 @@ enemyFrame:RegisterEvent'ADDON_LOADED'
 enemyFrame:SetScript('OnEvent', eventHandler)
 
 
-SLASH_ENEMYFRAMES1 = '/efd'
-SlashCmdList["ENEMYFRAMES"] = function(msg)
+local function debugDisplayPlayerData()
 	for k, v in pairs(playerList) do
 		print(k..':')
 		for i, j in pairs(v) do
 			print(i .. ' ' .. tostring(j))
 		end
+	end
+end
+local function debugCooldownTest()
+	for i = 1, unitLimit do
+		units[i].cc.cd:SetTimers(GetTime(), GetTime()+8)
+		units[i].cc.cd:Show()
+	end
+end
+SLASH_ENEMYFRAMES1 = '/efd'
+SlashCmdList["ENEMYFRAMES"] = function(msg)
+	if msg then
+		if 		msg == 'data' 	then 	debugDisplayPlayerData()	 
+		elseif 	msg =='cd' 		then	debugCooldownTest()
+		end		
 	end
 end
 

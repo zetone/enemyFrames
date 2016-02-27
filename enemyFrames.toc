@@ -13,6 +13,8 @@ globals\commHandler.lua
 UIElements\BindingsHandler.lua
 UIElements\nameplatesHandler.lua
 UIElements\targetframe.lua
+UIElements\customCooldown.lua
+UIElements\UIElementsTemplate.lua
 
 enemyFrames.lua
 enemyFramesCore.lua

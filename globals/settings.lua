@@ -26,11 +26,11 @@ ENEMYFRAMESPLAYERDATA =
 local playerFaction
 ------------ UI ELEMENTS ------------------
 local enemyFactionColor
-local checkBoxOptionalsN, checkBoxOptionals  = 5, { [1] = {['id'] = 'enableOutdoors', 		['label'] = 'enable outside of BGs'},
-													[2] = {['id'] = 'mouseOver', 			['label'] = 'mouseover cast on frames'},													
-													[3] = {['id'] = 'displayNames', 		['label'] = 'display names'}, 
-													[4] = {['id'] = 'displayManabar', 		['label'] = 'display mana bar'},
-													[5] = {['id'] = 'displayOnlyNearby', 	['label'] = 'only display nearby units'},
+local checkBoxOptionalsN, checkBoxOptionals  = 5, { [1] = {['id'] = 'enableOutdoors', 		['label'] = 'Enable outside of BattleGrounds'},
+													[2] = {['id'] = 'mouseOver', 			['label'] = 'Mouseover cast on frames'},													
+													[3] = {['id'] = 'displayNames', 		['label'] = 'Display names'}, 
+													[4] = {['id'] = 'displayManabar', 		['label'] = 'Display mana bar'},
+													[5] = {['id'] = 'displayOnlyNearby', 	['label'] = 'Display nearby units only'},
 													}
 local enemyFramesDisplayShow = false
 
@@ -114,7 +114,7 @@ settings.container.layout:SetText'layout'
 settings.container.layoutSlider = CreateFrame('Slider', 'enemyFramesLayoutSlider', settings.container, 'OptionsSliderTemplate')
 settings.container.layoutSlider:SetWidth(200) 	settings.container.layoutSlider:SetHeight(14)
 settings.container.layoutSlider:SetPoint('LEFT', settings.container.layout, 'LEFT', 0, -30)
-settings.container.layoutSlider:SetMinMaxValues(0, 3)
+settings.container.layoutSlider:SetMinMaxValues(0, 4)
 settings.container.layoutSlider:SetValueStep(1)
 _G[settings.container.layoutSlider:GetName()..'Low']:SetText'horizontal'
 _G[settings.container.layoutSlider:GetName()..'High']:SetText'vertical'
@@ -122,8 +122,8 @@ _G[settings.container.layoutSlider:GetName()..'High']:SetText'vertical'
 
 settings.container.layoutSlider:SetScript('OnValueChanged', function() 
 	local v = this:GetValue()
-	local a = v == 0 and 'horizontal' or v == 1 and 'hblock' or v == 2 and 'block' or 'vertical'
-	local g = v == 0 and 1 or (v == 1 or v == 2) and 5 or 15
+	local a = v == 0 and 'horizontal' or v == 1 and 'hblock' or v == 2 and 'block' or v == 3 and 'vblock' or 'vertical'
+	local g = v == 0 and 1 or (v == 1 or v == 2) and 5 or v == 3 and 2 or 15
 	ENEMYFRAMESPLAYERDATA['layout'] 	= a
 	ENEMYFRAMESPLAYERDATA['groupsize']  = g
 	ENEMYFRAMESsettings()
@@ -178,7 +178,7 @@ function setupSettings()
 	end
 
 	settings.container.scaleSlider:SetValue(ENEMYFRAMESPLAYERDATA['scale'])
-	settings.container.layoutSlider:SetValue(ENEMYFRAMESPLAYERDATA['layout'] == 'horizontal' and 0 or ENEMYFRAMESPLAYERDATA['layout'] == 'hblock' and 1 or ENEMYFRAMESPLAYERDATA['layout'] == 'block' and 2 or 3)
+	settings.container.layoutSlider:SetValue(ENEMYFRAMESPLAYERDATA['layout'] == 'horizontal' and 0 or ENEMYFRAMESPLAYERDATA['layout'] == 'hblock' and 1 or ENEMYFRAMESPLAYERDATA['layout'] == 'block' and 2 or ENEMYFRAMESPLAYERDATA['layout'] == 'vblock' and 3 or 4)
 		
 	settings:Show()
 	

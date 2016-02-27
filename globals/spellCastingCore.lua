@@ -4,23 +4,23 @@ local Heal 			= {} 		local heals			= {}
 local InstaBuff 	= {} 		local iBuffs 		= {}
 local buff 			= {} 		local buffList 		= {}
 local dreturns 		= {} 		local dreturnsList 	= {}
-Cast.__index   		= modcast
+Cast.__index   		= spellCast
 Heal.__index   		= Heal
 InstaBuff.__index 	= InstaBuff
 buff.__index 		= buff
 dreturns.__index	= dreturns
 
+local playerName = UnitName'player'
 
 Cast.create = function(caster, spell, info, timeMod, time, inv)
 	local acnt = {}
-	setmetatable(acnt, modcast)
+	setmetatable(acnt, spellCast)
 	acnt.caster     = caster
 	acnt.spell      = spell
 	acnt.icon       = info['icon']
 	acnt.timeStart  = time
 	acnt.timeEnd    = time + info['casttime']*timeMod
 	acnt.tick	    = info['tick'] and info['tick'] or 0 
-	--if info[3] then
 	acnt.nextTick	= info['tick'] and time + acnt.tick or acnt.timeEnd 
 	acnt.inverse    = inv	
 	return acnt
@@ -62,6 +62,7 @@ buff.create = function(tar, t, s, buffType, factor, time)
 	acnt.timeEnd   	= time + buffType['duration'] * factor
 	acnt.prio		= buffType['prio'] and buffType['prio'] or 0
 	acnt.border		= buffType['type'] and RGB_BORDER_DEBUFFS_COLOR[buffType['type']] or {.2, .2, .2}	-- border rgb values depending on type of buff/debuff
+	acnt.display 	= buffType['display'] == nil and true or buffType['display']
 	return acnt
 end
 
@@ -75,6 +76,7 @@ dreturns.create = function(tar, t, tEnd)
 	acnt.timeEnd 	= tEnd + acnt.k
 	return acnt
 end
+
 local removeExpiredTableEntries = function(time, tab)
 	local i = 1
 	for k, v in pairs(tab) do
@@ -221,10 +223,10 @@ local function manageDR(time, tar, b, castOn)
 	return 1
 end
 
-local function newbuff(tar, b, castOn)
+local function newbuff(tar, b, s, castOn)
 	local time = GetTime()
 	
-	local drf = manageDR(time, tar, b, s, castOn)
+	local drf = manageDR(time, tar, b, castOn)
 	
 	if drf > 0 then		
 		-- remove buff if it exists
@@ -301,6 +303,26 @@ local CastCraftPerform = function()
 	return fcast or fcraftor or fperform or fpcastFin or fcastFin
 end
 
+local handleHeal = function()
+	local h   = 'Your (.+) heals (.+) for (.+).'					local fh 	= string.find(arg1, h)
+	local c   = 'Your (.+) critically heals (.+) for (.+).'			local fc 	= string.find(arg1, c)
+	local hot = '(.+) gains (.+) health from your (.+).'			local fhot 	= string.find(arg1, hot)
+	--local totemHot = '(.+) gains (.+) health from (.+)\'s (.+).'
+	
+	if fh or fc then
+		local n  = gsub(arg1, h, '%2')
+		local no = gsub(arg1, h, '%3')
+		newHeal(n, no, fc and 1 or 0)
+	elseif fhot then--or string.find(arg1, totemHot)  then
+		local m = fhot and hot --or  string.find(arg1, totemHot) and totemHot			
+		local n  = gsub(arg1, m, '%1')
+		local no = gsub(arg1, m, '%2')
+		newHeal(n, no, 0)
+	end
+	
+	return fh or fc or fhot
+end
+
 local DirectInterrupt = function()
 	local pintrr 	= 'You interrupt (.+)\'s (.+).'			local fpintrr  	= string.find(arg1, pintrr)
 	local intrr 	= '(.+) interrupts (.+)\'s (.+).'		local fintrr  	= string.find(arg1, pintrr)
@@ -316,23 +338,22 @@ local DirectInterrupt = function()
 	return fpintrr  or fintrr 
 end
 
-local GainFadeAfflict = function()
-	local gain = '(.+) gains (.+).' 								local fgain = string.find(arg1, gain)
-	local fade = '(.+) fades from (.+).'							local ffade = string.find(arg1, fade)
-	local afflict = '(.+) is afflicted by (.+).' 					local fafflict = string.find(arg1, afflict)
-	local rem = '(.+)\'s (.+) is removed'							local frem = string.find(arg1, rem)
+local GainAfflict = function()
+	local gain 		= '(.+) gains (.+).' 								local fgain = string.find(arg1, gain)
+	local pgain 	= 'You gain (.+).'									local fpgain = string.find(arg1, pgain)	
+	local afflict 	= '(.+) is afflicted by (.+).' 						local fafflict = string.find(arg1, afflict)
+	local pafflict 	= 'You are afflicted by (.+).' 						local fpafflict = string.find(arg1, pafflict)
 	
 	-- start channeling based on buffs (evocation, first aid, ..)
-	if fgain then
-		local m = gain
-		local c = gsub(arg1, m, '%1')
-		local s = gsub(arg1, m, '%2')
+	if fgain or fpgain then
+		local m = fgain and gain or fpgain and pgain
+		local c = fgain and gsub(arg1, m, '%1') or fpgain and playerName
+		local s = fgain and gsub(arg1, m, '%2') or fpgain and gsub(arg1, m, '%1')
 		
 		-- buffs/debuffs to be displayed
 		if SPELLINFO_BUFFS_TO_TRACK[s] then
-			newbuff(c, s, 0, false)
+			newbuff(c, s, 1, false)
 		end
-		
 		-- self-cast buffs that interrupt cast (blink, ice block ...)
 		if SPELLINFO_INTERRUPTS_TO_TRACK[s] then
 			forceHideTableItem(casts, c, nil)
@@ -345,12 +366,51 @@ local GainFadeAfflict = function()
 		if SPELLINFO_TIME_MODIFIER_BUFFS_TO_TRACK[s] then
 			newIBuff(c, s)
 		end
+			
+	-- cast-interruting CC
+	elseif fafflict or fpafflict then
+		local m = fafflict and afflict or fpafflict and pafflict
+		local c = fafflict and gsub(arg1, m, '%1') or fpafflict and playerName
+		local s = fafflict and gsub(arg1, m, '%2') or fpafflict and gsub(arg1, m, '%1')
+		
+		local auxS, st = s, 1
+		if not SPELLINFO_BUFFS_TO_TRACK[s] then
+			local spellstacks = '(.+) ((.+))'	
+			if string.find(s, spellstacks) then s = gsub(s, spellstacks, '%1')	st = gsub(s, spellstacks, '%2')	end
+		end
+		-- debuffs to be displayed
+		if SPELLINFO_BUFFS_TO_TRACK[s] then
+			newbuff(c, s, st, false)
+		end
+		
+		s = auxS
+		
+		-- spell interrupting debuffs (stuns, incapacitate ...)
+		if SPELLINFO_INTERRUPTS_TO_TRACK[s] then
+			forceHideTableItem(casts, c, nil)
+		end
+		
+		-- debuffs that slow spellcasting speed (tongues ...)
+		if SPELLINFO_TIME_MODIFIER_BUFFS_TO_TRACK[s] then
+			newIBuff(c, s)
+		end
+	end
+	
+	return fgain or fpgain or fafflict or fpafflict
+end
+
+local FadeRem = function()
+	local fade 		= '(.+) fades from (.+).'							local ffade = string.find(arg1, fade)
+	local rem 		= '(.+)\'s (.+) is removed'							local frem = string.find(arg1, rem)
+	local prem 		= 'Your (.+) is removed'							local fprem = string.find(arg1, prem)
 	
 	-- end channeling based on buffs (evocation ..)
-	elseif ffade then
+	if ffade then
 		local m = fade
 		local c = gsub(arg1, m, '%2')
 		local s = gsub(arg1, m, '%1')
+		
+		c = c == 'you' and playerName or c
 		
 		-- buffs/debuffs to be displayed
 		if SPELLINFO_BUFFS_TO_TRACK[s] then
@@ -364,39 +424,10 @@ local GainFadeAfflict = function()
 		if SPELLINFO_TIME_MODIFIER_BUFFS_TO_TRACK[s] then
 			forceHideTableItem(iBuffs, c, s)
 		end
-		
-	-- cast-interruting CC
-	elseif fafflict then
-		local m = afflict
-		local c = gsub(arg1, m, '%1')
-		local s = gsub(arg1, m, '%2')
-		
-		local st = 0
-		if not SPELLINFO_BUFFS_TO_TRACK[s] then
-			local spellstacks = '(.+) ((.+))'	
-			if string.find(s, spellstacks) then s = gsub(s, spellstacks, '%1')	st = gsub(s, spellstacks, '%2')	end
-		end
-		-- debuffs to be displayed
-		if SPELLINFO_BUFFS_TO_TRACK[s] then
-			newbuff(c, s, st, false)
-		end
-		--/Script if string.find('Frost Nova', '(.+) ('%d')') then print('true') else print('false') end
-		s = gsub(arg1, m, '%2')
-		
-		-- spell interrupting debuffs (stuns, incapacitate ...)
-		if SPELLINFO_INTERRUPTS_TO_TRACK[s] then
-			forceHideTableItem(casts, c, nil)
-		end
-		
-		-- debuffs that slow spellcasting speed (tongues ...)
-		if SPELLINFO_TIME_MODIFIER_BUFFS_TO_TRACK[s] then
-			newIBuff(c, s)
-		end
-		
-	elseif frem then
-		local m = rem
-		local c = gsub(arg1, m, '%1')
-		local s = gsub(arg1, m, '%2')
+	elseif frem or fprem then
+		local m = frem and rem or fprem and prem
+		local c = frem and gsub(arg1, m, '%1') or fprem and playerName
+		local s = frem and gsub(arg1, m, '%2') or fprem and gsub(arg1, m, '%1')
 		
 		-- buffs/debuffs to be displayed
 		if SPELLINFO_BUFFS_TO_TRACK[s] then
@@ -408,7 +439,7 @@ local GainFadeAfflict = function()
 		end
 	end
 	
-	return fgain or ffade or fafflict or frem
+	return ffade or frem or fprem
 end
 
 local HitsCrits = function()
@@ -427,6 +458,8 @@ local HitsCrits = function()
 		local c = gsub(arg1, m, '%1')
 		local s = gsub(arg1, m, '%2')
 		local t = gsub(arg1, m, '%3')
+		
+		t = t == 'you' and playerName or t
 		
 		-- instant spells that cancel casted ones
 		if SPELLINFO_INSTANT_SPELLCASTS_TO_TRACK[s] then 
@@ -541,10 +574,12 @@ local channelHeal = function()
 end
 
 local playerDeath = function()
-	local dies	= '(.+) dies.'				local fdies		= string.find(arg1, dies)
+	local pdie 	= 'You die.'					local fpdie	= string.find(arg1, pdie)
+	local dies	= '(.+) dies.'					local fdies	= string.find(arg1, dies)
+	local slain = '(.+) is slain by (.+).'
 	
-	if fdies then
-		local c = gsub(arg1, dies, '%1')
+	if fpdie or fdies then
+		local c = fpdie and playerName or gsub(arg1, dies, '%1')
 		
 		forceHideTableItem(casts, c, nil)
 		forceHideTableItem(buffList, c, nil)
@@ -553,7 +588,7 @@ local playerDeath = function()
 		ENEMYFRAMECORESetPlayersData({[c] = {['name'] = c, ['health']  = 0}})
 	end
 	
-	return fdies
+	return fpdie or fdies
 end
 
 local fear = function()
@@ -568,43 +603,42 @@ local fear = function()
 end
 
 ----------------------------------------------------------------------------
-local handleCast = function()
-	if not CastCraftPerform() then
-		if not DirectInterrupt() then
-			if not GainFadeAfflict() then
-				if not HitsCrits() then
-					if not channelDot() then
-						if not channelHeal() then
-							if not playerDeath() then
-								fear()
-							end
-						end
-					end
-				end
-			end
-		end
+local parsingCheck = function(out)
+	if not out then
+		--print('Parsing failed:')
+		--print(event)
+		--print(arg1)
 	end
 end
 
-local handleHeal = function()
-	local h   = 'Your (.+) heals (.+) for (.+).'
-	local c   = 'Your (.+) critically heals (.+) for (.+).'
-	local hot = '(.+) gains (.+) health from your (.+).'
-	local totemHot = '(.+) gains (.+) health from (.+)\'s (.+).'
+local combatlogParser = function()	
+	local pSpell 	= 'CHAT_MSG_SPELL_PERIODIC_(.+)'		local fpSpell 		= string.find(event, pSpell)
+	local breakAura = 'CHAT_MSG_SPELL_BREAK_AURA'			local fbreakAura 	= string.find(event, breakAura)
+	local auraGone	= 'CHAT_MSG_SPELL_AURA_GONE_(.+)'		local fauraGone 	= string.find(event, auraGone)
+	local dSpell 	= 'CHAT_MSG_SPELL_(.+)'					local fdSpell 		= string.find(event, dSpell)	
+	local death		= 'CHAT_MSG_COMBAT_(.+)_DEATH'			local fdeath 		= string.find(event, death)
+	local mEmote	= 'CHAT_MSG_MONSTER_EMOTE'				local fmEmote		= string.find(event, mEmote)
 	
-	if string.find(arg1, h) or string.find(arg1, c) then
-		local n  = gsub(arg1, h, '%2')
-		local no = gsub(arg1, h, '%3')
-		newHeal(n, no, string.find(arg1, c) and 1 or 0)
-	elseif string.find(arg1, hot) or string.find(arg1, totemHot)  then
-		local m = string.find(arg1, hot) and hot or  string.find(arg1, totemHot) and totemHot			
-		local n  = gsub(arg1, m, '%1')
-		local no = gsub(arg1, m, '%2')
-		newHeal(n, no, 0)
+	-- periodic damage/buff spells
+	if fpSpell then
+		parsingCheck(GainAfflict()  or channelDot() or channelHeal())	
+	-- fade/remove buffs
+	elseif fbreakAura or fauraGone then
+		parsingCheck(FadeRem())
+	-- direct damage/buff spells
+	elseif fdSpell then
+		parsingCheck(CastCraftPerform() or handleHeal() or DirectInterrupt() or HitsCrits())
+	-- player death
+	elseif fdeath then
+		parsingCheck(playerDeath())
+	-- creature runs in fear
+	elseif fmEmote then
+		parsingCheck(fear())
+	else
+		--unparsed event!
+		parsingCheck(false)
 	end
 end
-
-
 
 -- GLOBAL ACCESS FUNCTIONS
 SPELLCASTINGCOREgetCast = function(caster)
@@ -640,7 +674,7 @@ end
 SPELLCASTINGCOREgetPrioBuff = function(name, n)
 	local b = {}
 	for j, e in pairs(buffList) do
-		if e.target == name then
+		if e.target == name and e.display then
 			b = sortPriobuff(b, e)
 		end
 	end
@@ -663,9 +697,7 @@ SPELLCASTINGCOREgetBuffs = function(name)
 	return list
 end
 
-
--------------------------------------
-
+------------------------------------
 
 local f = CreateFrame('Frame', 'spellCastingCore', UIParent)
 f:SetScript('OnUpdate', function()
@@ -673,7 +705,7 @@ f:SetScript('OnUpdate', function()
 end)
 
 f:RegisterEvent'PLAYER_ENTERING_WORLD'
-f:RegisterEvent'CHAT_MSG_MONSTER_EMOTE'
+f:RegisterEvent'CHAT_MSG_MONSTER_EMOTE'--[[
 f:RegisterEvent'CHAT_MSG_COMBAT_SELF_HITS'
 f:RegisterEvent'CHAT_MSG_COMBAT_SELF_MISSES'
 f:RegisterEvent'CHAT_MSG_COMBAT_PARTY_HITS'
@@ -682,7 +714,7 @@ f:RegisterEvent'CHAT_MSG_COMBAT_FRIENDLYPLAYER_HITS'
 f:RegisterEvent'CHAT_MSG_COMBAT_FRIENDLYPLAYER_MISSES'
 f:RegisterEvent'CHAT_MSG_COMBAT_HOSTILEPLAYER_HITS'
 f:RegisterEvent'CHAT_MSG_COMBAT_HOSTILEPLAYER_MISSES'
-f:RegisterEvent'CHAT_MSG_COMBAT_CREATURE_VS_PARTY_HITS'
+f:RegisterEvent'CHAT_MSG_COMBAT_CREATURE_VS_PARTY_HITS']]--
 f:RegisterEvent'CHAT_MSG_SPELL_SELF_BUFF'
 f:RegisterEvent'CHAT_MSG_SPELL_SELF_DAMAGE'
 f:RegisterEvent'CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE'
@@ -708,15 +740,19 @@ f:RegisterEvent'CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE'
 f:RegisterEvent'CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE'
 f:RegisterEvent'CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS'
 f:RegisterEvent'CHAT_MSG_SPELL_BREAK_AURA'
+f:RegisterEvent'CHAT_MSG_SPELL_AURA_GONE_SELF'
+f:RegisterEvent'CHAT_MSG_SPELL_AURA_GONE_PARTY'
 f:RegisterEvent'CHAT_MSG_SPELL_AURA_GONE_OTHER'
+
 f:RegisterEvent'CHAT_MSG_COMBAT_HOSTILE_DEATH'
+f:RegisterEvent'CHAT_MSG_COMBAT_FRIENDLY_DEATH'
+
+--f:RegisterAllEvents()
 
 f:SetScript('OnEvent', function()
 	if event == 'PLAYER_ENTERING_WORLD' then
 		tableMaintenance(true)
-	elseif event == 'CHAT_MSG_SPELL_SELF_BUFF' or event == 'CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS' then--or event == 'CHAT_MSG_SPELL_PERIODIC_PARTY_BUFFS' then
-		handleHeal()
-	else handleCast()  end
+	else combatlogParser()  end
 end)
 
 --
