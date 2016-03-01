@@ -17,6 +17,7 @@ ENEMYFRAMESPLAYERDATA =
 	['displayOnlyNearby']	= false,
 	['mouseOver']			= false,
 	['enableOutdoors']		= false,
+	['incomingSpells']		= false,
 	
 	['offX']				= 0,
 	['offY']				= 0,
@@ -26,17 +27,19 @@ ENEMYFRAMESPLAYERDATA =
 local playerFaction
 ------------ UI ELEMENTS ------------------
 local enemyFactionColor
-local checkBoxOptionalsN, checkBoxOptionals  = 5, { [1] = {['id'] = 'enableOutdoors', 		['label'] = 'Enable outside of BattleGrounds'},
-													[2] = {['id'] = 'mouseOver', 			['label'] = 'Mouseover cast on frames'},													
-													[3] = {['id'] = 'displayNames', 		['label'] = 'Display names'}, 
-													[4] = {['id'] = 'displayManabar', 		['label'] = 'Display mana bar'},
-													[5] = {['id'] = 'displayOnlyNearby', 	['label'] = 'Display nearby units only'},
+local checkBoxFeaturesN, checkBoxFeatures  = 3, { 	[1] = {['id'] = 'enableOutdoors', 		['label'] = 'Enable outside of BattleGrounds'},
+													[2] = {['id'] = 'mouseOver', 			['label'] = 'Mouseover cast on frames'},	
+													[3] = {['id'] = 'incomingSpells', 		['label'] = 'Display Incoming Spells(BGs only)'},
+													}
+local checkBoxOptionalsN, checkBoxOptionals  = 3, { [1] = {['id'] = 'displayNames', 		['label'] = 'Display names'}, 
+													[2] = {['id'] = 'displayManabar', 		['label'] = 'Display mana bar'},
+													[3] = {['id'] = 'displayOnlyNearby', 	['label'] = 'Display nearby units only'},
 													}
 local enemyFramesDisplayShow = false
 
 local settings = CreateFrame('Frame', 'enemyFramesSettings', UIParent)
 settings:ClearAllPoints()
-settings:SetWidth(280) settings:SetHeight(320)
+settings:SetWidth(290) settings:SetHeight(320)
 --settings:SetFrameLevel(6)
 settings:SetPoint('CENTER', UIParent, -UIParent:GetWidth()/3, 0)
 settings:SetBackdrop({bgFile   = [[Interface\Tooltips\UI-Tooltip-Background]],
@@ -54,7 +57,7 @@ settings:Hide()
 
 settings.x = CreateFrame('Button', 'enemyFramesSettingsCloseButton', settings, 'UIPanelCloseButton')
 settings.x:SetPoint('TOPRIGHT',  -6, -6)
-settings.x:SetScript('OnClick', function() settings:Hide() if not enemyFramesDisplayShow then _G['enemyFrameDisplay']:Hide() end end)
+settings.x:SetScript('OnClick', function() settings:Hide() if not enemyFramesDisplayShow then _G['enemyFrameDisplay']:Hide() end INCOMINGSPELLSsettings(false) end)
 
 settings.header = settings:CreateTexture(nil, 'ARTWORK')
 settings.header:SetWidth(320) settings.header:SetHeight(64)
@@ -91,7 +94,7 @@ settings.container.scale:SetPoint('LEFT', settings.container, 'TOPLEFT', 40, -30
 settings.container.scale:SetText'scale'
 
 settings.container.scaleSlider = CreateFrame('Slider', 'enemyFramesScaleSlider', settings.container, 'OptionsSliderTemplate')
-settings.container.scaleSlider:SetWidth(200) 	settings.container.scaleSlider:SetHeight(14)
+settings.container.scaleSlider:SetWidth(205) 	settings.container.scaleSlider:SetHeight(14)
 settings.container.scaleSlider:SetPoint('LEFT', settings.container.scale, 'LEFT', 0, -30)
 settings.container.scaleSlider:SetMinMaxValues(0.8, 1.4)
 settings.container.scaleSlider:SetValueStep(.05)
@@ -112,7 +115,7 @@ settings.container.layout:SetPoint('LEFT', settings.container.scaleSlider, 'LEFT
 settings.container.layout:SetText'layout'
 
 settings.container.layoutSlider = CreateFrame('Slider', 'enemyFramesLayoutSlider', settings.container, 'OptionsSliderTemplate')
-settings.container.layoutSlider:SetWidth(200) 	settings.container.layoutSlider:SetHeight(14)
+settings.container.layoutSlider:SetWidth(205) 	settings.container.layoutSlider:SetHeight(14)
 settings.container.layoutSlider:SetPoint('LEFT', settings.container.layout, 'LEFT', 0, -30)
 settings.container.layoutSlider:SetMinMaxValues(0, 4)
 settings.container.layoutSlider:SetValueStep(1)
@@ -130,15 +133,40 @@ settings.container.layoutSlider:SetScript('OnValueChanged', function()
 end)
 	
 	
+-- features
+
+settings.container.features = settings.container:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
+settings.container.features:SetPoint('LEFT', settings.container.layoutSlider, 'LEFT', 0, -50)
+settings.container.features:SetText'features'
+
+settings.container.featuresList = {}
+for i = 1, checkBoxFeaturesN, 1 do
+	settings.container.featuresList[i] = CreateFrame('CheckButton', 'enemyFramesFeaturesCheckButton'..i, settings.container, 'UICheckButtonTemplate')
+	settings.container.featuresList[i]:SetHeight(20) 	settings.container.featuresList[i]:SetWidth(20)
+	settings.container.featuresList[i]:SetPoint('LEFT', i == 1 and settings.container.features or settings.container.featuresList[i-1], 'LEFT', 0, i == 1 and -30 or -20)
+	_G[settings.container.featuresList[i]:GetName()..'Text']:SetText(checkBoxFeatures[i]['label'])
+	_G[settings.container.featuresList[i]:GetName()..'Text']:SetPoint('LEFT', settings.container.featuresList[i], 'RIGHT', 4, 0)
+	settings.container.featuresList[i].i = i
+	settings.container.featuresList[i]:SetScript('OnClick', function()
+		if this:GetChecked() then
+			ENEMYFRAMESPLAYERDATA[checkBoxFeatures[this.i]['id']]	= true
+		else
+			ENEMYFRAMESPLAYERDATA[checkBoxFeatures[this.i]['id']]	= false
+		end
+		ENEMYFRAMESsettings()
+		INCOMINGSPELLSsettings(ENEMYFRAMESPLAYERDATA['incomingSpells'])
+	end)
+end
+
 -- optionals
 
 settings.container.optionals = settings.container:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
-settings.container.optionals:SetPoint('LEFT', settings.container.layoutSlider, 'LEFT', 0, -50)
+settings.container.optionals:SetPoint('LEFT', settings.container.featuresList[checkBoxFeaturesN], 'LEFT', 0, -30)
 settings.container.optionals:SetText'optional'
 
 settings.container.optinalsList = {}
 for i = 1, checkBoxOptionalsN, 1 do
-	settings.container.optinalsList[i] = CreateFrame('CheckButton', 'enemyFramesCheckButton'..i, settings.container, 'UICheckButtonTemplate')
+	settings.container.optinalsList[i] = CreateFrame('CheckButton', 'enemyFramesOptionalsCheckButton'..i, settings.container, 'UICheckButtonTemplate')
 	settings.container.optinalsList[i]:SetHeight(20) 	settings.container.optinalsList[i]:SetWidth(20)
 	settings.container.optinalsList[i]:SetPoint('LEFT', i == 1 and settings.container.optionals or settings.container.optinalsList[i-1], 'LEFT', 0, i == 1 and -30 or -20)
 	_G[settings.container.optinalsList[i]:GetName()..'Text']:SetText(checkBoxOptionals[i]['label'])
@@ -172,6 +200,12 @@ function setupSettings()
 	_G[settings.container.layoutSlider:GetName()..'High']:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
 	
 	--optionals
+	for i = 1, checkBoxFeaturesN do
+		_G[settings.container.featuresList[i]:GetName()..'Text']:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
+		settings.container.featuresList[i]:SetChecked(ENEMYFRAMESPLAYERDATA[checkBoxFeatures[i]['id']])
+	end
+	
+	--optionals
 	for i = 1, checkBoxOptionalsN do
 		_G[settings.container.optinalsList[i]:GetName()..'Text']:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
 		settings.container.optinalsList[i]:SetChecked(ENEMYFRAMESPLAYERDATA[checkBoxOptionals[i]['id']])
@@ -191,6 +225,7 @@ function setupSettings()
 	end
 	
 	ENEMYFRAMESsettings()
+	INCOMINGSPELLSsettings(ENEMYFRAMESPLAYERDATA['incomingSpells'])
 end
 
 local function eventHandler()

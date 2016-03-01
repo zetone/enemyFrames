@@ -30,8 +30,9 @@ end
 
 local f = CreateFrame'Frame'
 f:RegisterEvent'PLAYER_ENTERING_WORLD'
+f:RegisterEvent'ZONE_CHANGED_NEW_AREA'
 f:RegisterEvent'CHAT_MSG_BG_SYSTEM_ALLIANCE' 
 f:RegisterEvent'CHAT_MSG_BG_SYSTEM_HORDE'
-f:SetScript('OnEvent', function()	if event == 'PLAYER_ENTERING_WORLD' then	flagCarriers = {}
+f:SetScript('OnEvent', function()	if event == 'PLAYER_ENTERING_WORLD' or event == 'ZONE_CHANGED_NEW_AREA' then	flagCarriers = {}
 									else	eventHandler()	end
 						end)

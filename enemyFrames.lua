@@ -2,9 +2,9 @@
 local playerFaction
 local insideBG = false
 -- TIMERS
-local refreshUnits = true
 local ktInterval, ktEndtime = 3, 0
 local rtMenuInterval, rtMenuEndtime = 5, 0
+local refreshInterval, nextRefresh = 1/60, 0
 -- LISTS
 local playerList = {}
 local unitLimit = 15
@@ -307,13 +307,11 @@ local function moduiReSkin()
 		
 		-- health bar
 		units[i].hpbar:SetStatusBarTexture(TEXTURE)
-		table.insert(MODUI_RAIDBARS_TO_SMOOTH, units[i].hpbar)
+		--SMOOTHaddBarstoSmooth(units[i].hpbar)
 		
 		-- mana bar
 		units[i].manabar:SetStatusBarTexture(TEXTURE)
-		--modSkin(units[i].manabar, 8)
-		--modSkinPadding(units[i].manabar, 1)
-		--modSkinColor(units[i].manabar, .2, .2, .2)
+		--SMOOTHaddBarstoSmooth(units[i].manabar)
 		
 		-- castbar
 		units[i].castbar:SetStatusBarTexture(TEXTURE)
@@ -542,13 +540,17 @@ local function drawUnits(list)
 			end)
 						
 		else
-			units[i].hpbar:SetStatusBarColor(colour.r / 2, colour.g / 2, colour.b / 2, .6)
+			units[i].hpbar:SetStatusBarColor(colour.r / 2, colour.g / 2, colour.b / 2, .7)
 			units[i].manabar:SetStatusBarColor(powerColor[1] / 2, powerColor[2] / 2, powerColor[3] / 2)
 			if not units[i].mo then
-				units[i].name:SetTextColor(colour.r / 2, colour.g / 2, colour.b / 2, .6)
+				units[i].name:SetTextColor(colour.r / 2, colour.g / 2, colour.b / 2, .7)
 			end		
 			--units[i].cc.icon:SetTexture(v['fc'] and SPELLINFO_WSG_FLAGS[playerFaction]['icon'] or SetDefaultIconTex(v))
-			units[i].cc.icon:SetVertexColor(.4, .4, .4, .6)
+			if v['fc'] then
+				units[i].cc.icon:SetVertexColor(1, 1, 1, 1)
+			else
+				units[i].cc.icon:SetVertexColor(.4, .4, .4, .7)--v['fc'] and 1, 1, 1, 1 or .4, .4, .4, .6)
+			end
 			units[i].cc.cd:Hide()
 			
 			units[i]:SetScript('OnEnter', nil)
@@ -671,10 +673,8 @@ local function updateUnits()
 		else
 			-- signal FC or class / rank
 			units[i].cc.icon:SetTexture(v['fc'] and SPELLINFO_WSG_FLAGS[playerFaction]['icon'] or SetDefaultIconTex(v))
-			-- hightlight fc
-			if v['fc'] then
-				units[i].cc.icon:SetVertexColor(1, 1, 1, 1)
-			end
+			
+			units[i].cc.cd:Hide()
 			
 			-- show target player portrait
 			if UnitName'target' == v['name'] and not v['fc'] and (ENEMYFRAMESPLAYERDATA['defaultIcon'] == 'portrait' or (ENEMYFRAMESPLAYERDATA['defaultIcon'] == 'rank' and v['rank'] < 0)) then
@@ -704,9 +704,14 @@ local function updateUnits()
 end
 
 local function enemyFramesOnUpdate()
-	-- update units
-	raidTargets = ENEMYFRAMECOREGetRaidTarget()
-	updateUnits()
+	nextRefresh = nextRefresh - arg1
+	if nextRefresh < 0 then
+		-- update units
+		raidTargets = ENEMYFRAMECOREGetRaidTarget()
+		updateUnits()
+	
+		nextRefresh = refreshInterval
+	end
 end
 
 

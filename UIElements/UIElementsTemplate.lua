@@ -1,7 +1,8 @@
 	-------------------------------------------------------------------------------
-	local TEXTURE = [[Interface\AddOns\enemyFrames\globals\resources\barTexture.tga]]
-	local BACKDROP = {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]],}
-
+	local TEXTURE 	= [[Interface\AddOns\enemyFrames\globals\resources\barTexture.tga]]
+	local BACKDROP 	= {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]],}
+	local ISTEXTURE = [[Interface\AddOns\enemyFrames\globals\resources\arrow2]]
+	-------------------------------------------------------------------------------
 	local unitWidth, unitHeight, castBarHeight, ccIconWidth, manaBarHeight = 64, 22, 8, 28, 4
 	UIElementsGetDimensions = function()
 		return unitWidth, unitHeight, castBarHeight, ccIconWidth, manaBarHeight
@@ -130,3 +131,43 @@
 		return self
 	end
 	-------------------------------------------------------------------------------
+	local ISWidth, ISHeight, arrowWidth, arrowHeight = 26, 20, 66, 14
+	CreateIncomingSpellsFrame = function(parentFrame)
+		local self = CreateFrame('Frame', nil, parentFrame)
+		self:SetWidth(ISWidth)
+		self:SetHeight(ISHeight)
+		
+		self.icon = self:CreateTexture(nil, 'OVERLAY')
+		self.icon:SetAllPoints()	
+		self.icon:SetTexCoord(.1, .9, .25, .75)
+		
+		self.border = CreateFrame('Frame', nil, self)
+		self.border:SetWidth(ISWidth)
+		self.border:SetHeight(ISHeight)
+		self.border:ClearAllPoints()
+		self.border:SetPoint('CENTER', self)
+		
+		self.arrow = CreateFrame('statusbar', nil, self)
+		self.arrow:SetStatusBarTexture(ISTEXTURE)
+		self.arrow:SetFrameLevel(1)
+		self.arrow:SetWidth(arrowWidth)
+		self.arrow:SetHeight(arrowHeight)
+		self.arrow:SetPoint('TOP', self, 'BOTTOM', -1, 0)
+
+		self.arrow.bg = self.arrow:CreateTexture(nil, 'BACKGROUND')
+		self.arrow.bg:SetTexture(ISTEXTURE)
+		self.arrow.bg:SetAllPoints()
+		
+		self.caster = self:CreateFontString(nil, 'OVERLAY')
+		self.caster:SetFont(STANDARD_TEXT_FONT, 16, 'OUTLINE')
+		self.caster:SetPoint('RIGHT', self.arrow, 'TOPLEFT', 4, 4)
+		
+		self.you = self:CreateFontString(nil, 'OVERLAY')
+		self.you:SetFont(STANDARD_TEXT_FONT, 16, 'OUTLINE')
+		self.you:SetPoint('LEFT', self.arrow, 'TOPRIGHT', -2, 4)
+		self.you:SetText("You")
+		
+		return self
+	end
+	-------------------------------------------------------------------------------
+	

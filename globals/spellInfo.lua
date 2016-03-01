@@ -24,8 +24,8 @@
 
 	RGB_FACTION_COLORS = 
 	{
-		['Alliance'] = {['r'] = 0, ['g'] = .68, ['b'] = .94}, 
-		['Horde'] = {['r'] = 1, ['g'] = .1, ['b'] = .1}
+		['Alliance'] 	= {['r'] = 0, ['g'] = .68, ['b'] = .94}, 
+		['Horde'] 		= {['r'] = 1, ['g'] = .1, ['b'] = .1}
 	}
 	
 	local RGB_POWER_COLORS =
@@ -185,15 +185,15 @@
     	['Arcane Bomb']             = {['icon'] = [[Interface\Icons\Spell_shadow_mindbomb]], ['casttime'] = 1},
  
             -- DRUID
-        ['Entangling Roots']        = {['icon'] = [[Interface\Icons\Spell_nature_stranglevines]], ['casttime'] = 1.5, ['type'] = 'dmg', ['school'] = 'nature', ['class'] = 'DRUID'},
-        ['Healing Touch']           = {['icon'] = [[Interface\Icons\Spell_nature_healingtouch]], ['casttime'] = 3, ['class'] = 'DRUID'},
-        ['Hibernate']               = {['icon'] = [[Interface\Icons\Spell_nature_sleep]], ['casttime'] = 1.5, ['type'] = 'dmg', ['school'] = 'nature', ['class'] = 'DRUID'},
-        ['Rebirth']                 = {['icon'] = [[Interface\Icons\Spell_nature_reincarnation]], ['casttime'] = 2, ['class'] = 'DRUID'},
-        ['Regrowth']                = {['icon'] = [[Interface\Icons\Spell_nature_resistnature]], ['casttime'] = 2, ['class'] = 'DRUID'},
-        ['Soothe Animal']           = {['icon'] = [[Interface\Icons\Ability_hunter_beastsoothe]], ['casttime'] = 1.5, ['class'] = 'DRUID'},
-        ['Starfire']                = {['icon'] = [[Interface\Icons\Spell_arcane_starfire]], ['casttime'] = 3, ['type'] = 'dmg', ['school'] = 'nature', ['class'] = 'DRUID'},
-        ['Teleport: Moonglade']     = {['icon'] = [[Interface\Icons\Spell_arcane_teleportmoonglade]], ['casttime'] = 10, ['class'] = 'DRUID'},
-        ['Wrath']                   = {['icon'] = [[Interface\Icons\Spell_nature_abolishmagic]], ['casttime'] = 1.5, ['type'] = 'dmg', ['school'] = 'nature', ['class'] = 'DRUID'},
+        ['Entangling Roots']        = {['icon'] = [[Interface\Icons\Spell_nature_stranglevines]], 		['casttime'] = 1.5, ['type'] = 'dmg', ['school'] = 'nature', 	['class'] = 'DRUID'},
+        ['Healing Touch']           = {['icon'] = [[Interface\Icons\Spell_nature_healingtouch]], 		['casttime'] = 3, 												['class'] = 'DRUID'},
+        ['Hibernate']               = {['icon'] = [[Interface\Icons\Spell_nature_sleep]], 				['casttime'] = 1.5, ['type'] = 'dmg', ['school'] = 'nature', 	['class'] = 'DRUID'},
+        ['Rebirth']                 = {['icon'] = [[Interface\Icons\Spell_nature_reincarnation]], 		['casttime'] = 2, 												['class'] = 'DRUID'},
+        ['Regrowth']                = {['icon'] = [[Interface\Icons\Spell_nature_resistnature]], 		['casttime'] = 2, 												['class'] = 'DRUID'},
+        ['Soothe Animal']           = {['icon'] = [[Interface\Icons\Ability_hunter_beastsoothe]], 		['casttime'] = 1.5, 											['class'] = 'DRUID'},
+        ['Starfire']                = {['icon'] = [[Interface\Icons\Spell_arcane_starfire]], 			['casttime'] = 3, 	['type'] = 'dmg', ['school'] = 'nature', 	['class'] = 'DRUID'},
+        ['Teleport: Moonglade']     = {['icon'] = [[Interface\Icons\Spell_arcane_teleportmoonglade]], 	['casttime'] = 10, 												['class'] = 'DRUID'},
+        ['Wrath']                   = {['icon'] = [[Interface\Icons\Spell_nature_abolishmagic]], 		['casttime'] = 1.5, ['type'] = 'dmg', ['school'] = 'nature', 	['class'] = 'DRUID'},
             -- HUNTER
         ['Aimed Shot']              = {['icon'] = [[Interface\Icons\Inv_spear_07]], ['casttime'] = 2.5, ['type'] = 'dmg', ['school'] = 'physical', ['class'] = 'HUNTER'},
         ['Dismiss Pet']             = {['icon'] = [[Interface\Icons\Spell_nature_spiritwolf]], ['casttime'] = 5},
@@ -380,29 +380,28 @@
 	SPELLINFO_INSTANT_SPELLCASTS_TO_TRACK = {
 		-- MISC
 		['Shoot']				= true,
+		
 		-- DRUID
 		['Moonfire'] 			= true,
 		
 		-- MAGE
-		['Arcane Explosion'] 	= true,
-		['Cone of Cold'] 		= true,
-		['Fire Blast'] 			= true,
-		['Frost Nova'] 			= true,
+		['Arcane Explosion'] 	= true,	['Cone of Cold'] = true, ['Fire Blast'] = true,	['Frost Nova'] = true,
+		
+		-- PALADIN
+		['Holy Shock'] = true,
 		
 		-- PRIEST
 		['Holy Nova'] 			= true,
 		
 		-- SHAMAN
-		['Earth Shock'] 		= true,
-		['Flame Shock'] 		= true,
-		['Frost Shock'] 		= true,
+		['Earth Shock'] 		= true,	['Flame Shock'] = true,	['Frost Shock'] = true,
 		
 		-- WARLOCK
 		['Shadowburn'] 			= true,
 	}
 	
 	SPELLINFO_TIME_MODIFIER_BUFFS_TO_TRACK = {
-		['Barkskin']					= {['mod'] = 1.4, 	['list'] = {'all'}},
+		['Barkskin']					= {['mod'] = 1.4, 	['list'] = {'all'}},	-- its 1 second flat increase but 1.4 should be close enough
 		['Curse of Tongues'] 			= {['mod'] = 1.6, 	['list'] = {'all'}},
 		
 		['Curse of the Eye'] 			= {['mod'] = 1.2, 	['list'] = {'all'}},
@@ -411,11 +410,11 @@
 		
 		['Fang of the Crystal Spider'] 	= {['mod'] = 1.1, 	['list'] = {'all'}},
 		
-		["Nature's Swiftness"] 			= {['mod'] = 0.1, 	['list'] = {'Chain Heal', 'Far Sight', 'Ghost Wolf', 'Healing Wave', 'Lesser Healing Wave', 'Lightning Bolt',   -- shaman
+		["Nature's Swiftness"] 			= {['mod'] = 0, 	['list'] = {'Chain Heal', 'Far Sight', 'Ghost Wolf', 'Healing Wave', 'Lesser Healing Wave', 'Lightning Bolt',   -- shaman
 															'Entangling Roots', 'Healing Touch', 'Hibernate', 'Rebirth', 'Regrowth', 'Soothe Animal', 'Wrath'}}, -- druid
 								  
 		['Rapid Fire']					= {['mod'] = .6, 	['list'] = {'Aimed Shot'}},
-		['Shadow Trance'] 				= {['mod'] = 0.1, 	['list'] = {'Shadow Bolt'}},
+		['Shadow Trance'] 				= {['mod'] = 0, 	['list'] = {'Shadow Bolt'}},
 		['Fel Domination']				= {['mod'] = 0.05, 	['list'] = {'Summon Felhunter', 'Summon Imp', 'Summon Succubus', 'Summon Voidwalker'}},
 		
 		['Presence of Mind'] 			= {['mod'] = 0.1, 	['list'] = {'Fireball', 'Frostbolt', 'Pyroblast', 'Scorch', 'Polymorph'}},
@@ -452,7 +451,7 @@
 		['Viper Sting']				= {['icon'] = [[Interface\Icons\Ability_hunter_aimedshot]], 		['duration'] = 8, 	['type'] = 'poison', 	['prio'] = 1},
 		
             -- MAGE
-		['Clearcasting']			= {['icon'] = [[Interface\Icons\Spell_frost_manaburn]], 			['duration'] = 15,  ['type'] = 'magic', 	['prio'] = 1},
+		['Clearcasting']			= {['icon'] = [[Interface\Icons\Spell_frost_manaburn]], 			['duration'] = 15,  ['type'] = 'magic', 	['prio'] = 1,	['display'] = false,},
 		['Counterspell - Silenced'] = {['icon'] = [[Interface\Icons\Spell_frost_iceshock]], 			['duration'] = 4,  	['type'] = 'magic', 	['prio'] = 2},
 		["Cone of Cold"] 			= {['icon'] = [[Interface\Icons\Spell_frost_glacier]], 				['duration'] = 10, 	['type'] = 'magic',		['display'] = false,},
 		--["Chilled"] 				= {['icon'] = [[Interface\Icons\Spell_frost_frostarmor02]], 		['duration'] = 7, 	['type'] = 'magic', 	['prio'] = 1},
@@ -490,6 +489,7 @@
 		
 			-- SHAMAN
 		['Frost Shock']				= {['icon'] = [[Interface\Icons\Spell_frost_frostshock]],			['duration'] = 8,	['type'] = 'magic',		['prio'] = 1, 	['dr'] = 'Frost Shock'},
+		['Grounding Totem Effect']	= {['icon'] = [[Interface\Icons\Spell_nature_groundingtotem]],		['duration'] = 10,	['type'] = 'magic',		['prio'] = 3},
 		
 		     -- WARLOCK
 		['Death Coil']				= {['icon'] = [[Interface\Icons\Spell_shadow_deathcoil]],			['duration'] = 3,	['type'] = 'magic',		['prio'] = 1},
@@ -505,6 +505,7 @@
 		['Mortal Strike'] 			= {['icon'] = [[Interface\Icons\Ability_warrior_savageblow]], 		['duration'] = 10, 	['type'] = 'physical'},
 
     }
+	
     
 	SPELLINFO_WSG_FLAGS = {
 		['Alliance'] 	= {['icon'] = [[Interface\Icons\inv_bannerpvp_02]]},
@@ -537,13 +538,17 @@
 	
 	SPELLINFO_DEBUFF_REFRESHING_SPELLS = {
 		-- MAGE
-		['Fireball'] 		=  {'Fireball', },		
+		['Fireball'] 		= {'Fireball', },		
 		['Blizzard'] 		= {'Winter\'s Chill',},
 		['Cone of Cold'] 	= {'Winter\'s Chill',},
 		['Frost Nova'] 		= {'Winter\'s Chill',},
 		['Frostbolt'] 		= {'Frostbolt', 'Winter\'s Chill',},
+		-- SHAMAN
+		['Flame Shock']		= {'Flame Shock',},
+		['Frost Shock']		= {'Frost Shock',},
 		-- WARRRIOR
 		['Hamstring']		= {'Hamstring',},
 		['Mortal Strike']	= {'Mortal Strike',},
 	}
+	
 	--

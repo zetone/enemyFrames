@@ -4,8 +4,12 @@ local bgs = {['Warsong Gulch'] = 10,
 			 ['Arathi Basin'] = 15, 
 			 --['Alterac Valley'] = 40
 			 }
+local bgsID = { [443] = 10, 
+				[461] = 15, 
+			 --['Alterac Valley'] = 40
+			 }
 -- TIMERS
-local playerListInterval, playerListRefresh, enemyNearbyInterval, enemyNearbyRefresh = 45, 0, .3, 0
+local playerListInterval, playerListRefresh, enemyNearbyInterval, enemyNearbyRefresh = 45, 0, .4, 0
 local raidMemberIndex = 1
 local playerOutdoorLastseen = 60
 local insideBG = false
@@ -14,9 +18,11 @@ local refreshUnits = true
 -- LISTS
 local playerList = {}
 local raidTargets = {}
-
+local prioMembers = {}
 local nearbyList, notnearbyList = {}, {}
--- 
+-- DUMMY FRAME
+local f = CreateFrame('Frame', 'enemyFramesCore', UIParent)
+--
 
 local function fillPlayerList()
 	local f
@@ -104,10 +110,11 @@ local function getRankbyTitle(title)
 end
 
 local function verifyUnitInfo(unit)
-	if UnitExists(unit) and UnitIsPlayer(unit) and UnitIsEnemy(unit, 'player') then
+	if UnitExists(unit) and UnitIsPlayer(unit) and UnitFactionGroup(unit) ~= playerFaction then --UnitIsEnemy(unit, 'player') then
 		local u = {}
 		u['name']		= UnitName(unit)
-		u['class']		= string.upper(UnitClass(unit))
+		local _, c = UnitClass(unit)
+		u['class']		= c
 		u['rank']		= getRankbyTitle(UnitPVPName(unit))
 		local r = UnitRace(unit)
 		u['race']		= r == 'Undead' and 'SCOURGE' or r == 'Night Elf' and 'NIGHTELF' or string.upper(r)
@@ -119,17 +126,25 @@ local function verifyUnitInfo(unit)
 		u['sex']		= (s == 1 or s == 2) and 'MALE' or s == 3 and 'FEMALE' 
 
 		addNearbyPlayers({u})
+		return true
 	end
+	return false
 end
 
-
+local function checkPrioMembers()
+	for k, v in pairs(prioMembers) do
+		if not verifyUnitInfo(v) then	prioMembers[k] = nil end
+	end
+end
 --	attempt to get enemy info from raid's targets
 -- 	check one every frame rather than all every other frame
 local function getRaidMembersTarget()
 	local numRaidMembers = UnitInRaid('player') and GetNumRaidMembers() or GetNumPartyMembers() 
 	if numRaidMembers == 0 then return end
 	
-	verifyUnitInfo('raid' .. raidMemberIndex .. 'target')
+	if verifyUnitInfo('raid' .. raidMemberIndex .. 'target') then 
+		prioMembers[raidMemberIndex] = 'raid' .. raidMemberIndex .. 'target'	
+	end
 
 	raidMemberIndex = raidMemberIndex < numRaidMembers and raidMemberIndex + 1 or 1
 end
@@ -149,13 +164,6 @@ local function updatePlayerListInfo()
 			if v['nearby'] == false then	v['health'] = v['maxhealth'] and v['maxhealth'] or 100	v['mana'] = v['maxmana'] and v['maxmana'] or 100	refreshUnits 	= true	v['refresh'] 	= true	end
 			v['nearby'] 	= true
 			
-			--refreshUnits 	= true
-		--else
-			-- check if a cast or buff is recently gone
-		---	if c ~= nil or b ~= nil then
-		--		v['refresh'] 	= true
-				--refreshUnits 	= true
-		--	end
 		end
 		
 		-- remove inactive player
@@ -171,12 +179,11 @@ local function updatePlayerListInfo()
 		
 		-- outdoors
 		if not insideBG then
-			if GetTime() > v['lastSeen'] then
-				playerList[v['name']] 	= nil
-				refreshUnits 			= true
+			if v['lastSeen'] and GetTime() > v['lastSeen'] then
+					playerList[v['name']] 	= nil
+					refreshUnits 			= true				
 			end
-		end
-		
+		end		
 	end
 end
 
@@ -242,13 +249,6 @@ local function orderUnitsforOutput()
 end
 
 --- GLOBAL ACCESS ---
---function ENEMYFRAMESCOREGetUnitsInfo()
---	if refreshUnits then
---		refreshUnits = false
---		return orderUnitsforOutput()--playerList
---	end
---	return nil
---end
 -- player list drawn
 function ENEMYFRAMESCOREListRefreshed()
 	for k, v in pairs(playerList) do
@@ -273,12 +273,16 @@ end
 
 function ENEMYFRAMECORESetPlayersData(list)
 	local nextCheck = GetTime() + nextPlayerCheck
+	local nextSeen	= GetTime() + playerOutdoorLastseen
 	
 	for k, v in pairs(list) do
 		if playerList[k] then
-			playerList[k]['health'] = v['health']
+			playerList[k]['health'] 	= v['health']
 			playerList[k]['nextCheck'] 	= nextCheck
 			playerList[k]['nearby'] 	= true
+			if not insideBG then
+				playerList[k]['lastSeen']	= nextSeen 
+			end
 			refreshUnits = true
 		end
 	end
@@ -328,6 +332,7 @@ local function enemyFramesCoreOnUpdate()
 	verifyUnitInfo('target')
 	verifyUnitInfo('mouseover')
 	
+	checkPrioMembers()
 	-- check raid targets every enemyNearbyInterval seconds
 	local now = GetTime()
 	if now > enemyNearbyRefresh then
@@ -358,8 +363,6 @@ local function enemyFramesCoreOnUpdate()
 	end
 end
 
--- DUMMY FRAME
-local f = CreateFrame('Frame', 'enemyFramesCore', UIParent)
 
 local function initializeValues()
 	insideBG = false
@@ -367,8 +370,9 @@ local function initializeValues()
 		
 	playerList = {}
 	raidTargets = {}
+	prioMembers = {}
 	nearbyList, notnearbyList = {}, {}
-	
+		
 	local maxUnits = bgs[GetZoneText()] and bgs[GetZoneText()] or ENEMYFRAMESPLAYERDATA['enableOutdoors'] and 15 or nil
 	if maxUnits then
 		--
@@ -381,6 +385,7 @@ local function initializeValues()
 		namePlatesHandlerInit()
 		targetframeInit()
 		bindingsInit()
+		INCOMINGSPELLSinit(insideBG)
 	else
 		f:UnregisterEvent'UPDATE_BATTLEFIELD_SCORE'
 		-- nil value to disable ui elements

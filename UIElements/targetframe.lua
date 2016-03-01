@@ -31,7 +31,7 @@
 
 
 	local function eventHandler()
-		--f:SetScript('OnUpdate', nil)
+		f:SetScript('OnUpdate', nil)
 	end
 		
 	f:RegisterEvent'PLAYER_ENTERING_WORLD'

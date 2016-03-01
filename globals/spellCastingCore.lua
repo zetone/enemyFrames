@@ -23,6 +23,8 @@ Cast.create = function(caster, spell, info, timeMod, time, inv)
 	acnt.tick	    = info['tick'] and info['tick'] or 0 
 	acnt.nextTick	= info['tick'] and time + acnt.tick or acnt.timeEnd 
 	acnt.inverse    = inv	
+	acnt.class		= info['class']
+	acnt.school		= info['school'] and RGB_SPELL_SCHOOL_COLORS[info['school']]
 	return acnt
 end
 
@@ -267,16 +269,18 @@ local forceHideTableItem = function(tab, caster, spell)
 end
 
 local CastCraftPerform = function()
-	local cast = '(.+) begins to cast (.+).' 						local fcast = string.find(arg1, cast)
-	local craft = '(.+) -> (.+).' 									local fcraft = string.find(arg1, craft)
-	local perform = '(.+) performs (.+).' 							local fperform = string.find(arg1, perform)
-	local bperform = '(.+) begins to perform (.+).' 				local fbperform = string.find(arg1, bperform)
+	local pcast 	= 'You cast (.+).'							local fpcast = string.find(arg1, pcast)	-- standby for now
+	local cast		= '(.+) casts (.+).'						local fcast = string.find(arg1, cast)
+	local bcast 	= '(.+) begins to cast (.+).' 				local fbcast = string.find(arg1, bcast)
+	local craft 	= '(.+) -> (.+).' 							local fcraft = string.find(arg1, craft)
+	local perform 	= '(.+) performs (.+).' 					local fperform = string.find(arg1, perform)
+	local bperform 	= '(.+) begins to perform (.+).' 			local fbperform = string.find(arg1, bperform)
 	
-	local pcastFin 	= 'You cast (.+) on (.+).'						local fpcastFin = string.find(arg1, pcastFin)
-	local castFin 	= '(.+) casts (.+) on (.+).'					local fcastFin = string.find(arg1, castFin)
+	local pcastFin 	= 'You cast (.+) on (.+).'					local fpcastFin = string.find(arg1, pcastFin)
+	local castFin 	= '(.+) casts (.+) on (.+).'				local fcastFin = string.find(arg1, castFin)
 	
-	if fcast or fcraft then
-		local m = fcast and cast or fcraft and craft or fperform and perform
+	if fbcast or fcraft then
+		local m = fbcast and bcast or fcraft and craft or fperform and perform
 		local c = gsub(arg1, m, '%1')
 		local s = gsub(arg1, m, '%2')
 		newCast(c, s, false)
@@ -300,14 +304,15 @@ local CastCraftPerform = function()
 		end]]--
 	end
 	
-	return fcast or fcraftor or fperform or fpcastFin or fcastFin
+	return fcast or fbcast or fpcast or fcraftor or fperform or fbperform or fpcastFin or fcastFin
 end
 
 local handleHeal = function()
-	local h   = 'Your (.+) heals (.+) for (.+).'					local fh 	= string.find(arg1, h)
-	local c   = 'Your (.+) critically heals (.+) for (.+).'			local fc 	= string.find(arg1, c)
-	local hot = '(.+) gains (.+) health from your (.+).'			local fhot 	= string.find(arg1, hot)
-	--local totemHot = '(.+) gains (.+) health from (.+)\'s (.+).'
+	local h   	 = 'Your (.+) heals (.+) for (.+).'					local fh 	  = string.find(arg1, h)
+	local c   	 = 'Your (.+) critically heals (.+) for (.+).'		local fc 	  = string.find(arg1, c)
+	local hot 	 = '(.+) gains (.+) health from your (.+).'			local fhot 	  = string.find(arg1, hot)
+	local oheal  = '(.+)\'s (.+) heals (.+) for (.+).'				local foheal  = string.find(arg1, oheal)
+	local ocheal = '(.+)\'s (.+) critically heals (.+) for (.+).'	local focheal = string.find(arg1, ocheal)
 	
 	if fh or fc then
 		local n  = gsub(arg1, h, '%2')
@@ -318,9 +323,19 @@ local handleHeal = function()
 		local n  = gsub(arg1, m, '%1')
 		local no = gsub(arg1, m, '%2')
 		newHeal(n, no, 0)
+		
+		-- other's heals (insta heals)
+	elseif foheal or focheal then
+		local m = foheal and oheal or focheal and ocheal
+		local c = gsub(arg1, m, '%1')
+		local s = gsub(arg1, m, '%2')
+		
+		if SPELLINFO_INSTANT_SPELLCASTS_TO_TRACK[s] then
+			forceHideTableItem(casts, s, nil)
+		end
 	end
 	
-	return fh or fc or fhot
+	return fh or fc or fhot or foheal or focheal
 end
 
 local DirectInterrupt = function()
@@ -451,7 +466,9 @@ local HitsCrits = function()
 	local pcrits = 'Your (.+) crits (.+) for (.+)' 					local fpcrits = string.find(arg1, pcrits)	
 	local pabsb = 'Your (.+) is absorbed by (.+).'					local fpabsb = string.find(arg1, pabsb)
 	
-	--local fails = "(.+)'s (.+) fails."								local ffails = string.find(arg1, fails)		
+	local channelDotRes = "(.+)'s (.+) was resisted by (.+)."		local fchannelDotRes = string.find(arg1, channelDotRes)
+	local pchannelDotRes = "(.+)'s (.+) was resisted."				local fpchannelDotRes = string.find(arg1, pchannelDotRes)
+	
 	-- other hits/crits
 	if fhits or fcrits or fabsb then
 		local m = fhits and hits or fcrits and crits or fabsb and absb
@@ -498,16 +515,25 @@ local HitsCrits = function()
 		end
 	end
 	
+	-- resisted channeling dmg spells (arcane missiles ITS A VERY SPECIAL AND UNIQUE SNOWFLAKE SPELL)
+	if fchannelDotRes or fpchannelDotRes then
+		local m = fchannelDotRes and channelDotRes or fpchannelDotRes and pchannelDotRes
+		local c = gsub(arg1, m, '%1')
+		local s = gsub(arg1, m, '%2')
+		
+		if SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[s] then
+			newCast(c, s, true)
+		end			
+	end
+	
 	return fhits or fcrits or fphits or fpcrits or fabsb or fpabsb --or ffails
 end
 
 local channelDot = function()
-	local channelDot = "(.+) suffers (.+) from (.+)'s (.+)."		local fchannelDot = string.find(arg1, channelDot)
-	local pchannelDot = "You suffer (.+) from (.+)'s (.+)."			local fpchannelDot = string.find(arg1, pchannelDot)
-			
-	local channelDotRes = "(.+)'s (.+) was resisted by (.+)."		local fchannelDotRes = string.find(arg1, channelDotRes)
-	local pchannelDotRes = "(.+)'s (.+) was resisted."				local fpchannelDotRes = string.find(arg1, pchannelDotRes)
-	
+	local channelDot 	= "(.+) suffers (.+) from (.+)'s (.+)."		local fchannelDot = string.find(arg1, channelDot)
+	local channelpDot 	= '(.+) suffers (.+) from your (.+).'		local fchannelpDot	= string.find(arg1, channelpDot)
+	local pchannelDot 	= "You suffer (.+) from (.+)'s (.+)."		local fpchannelDot = string.find(arg1, pchannelDot)
+				
 	local MDrain = "(.+)\'s (.+) drains (.+) Mana from"				local fMDrain = string.find(arg1, MDrain)
 	
 	-- channeling dmg spells on other (mind flay, life drain(?))
@@ -532,18 +558,7 @@ local channelDot = function()
 			newCast(c, s, true)
 		end			
 	end
-	
-	-- resisted channeling dmg spells (arcane missiles)
-	if fchannelDotRes or fpchannelDotRes then
-		local m = fchannelDotRes and channelDotRes or fpchannelDotRes and pchannelDotRes
-		local c = gsub(arg1, m, '%1')
-		local s = gsub(arg1, m, '%2')
 		
-		if SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[s] then
-			newCast(c, s, true)
-		end			
-	end
-	
 	-- drain mana 
 	if fMDrain then
 		local m = MDrain
@@ -554,7 +569,7 @@ local channelDot = function()
 			newCast(c, s, true)
 		end	
 	end
-	return fchannelDot or fpchannelDot or fchannelDotRes or fpchannelDotRes or fMDrain
+	return fchannelDot or fpchannelDot or fchannelpDot or fMDrain
 end
 
 local channelHeal = function()
@@ -574,12 +589,13 @@ local channelHeal = function()
 end
 
 local playerDeath = function()
-	local pdie 	= 'You die.'					local fpdie	= string.find(arg1, pdie)
-	local dies	= '(.+) dies.'					local fdies	= string.find(arg1, dies)
-	local slain = '(.+) is slain by (.+).'
+	local pdie 		= 'You die.'					local fpdie		= string.find(arg1, pdie)
+	local dies		= '(.+) dies.'					local fdies		= string.find(arg1, dies)
+	local slain 	= '(.+) is slain by (.+).'		local fslain 	= string.find(arg1, slain)
+	local pslain 	= 'You have slain (.+).'		local fpslain 	= string.find(arg1, pslain)
 	
-	if fpdie or fdies then
-		local c = fpdie and playerName or gsub(arg1, dies, '%1')
+	if fpdie or fdies or fslain or fpslain then
+		local c = fpdie and playerName or  gsub(arg1, dies, '%1') 
 		
 		forceHideTableItem(casts, c, nil)
 		forceHideTableItem(buffList, c, nil)
@@ -588,7 +604,7 @@ local playerDeath = function()
 		ENEMYFRAMECORESetPlayersData({[c] = {['name'] = c, ['health']  = 0}})
 	end
 	
-	return fpdie or fdies
+	return fpdie or fdies or fslain or fpslain
 end
 
 local fear = function()
@@ -621,7 +637,7 @@ local combatlogParser = function()
 	
 	-- periodic damage/buff spells
 	if fpSpell then
-		parsingCheck(GainAfflict()  or channelDot() or channelHeal())	
+		parsingCheck(GainAfflict() or handleHeal()  or channelDot() or channelHeal())	
 	-- fade/remove buffs
 	elseif fbreakAura or fauraGone then
 		parsingCheck(FadeRem())
@@ -636,6 +652,7 @@ local combatlogParser = function()
 		parsingCheck(fear())
 	else
 		--unparsed event!
+		print('untreated event')
 		parsingCheck(false)
 	end
 end

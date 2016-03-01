@@ -1,5 +1,5 @@
 
-local timerRefresh, timerInterval = 0, (1/60)
+local refreshInterval, nextRefresh = 1/60, 0
 
 local isPlate = function(frame)     -- GO FISH
 	local overlayRegion = frame:GetRegions()
@@ -51,10 +51,10 @@ end
 -- global access
 function namePlatesHandlerInit()
 	f:SetScript('OnUpdate', function()
-		local now = GetTime()
-		if now > timerRefresh then
+		nextRefresh = nextRefresh - arg1
+		if nextRefresh < 0 then
 			namePlateHandlerOnUpdate()
-			timerRefresh = now + timerInterval
+			nextRefresh = refreshInterval
 		end
 	end)
 end
