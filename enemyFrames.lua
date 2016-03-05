@@ -200,13 +200,38 @@ local 	enemyFrame = CreateFrame('Frame', 'enemyFrameDisplay', UIParent)
 														end)							
 		end
 
-		
+		--spawn raidtarget menu
+		local function spawnRTMenu(b, target)
+			enemyFrame.raidTargetMenu:SetPoint('TOP', b,'BOTTOM', rtMenuIconsize/2, 0)
+			if enemyFrame.raidTargetMenu.target and enemyFrame.raidTargetMenu.target == target and rtMenuEndtime > GetTime() then
+					enemyFrame.raidTargetMenu:Hide()
+					return
+			end
+			
+			enemyFrame.raidTargetMenu.target = target
+			enemyFrame.raidTargetMenu:Show()
+			rtMenuEndtime = GetTime() + rtMenuInterval
+			
+			for j = 1, raidIconsN, 1 do
+				enemyFrame.raidTargetMenu.icons[j]:SetScript('OnClick', function()
+					ENEMYFRAMECORESendRaidTarget(raidIcons[this.id], target)
+					enemyFrame.raidTargetMenu:Hide()
+					rtMenuEndtime = 0
+				end)
+			end
+		end
+
 local unitWidth, unitHeight, castBarHeight, ccIconWidth, manaBarHeight = UIElementsGetDimensions()
 local leftSpacing = 5
 -- draw player units
 for i = 1, unitLimit,1 do
 	units[i] = CreateEnemyUnitFrame('enemyFrameUnit'..i, enemyFrame)
 	units[i].index = i	
+		
+	units[i]:SetScript('OnClick', function()	if arg1 == 'LeftButton' and this.tar ~= nil  then  	TargetByName(this.tar, true)			end
+		if arg1 == 'RightButton' then	
+		spawnRTMenu(this, this.tar)	end
+	end)
 end
 
 
@@ -470,26 +495,6 @@ local function SetupFrames(maxU)
 		
 end
 
---spawn raidtarget menu
-local function spawnRTMenu(b, target)
-	enemyFrame.raidTargetMenu:SetPoint('TOP', b,'BOTTOM', rtMenuIconsize/2, 0)
-	if enemyFrame.raidTargetMenu.target and enemyFrame.raidTargetMenu.target == target and rtMenuEndtime > GetTime() then
-			enemyFrame.raidTargetMenu:Hide()
-			return
-	end
-	
-	enemyFrame.raidTargetMenu.target = target
-	enemyFrame.raidTargetMenu:Show()
-	rtMenuEndtime = GetTime() + rtMenuInterval
-	
-	for j = 1, raidIconsN, 1 do
-		enemyFrame.raidTargetMenu.icons[j]:SetScript('OnClick', function()
-			ENEMYFRAMECORESendRaidTarget(raidIcons[this.id], target)
-			enemyFrame.raidTargetMenu:Hide()
-			rtMenuEndtime = 0
-		end)
-	end
-end
 
 local function round(num, idp)
 	local mult = 10^(idp or 0)
@@ -503,7 +508,7 @@ end
 local function SetDefaultIconTex(p)
 	p['portrait']	= p['sex'] .. '-' .. p['race']
 	local d = ENEMYFRAMESPLAYERDATA['defaultIcon']
-	if d == 'rank' and p['rank'] < 0 then d = 'portrait' end
+	if d == 'rank' and (p['rank'] < 0 or not p['rank']) then d = 'portrait' end
 	return GET_DEFAULT_ICON(d, p[d])
 end
 
@@ -514,7 +519,6 @@ local function drawUnits(list)
 	
 	for k,v in pairs(playerList) do
 		-- set for redrawn
-		--if i > unitLimit then	next	end
 		
 		local colour = RAID_CLASS_COLORS[v['class']]
 		local powerColor = GET_RGB_POWER_COLORS_BY_CLASS(v['class'])
@@ -545,7 +549,7 @@ local function drawUnits(list)
 			if not units[i].mo then
 				units[i].name:SetTextColor(colour.r / 2, colour.g / 2, colour.b / 2, .7)
 			end		
-			--units[i].cc.icon:SetTexture(v['fc'] and SPELLINFO_WSG_FLAGS[playerFaction]['icon'] or SetDefaultIconTex(v))
+
 			if v['fc'] then
 				units[i].cc.icon:SetVertexColor(1, 1, 1, 1)
 			else
@@ -561,15 +565,11 @@ local function drawUnits(list)
 		end
 				
 		units[i].name:SetText(v['name'])
-		units[i].name:SetText(string.sub(units[i].name:GetText(), 1, 8))
+		units[i].name:SetText(string.sub(units[i].name:GetText(), 1, 7))
 		
 		-- button function to target unit
 		units[i].tar = v['name']
-		units[i]:SetScript('OnClick', function()	if arg1 == 'LeftButton'  then  	TargetByName(this.tar, true)			end
-														if arg1 == 'RightButton' then	--enemyFrame.raidTargetFrame:Hide()
-														spawnRTMenu(this, this.tar)	end
-																						--ENEMYFRAMECORESendRaidTarget('skull', this.tar)	end
-														end)
+		
 		
 		-- hp & mana
 		units[i].hpbar:SetMinMaxValues(0, v['maxhealth'] and v['maxhealth'] or 100)
@@ -577,10 +577,7 @@ local function drawUnits(list)
 		units[i].manabar:SetMinMaxValues(0, v['maxmana'] and v['maxmana'] or 100)
 		units[i].manabar:SetValue(v['mana'] and v['mana'] or not (v['nearby'] and v['maxmana']) and v['maxmana'] or 100)
 		
-
-		
 		units[i]:Show()
-
 		
 		nearU = v['nearby'] and nearU + 1 or nearU
 		i = i + 1

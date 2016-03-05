@@ -167,6 +167,16 @@
 		self.you:SetPoint('LEFT', self.arrow, 'TOPRIGHT', -2, 4)
 		self.you:SetText("You")
 		
+		self.button = CreateFrame('Button', nil, self)
+		self.button:SetPoint('TOPLEFT', self.caster, 'TOPLEFT')
+		self.button:SetPoint('BOTTOMRIGHT', self.you, 'BOTTOMRIGHT')
+		
+		self.button:SetScript('OnClick', function()
+			if this.target then
+				TargetByName(this.target, true)
+			end
+		end)
+		
 		return self
 	end
 	-------------------------------------------------------------------------------

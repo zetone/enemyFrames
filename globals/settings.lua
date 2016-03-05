@@ -29,7 +29,7 @@ local playerFaction
 local enemyFactionColor
 local checkBoxFeaturesN, checkBoxFeatures  = 3, { 	[1] = {['id'] = 'enableOutdoors', 		['label'] = 'Enable outside of BattleGrounds'},
 													[2] = {['id'] = 'mouseOver', 			['label'] = 'Mouseover cast on frames'},	
-													[3] = {['id'] = 'incomingSpells', 		['label'] = 'Display Incoming Spells(BGs only)'},
+													[3] = {['id'] = 'incomingSpells', 		['label'] = 'Display Incoming Spells (BGs only)'},
 													}
 local checkBoxOptionalsN, checkBoxOptionals  = 3, { [1] = {['id'] = 'displayNames', 		['label'] = 'Display names'}, 
 													[2] = {['id'] = 'displayManabar', 		['label'] = 'Display mana bar'},

@@ -25,10 +25,12 @@
 
 	local f = CreateFrame'Frame'	
 	function targetframeInit()
+		f:SetScript('OnUpdate', raidTargetOnUpdate)
 		raidTargetFrame:Show()
 	end
 
 	local function eventHandler()
+		f:SetScript('OnUpdate', nil)
 		raidTargetFrame:Hide()
 	end
 		
@@ -36,4 +38,4 @@
 	f:RegisterEvent'ZONE_CHANGED_NEW_AREA'
 	f:SetScript('OnEvent', eventHandler)
 	
-	f:SetScript('OnUpdate', raidTargetOnUpdate)
+	--f:SetScript('OnUpdate', raidTargetOnUpdate)

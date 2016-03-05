@@ -65,19 +65,6 @@
 		return dir .. a .. value
 	end
 	
-	RANK_BY_TITLE = 
-	{
-		-- alliance
-		['Private']	= 1, 				['Corporal']	= 2, 		['Sergeant']	= 3, 		['Master Sergeant'] = 4, 			
-		['Sergeant Major']	= 5, 		['Knight']	= 6, 			['Knight-Lieutenant'] = 7, 	['Knight-Captain']	= 8, 	['Knight-Champion']	= 9, 	
-		['Lieutenant Commander'] = 10, 	['Commander']	= 11, 		['Marshal']	= 12, 			['Field Marshal']	= 13, 	['Grand Marshal']	= 14, 
-		-- horde
-		['Scout']	= 1, 			['Grunt']	= 2, 				['Sergeant']	= 3, 	['Senior Sergeant'] = 4, 			
-		['First Sergeant']	= 5, 	['Stone Guard']	= 6, 			['Blood Guard'] = 7, 	['Legionnaire']	= 8, 	['Centurion']	= 9, 	
-		['Champion'] = 10, 			['Lieutenant General']	= 11, 	['General']	= 12, 		[' 	Warlord']	= 13, 	['High Warlord']	= 14,
-	}
-
-	
 	RAID_TARGET_TCOORDS = 
 	{
 		['star']		= {0, .25, 0, .25},
@@ -195,11 +182,11 @@
         ['Teleport: Moonglade']     = {['icon'] = [[Interface\Icons\Spell_arcane_teleportmoonglade]], 	['casttime'] = 10, 												['class'] = 'DRUID'},
         ['Wrath']                   = {['icon'] = [[Interface\Icons\Spell_nature_abolishmagic]], 		['casttime'] = 1.5, ['type'] = 'dmg', ['school'] = 'nature', 	['class'] = 'DRUID'},
             -- HUNTER
-        ['Aimed Shot']              = {['icon'] = [[Interface\Icons\Inv_spear_07]], ['casttime'] = 2.5, ['type'] = 'dmg', ['school'] = 'physical', ['class'] = 'HUNTER'},
-        ['Dismiss Pet']             = {['icon'] = [[Interface\Icons\Spell_nature_spiritwolf]], ['casttime'] = 5},
-        ['Eyes of the Beast']       = {['icon'] = [[Interface\Icons\Ability_eyeoftheowl]], ['casttime'] = 2},
-        ['Revive Pet']              = {['icon'] = [[Interface\Icons\Ability_hunter_beastsoothe]], ['casttime'] = 10},
-        ['Scare Beast']             = {['icon'] = [[Interface\Icons\Ability_druid_cower]], ['casttime'] = 1.5, ['type'] = 'dmg', ['school'] = 'physical', ['class'] = 'HUNTER'},
+        ['Aimed Shot']              = {['icon'] = [[Interface\Icons\Inv_spear_07]], 				['casttime'] = 2.5, ['type'] = 'dmg', ['school'] = 'physical', ['class'] = 'HUNTER'},
+        ['Dismiss Pet']             = {['icon'] = [[Interface\Icons\Spell_nature_spiritwolf]], 		['casttime'] = 5},
+        ['Eyes of the Beast']       = {['icon'] = [[Interface\Icons\Ability_eyeoftheowl]], 			['casttime'] = 2},
+        ['Revive Pet']              = {['icon'] = [[Interface\Icons\Ability_hunter_beastsoothe]], 	['casttime'] = 10},
+        ['Scare Beast']             = {['icon'] = [[Interface\Icons\Ability_druid_cower]], 			['casttime'] = 1.5, ['type'] = 'dmg', ['school'] = 'physical', ['class'] = 'HUNTER'},
             -- MAGE
 --        ['Arcane Missile']         = {[[Interface\Icons\Spell_nature_starfall]], 3},
 --		['Arcane Missiles']         = {[[Interface\Icons\Spell_nature_starfall]], 5},
@@ -315,27 +302,29 @@
 		-- MISC
 		['Inferno Effect'] = true, ['Reckless Charge'] = true,
 		-- DRUID
-		['Bash'] = true, ['Feral Charge Effect'] = true, ['Nature\'s Swiftness'] =  true, ['Pounce'] = true, ['Starfire Stun'] = true,
+		['Bash'] = true, 					['Bear Form'] = true, 	['Cat Form'] = true, 	['Feral Charge Effect'] = true, ['Moonkin Form'] = true, 
+		['Nature\'s Swiftness'] =  true, 	['Pounce'] = true, 		['Travel Form'] = true, ['Starfire Stun'] = true,
 		-- HUNTER
-		['Aspect of the Cheetah'] =  true, ['Aspect of the Hawk'] =  true, ['Aspect of the Monkey'] =  true, ['Freezing Trap Effect'] = true, 
-		['Intimidation'] = true, ['Scatter Shot'] = true, ['Wyvern Sting'] = true,
+		['Aspect of the Cheetah'] =  true, 	['Aspect of the Hawk'] =  true, ['Aspect of the Monkey'] =  true, 	['Freezing Trap Effect'] = true, 
+		['Improved Concussive Shot'] = true,['Intimidation'] = true, 		['Scatter Shot'] = true, 			['Wyvern Sting'] = true,
 		-- MAGE
-		['Blink'] = true, ['Counterspell - Silenced'] = true, ['Fire Ward'] = true, ['Frost Ward'] = true, ['Ice Barrier'] = true, 
-		['Ice Block'] = true, ['Impact'] = true, ['Mana Shield'] = true, ['Polymorph'] = true, ['Polymorph: Pig'] = true, ['Polymorph: Turtle'] = true,
+		['Blink'] = true, 		['Counterspell - Silenced'] = true, ['Fire Ward'] = true, 	['Frost Ward'] = true, 	['Ice Barrier'] = true, 
+		['Ice Block'] = true, 	['Impact'] = true, 					['Mana Shield'] = true, ['Polymorph'] = true, 	['Polymorph: Pig'] = true, 
+		['Polymorph: Turtle'] = true,
 		-- PALADIN
-		['Divine Intervention'] = true, ['Divine Protection'] = true, ['Divine Shield'] = true, ['Hammer of Justice'] = true, 
-		['Seal of the Crusader'] = true, ['Seal of Righteousness'] = true,
+		['Divine Intervention'] = true, 	['Divine Protection'] = true, ['Divine Shield'] = true, ['Hammer of Justice'] = true, 
+		['Seal of the Crusader'] = true, 	['Seal of Righteousness'] = true,
 		-- PRIEST
 		['Blackout'] = true, ['Inner Fire'] = true, ['Psychic Scream'] = true,   ['Silence'] = true,
 		-- ROGUE
-		['Blind'] = true, ['Gouge'] = true, ['Kidney Shot'] = true, ['Kick'] = true, ['Kick - Silenced'] = true,
+		['Blind'] = true, ['Cheap Shot'] = true, ['Gouge'] = true, ['Kidney Shot'] = true, ['Kick'] = true, ['Kick - Silenced'] = true,
 		-- SHAMAN
 		['Earth Shock'] = true, ['Elemental Mastery'] =  true, ['Ghost Wolf'] = true, ['Lightning Shield'] = true, ['Nature\'s Swiftness'] =  true,
 		-- WARLOCK
 		['Death Coil'] = true, ['Fear'] = true, ['Shadow Ward'] = true, ['Spell Lock'] = true, 
 		-- WARRIOR
-		['Charge Stun'] = true, ['Concussion Blow'] = true, ['Intercept Stun'] = true, ['Intimidating Shout'] = true, ['Mace Stun Effect'] = true, 
-		['Pummel'] = true, ['Revenge Stun'] = true,	['Shield Bash'] = true, ['Shield Bash - Silenced'] = true,    
+		['Charge Stun'] = true, ['Concussion Blow'] = true, ['Intercept Stun'] = true, 	['Intimidating Shout'] = true, ['Mace Stun Effect'] = true, 
+		['Pummel'] = true, 		['Revenge Stun'] = true,	['Shield Bash'] = true, 	['Shield Bash - Silenced'] = true,    
     }
 	
 	-- minus .5 seconds to channeling tracked after the 1st tick 
@@ -350,30 +339,30 @@
 
 	SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK = {
 		-- MISC
-		['Fishing']					= {['icon'] = [[Interface\Icons\Trade_Fishing]], ['casttime'] = 30},
+		['Fishing']					= {['icon'] = [[Interface\Icons\Trade_Fishing]], 			['casttime'] = 30},
 		
 		-- DRUID
-		['Hurricane']				= {['icon'] = [[Interface\Icons\Spell_nature_cyclone]], ['casttime'] = 9.5, ['tick'] = 1},
+		['Hurricane']				= {['icon'] = [[Interface\Icons\Spell_nature_cyclone]], 	['casttime'] = 9.5, 	['tick'] = 1},
 		
 		-- HUNTER
-		['Eagle Eye']      			= {['icon'] = [[Interface\Icons\Ability_hunter_eagleeye]], ['casttime'] = 60},
-		['Eyes of the Beast']       = {['icon'] = [[Interface\Icons\Ability_eyeoftheowl]], ['casttime'] = 60}, 
+		['Eagle Eye']      			= {['icon'] = [[Interface\Icons\Ability_hunter_eagleeye]], 	['casttime'] = 60},
+		['Eyes of the Beast']       = {['icon'] = [[Interface\Icons\Ability_eyeoftheowl]], 		['casttime'] = 60}, 
 		
 		-- MAGE
-		['Arcane Missile']         	= {['icon'] = [[Interface\Icons\Spell_nature_starfall]], ['casttime'] = 2.5},
-		['Arcane Missiles']         = {['icon'] = [[Interface\Icons\Spell_nature_starfall]], ['casttime'] = 4.5},
-		['Blizzard']                = {['icon'] = [[Interface\Icons\Spell_frost_icestorm]], ['casttime'] = 7.5, ['tick'] = 1},
-		['Evocation']               = {['icon'] = [[Interface\Icons\Spell_nature_purge]], ['casttime'] = 8},
+		['Arcane Missile']         	= {['icon'] = [[Interface\Icons\Spell_nature_starfall]], 	['casttime'] = 2.5},
+		['Arcane Missiles']         = {['icon'] = [[Interface\Icons\Spell_nature_starfall]], 	['casttime'] = 4.5},
+		['Blizzard']                = {['icon'] = [[Interface\Icons\Spell_frost_icestorm]], 	['casttime'] = 7.5, 	['tick'] = 1},
+		['Evocation']               = {['icon'] = [[Interface\Icons\Spell_nature_purge]], 		['casttime'] = 8},
 		
 		-- PRIEST
-		['Mind Flay']   	       	= {['icon'] = [[Interface\Icons\Spell_shadow_siphonmana]], ['casttime'] = 2.5, ['tick'] = 1},
-		['Mind Vision']             = {['icon'] = [[Interface\Icons\Spell_holy_mindvision]], ['casttime'] = 30},
+		['Mind Flay']   	       	= {['icon'] = [[Interface\Icons\Spell_shadow_siphonmana]], 	['casttime'] = 2.5, 	['tick'] = 1},
+		['Mind Vision']             = {['icon'] = [[Interface\Icons\Spell_holy_mindvision]], 	['casttime'] = 30},
 		
 		-- WARLOCK
-		['Drain Life']              = {['icon'] = [[Interface\Icons\Spell_shadow_lifedrain02]], ['casttime'] = 4.5, ['tick'] = 1},
-        ['Drain Mana']              = {['icon'] = [[Interface\Icons\Spell_shadow_siphonmana]], ['casttime'] = 4.5, ['tick'] = 1},
-		['Drain Soul']            	= {['icon'] = [[Interface\Icons\Spell_shadow_haunting]], ['casttime'] = 14.5, ['tick'] = 3},
-		['Rain of Fire']            = {['icon'] = [[Interface\Icons\Spell_shadow_rainoffire]], ['casttime'] = 7.5, ['tick'] = 2},		
+		['Drain Life']              = {['icon'] = [[Interface\Icons\Spell_shadow_lifedrain02]], ['casttime'] = 4.5, 	['tick'] = 1},
+        ['Drain Mana']              = {['icon'] = [[Interface\Icons\Spell_shadow_siphonmana]], 	['casttime'] = 4.5, 	['tick'] = 1},
+		['Drain Soul']            	= {['icon'] = [[Interface\Icons\Spell_shadow_haunting]], 	['casttime'] = 14.5, 	['tick'] = 3},
+		['Rain of Fire']            = {['icon'] = [[Interface\Icons\Spell_shadow_rainoffire]], 	['casttime'] = 7.5, 	['tick'] = 2},		
 
 	}
 	
@@ -449,9 +438,10 @@
 		["Scare Beast"] 			= {['icon'] = [[Interface\Icons\Ability_druid_cower]], 				['duration'] = 10, 	['type'] = 'magic', 	['prio'] = 2, 	['dr'] = 'Fear'},
 		["Freezing Trap Effect"] 	= {['icon'] = [[Interface\Icons\Spell_frost_chainsofice]], 			['duration'] = 10, 	['type'] = 'magic',		['prio'] = 3},
 		['Viper Sting']				= {['icon'] = [[Interface\Icons\Ability_hunter_aimedshot]], 		['duration'] = 8, 	['type'] = 'poison', 	['prio'] = 1},
+		['Wing Clip']				= {['icon'] = [[Interface\Icons\Ability_rogue_trip]],				['duration'] = 10,	['type'] = 'physical',},
 		
             -- MAGE
-		['Clearcasting']			= {['icon'] = [[Interface\Icons\Spell_frost_manaburn]], 			['duration'] = 15,  ['type'] = 'magic', 	['prio'] = 1,	['display'] = false,},
+		['Clearcasting']			= {['icon'] = [[Interface\Icons\Spell_frost_manaburn]], 			['duration'] = 15,  ['type'] = 'magic', 	['prio'] = 1,},
 		['Counterspell - Silenced'] = {['icon'] = [[Interface\Icons\Spell_frost_iceshock]], 			['duration'] = 4,  	['type'] = 'magic', 	['prio'] = 2},
 		["Cone of Cold"] 			= {['icon'] = [[Interface\Icons\Spell_frost_glacier]], 				['duration'] = 10, 	['type'] = 'magic',		['display'] = false,},
 		--["Chilled"] 				= {['icon'] = [[Interface\Icons\Spell_frost_frostarmor02]], 		['duration'] = 7, 	['type'] = 'magic', 	['prio'] = 1},
@@ -472,12 +462,12 @@
     	['Blessing of Freedom']    	= {['icon'] = [[Interface\Icons\Spell_holy_sealofvalor]], 			['duration'] = 10, 	['type'] = 'magic'},
     	['Divine Protection']      	= {['icon'] = [[Interface\Icons\Spell_holy_restoration]], 			['duration'] = 8, 	['prio'] = 4},
 		['Divine Shield']			= {['icon'] = [[Interface\Icons\Spell_holy_divineintervention]], 	['duration'] = 10, 	['prio'] = 4},
-		["Hammer of Justice"] 		= {['icon'] = [[Interface\Icons\Spell_holy_sealofmight]], 			['duration'] = 4, 	['type'] = 'magic',		['dr'] = 'Controlled Stun'},
+		["Hammer of Justice"] 		= {['icon'] = [[Interface\Icons\Spell_holy_sealofmight]], 			['duration'] = 5, 	['type'] = 'magic',		['dr'] = 'Controlled Stun'},
 		
             -- PRIEST
     	['Power Word: Shield']    	= {['icon'] = [[Interface\Icons\Spell_holy_powerwordshield]], 		['duration'] = 30, 	['type'] = 'magic'},
 		["Psychic Scream"] 			= {['icon'] = [[Interface\Icons\Spell_shadow_psychicscream]], 		['duration'] = 8, 	['type'] = 'magic', 	['prio'] = 1, 	['dr'] = 'Fear'},
-		['Silence']					= {['icon'] = [[Interface\Icons\Spell_shadow_impphaseshift]], 		['duration'] = 5, 	['type'] = 'magic', 	['prio'] = 1},
+		['Silence']					= {['icon'] = [[Interface\Icons\Spell_shadow_impphaseshift]], 		['duration'] = 5, 	['type'] = 'magic', 	['prio'] = 2},
 		
 		--[[	ROGUE 	]]--
 		['Blind']					= {['icon'] = [[Interface\Icons\Spell_shadow_mindsteal]],			['duration'] = 10,	['type'] = 'poison',	['prio'] = 3},
@@ -494,6 +484,7 @@
 		     -- WARLOCK
 		['Death Coil']				= {['icon'] = [[Interface\Icons\Spell_shadow_deathcoil]],			['duration'] = 3,	['type'] = 'magic',		['prio'] = 1},
 		["Fear"] 					= {['icon'] = [[Interface\Icons\Spell_shadow_possession]], 			['duration'] = 10, 	['type'] = 'magic', 	['prio'] = 2, 	['dr'] = 'Fear'},
+		['Immolate']				= {['icon'] = [[Interface\Icons\Spell_fire_immolation]],			['duration'] = 15, 	['type'] = 'magic',						['display'] = false,},
 		['Seduction']				= {['icon'] = [[Interface\Icons\Spell_shadow_mindsteal]],			['duration'] = 10, 	['type'] = 'magic', 	['prio'] = 3, 	['dr'] = 'Fear'},
     	['Shadow Trance'] 			= {['icon'] = [[Interface\Icons\Spell_shadow_twilight]], 			['duration'] = 10, 	['type'] = 'magic'},
 		
@@ -537,6 +528,8 @@
 	}
 	
 	SPELLINFO_DEBUFF_REFRESHING_SPELLS = {
+		-- HUNTER
+		['Wing Clip']		= {'Wing Clip',},
 		-- MAGE
 		['Fireball'] 		= {'Fireball', },		
 		['Blizzard'] 		= {'Winter\'s Chill',},
@@ -546,6 +539,8 @@
 		-- SHAMAN
 		['Flame Shock']		= {'Flame Shock',},
 		['Frost Shock']		= {'Frost Shock',},
+		-- WARLOCK
+		['Immolate']		= {'Immolate',},
 		-- WARRRIOR
 		['Hamstring']		= {'Hamstring',},
 		['Mortal Strike']	= {'Mortal Strike',},

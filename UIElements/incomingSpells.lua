@@ -25,6 +25,10 @@
 			incFrame:SetBackdrop(BACKDROP)
 			incFrame:SetBackdropColor(0, 0, 0, 0) 
 			
+			incFrame.border = CreateFrame('Frame', nil, incFrame)
+			incFrame.border:SetAllPoints()
+			incFrame.border:Hide()
+			
 			incFrame.title = incFrame:CreateFontString(nil, 'OVERLAY')
 			incFrame.title:SetFont(STANDARD_TEXT_FONT, 14, 'OUTLINE')
 			incFrame.title:SetPoint('CENTER', incFrame, 'CENTER')
@@ -53,7 +57,6 @@
 					if refresh then
 						units[i].icon:SetTexture(c.icon)
 						units[i].caster:SetText(c.caster)
-						--units[i].caster:SetPoint('CENTER', visuals[i], -visuals[i].caster:GetWidth()/2 - 26, -14)
 						
 						if c.class then
 							local colour = RAID_CLASS_COLORS[c.class]
@@ -67,6 +70,8 @@
 						else
 							print(c.spell)
 						end
+						
+						units[i].button.target = c.caster
 						
 						units[i]:Show()
 					else
@@ -83,6 +88,7 @@
 	end
 	-------------------------------------------------------------------------------
 	local defaultValues = function(b)
+		if b then incFrame.border:Show() else incFrame.border:Hide()	end
 		incFrame:SetBackdropColor(0, 0, 0, b and .6 or 0)
 		incFrame.title:SetText(b and 'incoming spells' or '')
 		frameMovable = b
@@ -109,6 +115,10 @@
 	end
 	-------------------------------------------------------------------------------
 	local moduiReSkin = function()
+		modSkin(incFrame.border, 14)
+		modSkinPadding(incFrame.border, 3)
+		modSkinColor(incFrame.border, .2, .2, .2)
+			
 		for i=1,unitsLimit do
 			modSkin(units[i].border, 14)
 			modSkinPadding(units[i].border, 3)
