@@ -9,7 +9,7 @@ local playerListInterval, playerListRefresh, enemyNearbyInterval, enemyNearbyRef
 local raidMemberIndex = 1
 local playerOutdoorLastseen = 60
 local insideBG = false
-local nextPlayerCheck = 5	-- timer since last seen in seconds
+local nextPlayerCheck = 6	-- timer since last seen in seconds
 local refreshUnits = true
 -- LISTS
 local playerList = {}
@@ -239,6 +239,10 @@ local function orderUnitsforOutput()
 end
 
 --- GLOBAL ACCESS ---
+function ENEMYFRAMECOREgetPlayer(name)
+	return playerList[name]
+end
+
 function ENEMYFRAMECOREUpdateFlagCarriers(fc)
 	for k, v in pairs(playerList) do
 		-- no carriers

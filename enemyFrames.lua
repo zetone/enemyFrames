@@ -33,7 +33,6 @@ local 	enemyFrame = CreateFrame('Frame', 'enemyFrameDisplay', UIParent)
 		--enemyFrame:SetBackdropColor(0, 0, 0, .6)
 		
 		enemyFrame:SetMovable(true)
-		enemyFrame:EnableMouse(true)
 		enemyFrame:SetClampedToScreen(true)
 		
 		enemyFrame:SetScript('OnDragStart', function() if ENEMYFRAMESPLAYERDATA['frameMovable'] then this:StartMoving() end end)
@@ -375,6 +374,7 @@ local function showHideBars()
 		enemyFrame.bottom:SetAlpha(0)
 		enemyFrame.spawnText:SetText('+')
 	end
+	enemyFrame:EnableMouse(ENEMYFRAMESPLAYERDATA['frameMovable'])
 end
 
 local function SetupFrames(maxU)

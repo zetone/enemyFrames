@@ -15,7 +15,6 @@
 			incFrame:SetHeight(20)
 			
 			incFrame:SetMovable(true)
-			incFrame:EnableMouse(true)
 			incFrame:SetClampedToScreen(true)
 			
 			incFrame:SetScript('OnDragStart', function() if frameMovable then this:StartMoving() end end)
@@ -89,6 +88,7 @@
 	-------------------------------------------------------------------------------
 	local defaultValues = function(b)
 		if b then incFrame.border:Show() else incFrame.border:Hide()	end
+		incFrame:EnableMouse(b)
 		incFrame:SetBackdropColor(0, 0, 0, b and .6 or 0)
 		incFrame.title:SetText(b and 'incoming spells' or '')
 		frameMovable = b
