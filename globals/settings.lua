@@ -21,6 +21,8 @@ ENEMYFRAMESPLAYERDATA =
 	
 	['offX']				= 0,
 	['offY']				= 0,
+	
+	['nameplatesdebuffs'] 	= true,
 }
 
 
@@ -31,9 +33,10 @@ local checkBoxFeaturesN, checkBoxFeatures  = 3, { 	[1] = {['id'] = 'enableOutdoo
 													[2] = {['id'] = 'mouseOver', 			['label'] = 'Mouseover cast on frames'},	
 													[3] = {['id'] = 'incomingSpells', 		['label'] = 'Display Incoming Spells (BGs only)'},
 													}
-local checkBoxOptionalsN, checkBoxOptionals  = 3, { [1] = {['id'] = 'displayNames', 		['label'] = 'Display names'}, 
+local checkBoxOptionalsN, checkBoxOptionals  = 4, { [1] = {['id'] = 'displayNames', 		['label'] = 'Display names'}, 
 													[2] = {['id'] = 'displayManabar', 		['label'] = 'Display mana bar'},
 													[3] = {['id'] = 'displayOnlyNearby', 	['label'] = 'Display nearby units only'},
+													[4] = {['id'] = 'nameplatesdebuffs', 	['label'] = 'Display nameplates debuffs'},
 													}
 local enemyFramesDisplayShow = false
 

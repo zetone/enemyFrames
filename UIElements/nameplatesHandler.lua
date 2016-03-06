@@ -83,7 +83,7 @@
 			
 			if IsAddOnLoaded'modui' then
 				--TEXTURE = [[Interface\AddOns\modui\statusbar\texture\sb.tga]]
-				plate.cast:SetStatusBarTexture([[Interface\AddOns\modui\statusbar\texture\sb.tga]])
+				plate.castBar:SetStatusBarTexture([[Interface\AddOns\modui\statusbar\texture\sb.tga]])
 				
 				modSkin(plate.castBar.icon.border, 8)
 				modSkinColor(plate.castBar.icon.border, .2, .2, .2)
@@ -142,7 +142,6 @@
 				plate.buffs[i].duration:SetTextColor(1, 1, 1)
 				plate.buffs[i].duration:SetPoint('CENTER', plate.buffs[i], 'BOTTOM', 0, -2)
 			end
-			print('adddind buffs')
 		end
 		
         local v = SPELLCASTINGCOREgetPrioBuff(name, maxBuffs)
@@ -192,7 +191,9 @@
 				-- everyone's casts
 				addCastbar(plate, n)
 				-- everyone's auras
-				addBuffs(plate, n)
+				if ENEMYFRAMESPLAYERDATA['nameplatesdebuffs'] then
+					addBuffs(plate, n)
+				end
 			end
 		end
 		
