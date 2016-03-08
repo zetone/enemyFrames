@@ -12,7 +12,6 @@ local units = {}
 local raidTargets = {}
 local raidIcons, raidIconsN = {[1] = 'skull', [2] = 'moon', [3] = 'square', [4] = 'triangle'}, 4
 
-local moduiLoaded = false
 local enabled = false
 local maxUnits = 15
 
@@ -77,6 +76,9 @@ local 	enemyFrame = CreateFrame('Frame', 'enemyFrameDisplay', UIParent)
 		enemyFrame.top:SetBackdrop(BACKDROP)
 		enemyFrame.top:SetBackdropColor(0, 0, 0, .6)
 		
+		--border
+		enemyFrame.top.border = CreateBorder(nil, enemyFrame.top, 13)
+		
 		-- bottom frame
 		enemyFrame.bottom = CreateFrame('Frame', nil, enemyFrame)
 		--enemyFrame.bottom:SetFrameStrata("BACKGROUND")
@@ -86,6 +88,9 @@ local 	enemyFrame = CreateFrame('Frame', 'enemyFrameDisplay', UIParent)
 		
 		enemyFrame.bottom:SetBackdrop(BACKDROP)
 		enemyFrame.bottom:SetBackdropColor(0, 0, 0, .6)
+		
+		--border
+		enemyFrame.bottom.border = CreateBorder(nil, enemyFrame.bottom, 13)
 		
 		-- settings button
 		enemyFrame.bottom.settings = CreateFrame('Button', nil, enemyFrame.bottom)
@@ -147,7 +152,7 @@ local 	enemyFrame = CreateFrame('Frame', 'enemyFrameDisplay', UIParent)
 		enemyFrame.raidTargetFrame:SetHeight(36)	enemyFrame.raidTargetFrame:SetWidth(36)
 		enemyFrame.raidTargetFrame:SetPoint('CENTER', UIParent,'CENTER', 0, 160)
 		enemyFrame.raidTargetFrame:Hide()
-
+	
 		enemyFrame.raidTargetFrame.text = enemyFrame.raidTargetFrame:CreateFontString(nil, 'OVERLAY')
 		enemyFrame.raidTargetFrame.text:SetFont(STANDARD_TEXT_FONT, 18, 'OUTLINE')
 		enemyFrame.raidTargetFrame.text:SetTextColor(.8, .8, .8, .8)
@@ -175,6 +180,8 @@ local 	enemyFrame = CreateFrame('Frame', 'enemyFrameDisplay', UIParent)
 		enemyFrame.raidTargetMenu:SetBackdropColor(0, 0, 0, .6)
 		--enemyFrame.raidTargetMenu:SetPoint('CENTER', UIParent,'CENTER', 0, 160)
 		enemyFrame.raidTargetMenu:Hide()
+		
+		enemyFrame.raidTargetMenu.border = CreateBorder(nil, enemyFrame.raidTargetMenu, 10)
 		
 		enemyFrame.raidTargetMenu.icons = {}
 		for j = 1, raidIconsN, 1 do
@@ -308,58 +315,6 @@ local function arrangeUnits()
 			end
 		end	
 	end
-end
-
--- use modui to reskin some ui elements
-local function moduiReSkin()
-	TEXTURE = [[Interface\AddOns\modui\statusbar\texture\sb.tga]]
-	
-	-- enemyFrame
-	modSkin(enemyFrame.top, 13)
-	modSkinColor(enemyFrame.top, .2, .2, .2)
-	
-	modSkin(enemyFrame.bottom, 13)
-	modSkinColor(enemyFrame.bottom, .2, .2, .2)
-	
-	modSkin(enemyFrame.raidTargetMenu, 8)
-	modSkinColor(enemyFrame.raidTargetMenu, .2, .2, .2)
-	
-	-- individual unit ui
-	for i = 1, unitLimit do
-		modSkin(units[i], 12)
-		modSkinPadding(units[i], 2)
-		
-		-- health bar
-		units[i].hpbar:SetStatusBarTexture(TEXTURE)
-		--SMOOTHaddBarstoSmooth(units[i].hpbar)
-		
-		-- mana bar
-		units[i].manabar:SetStatusBarTexture(TEXTURE)
-		--SMOOTHaddBarstoSmooth(units[i].manabar)
-		
-		-- castbar
-		units[i].castbar:SetStatusBarTexture(TEXTURE)
-		units[i].castbar:SetStatusBarColor(1, .4, 0)
-		modSkin(units[i].castbar, 8)
-		modSkinPadding(units[i].castbar, 1)
-		modSkinColor(units[i].castbar, .2, .2, .2)
-		
-		-- castbar icon
-		modSkin(units[i].castbar.iconborder, 6)
-		modSkinPadding(units[i].castbar.iconborder, 1)
-		modSkinColor(units[i].castbar.iconborder, .2, .2, .2)
-		
-		-- cc icon
-		modSkin(units[i].cc.border, 13)
-		modSkinPadding(units[i].cc.border, 2)
-	end
-	
-	moduiLoaded = true
-end
-
--- check if modui loaded first		
-if IsAddOnLoaded'modui' then
-	moduiReSkin()
 end
 
 local function showHideBars()
@@ -623,16 +578,13 @@ local function updateUnits()
 		
 		-- target indicator
 		if UnitName'target' == v['name'] then
-			if moduiLoaded then
-				modSkinColor(units[i], enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'])
-			end
-			units[i].hpbar:SetBackdropColor(enemyFactionColor['r'] - .6, enemyFactionColor['g'] - .6, enemyFactionColor['b'] - .6, .6)
-			units[i].manabar:SetBackdropColor(enemyFactionColor['r'] - .6, enemyFactionColor['g'] - .6, enemyFactionColor['b'] - .6, .6)
+			units[i].border:SetColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'])
 			
+			units[i].hpbar:SetBackdropColor(enemyFactionColor['r'] - .6, enemyFactionColor['g'] - .6, enemyFactionColor['b'] - .6, .6)
+			units[i].manabar:SetBackdropColor(enemyFactionColor['r'] - .6, enemyFactionColor['g'] - .6, enemyFactionColor['b'] - .6, .6)			
 		else
-			if moduiLoaded then
-				modSkinColor(units[i], .2, .2, .2)
-			end
+			units[i].border:SetColor(.1, .1, .1)
+			
 			units[i].hpbar:SetBackdropColor(0, 0, 0, .6)
 			units[i].manabar:SetBackdropColor(0, 0, 0, .6)
 		end
@@ -666,7 +618,7 @@ local function updateUnits()
 			units[i].cc.cd:Show()
 			
 			local r, g, b = b.border[1], b.border[2], b.border[3]
-			if moduiLoaded then modSkinColor(units[i].cc.border, r, g, b) end
+			units[i].cc.border:SetColor(r, g, b)
 		else
 			-- signal FC or class / rank
 			units[i].cc.icon:SetTexture(v['fc'] and SPELLINFO_WSG_FLAGS[playerFaction]['icon'] or SetDefaultIconTex(v))
@@ -678,7 +630,7 @@ local function updateUnits()
 				SetPortraitTexture(units[i].cc.icon, 'target')
 			end
 
-			if moduiLoaded then modSkinColor(units[i].cc.border, .2, .2, .2)	end
+			units[i].cc.border:SetColor(.1, .1, .1)
 			units[i].cc.duration:SetText('')
 		end
 		
@@ -763,16 +715,11 @@ local function eventHandler()
 		enabled = false
 		enemyFrame:Hide()
 		--
-	elseif event == 'ADDON_LOADED' then
-		if arg1 == 'modui' then
-			moduiReSkin()
-		end
 	end
 end
 
 enemyFrame:RegisterEvent'PLAYER_ENTERING_WORLD'
 enemyFrame:RegisterEvent'ZONE_CHANGED_NEW_AREA'
-enemyFrame:RegisterEvent'ADDON_LOADED'
 enemyFrame:SetScript('OnEvent', eventHandler)
 
 

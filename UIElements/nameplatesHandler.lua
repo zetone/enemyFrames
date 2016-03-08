@@ -59,6 +59,9 @@
 			plate.castBar:SetPoint('LEFT', plate, 24, 0)
 			plate.castBar:SetPoint('RIGHT', plate, -4, 0)
 			plate.castBar:SetPoint('TOP', health, 'BOTTOM', 0, -12)
+			
+			plate.castBar.border = CreateBorder(nil, plate.castBar, 12)
+			plate.castBar.border:SetPadding(.9)
 
 			plate.castBar.text = plate.castBar:CreateFontString(nil, 'OVERLAY')
 			plate.castBar.text:SetTextColor(1, 1, 1)
@@ -71,23 +74,16 @@
 			plate.castBar.timer:SetTextColor(1, 1, 1)
 			plate.castBar.timer:SetFont(STANDARD_TEXT_FONT, 9)
 			plate.castBar.timer:SetPoint('RIGHT', plate.castBar)
-
-			plate.castBar.icon = plate.castBar:CreateTexture(nil, 'OVERLAY')--'OVERLAY', nil, 7)
-			plate.castBar.icon:SetWidth(14) plate.castBar.icon:SetHeight(14)
-			plate.castBar.icon:SetTexCoord(.078, .92, .079, .937)	
-			plate.castBar.icon:SetPoint('RIGHT', plate.castBar, 'LEFT', -5, 0)
+					
+			plate.castBar.iconborder = CreateFrame('Frame', nil, plate.castBar)
+			plate.castBar.iconborder:SetWidth(14) plate.castBar.iconborder:SetHeight(14)
+			plate.castBar.iconborder:SetPoint('RIGHT', plate.castBar, 'LEFT', -4, 0)
 			
-			plate.castBar.icon.border = CreateFrame('Frame', nil, plate.castBar)
-			plate.castBar.icon.border:SetWidth(plate.castBar.icon:GetWidth()+4) plate.castBar.icon.border:SetHeight(plate.castBar.icon:GetHeight()+4)
-			plate.castBar.icon.border:SetPoint('CENTER', plate.castBar.icon)
+			plate.castBar.icon = plate.castBar.iconborder:CreateTexture(nil, 'OVERLAY')--'OVERLAY', nil, 7)
+			plate.castBar.icon:SetAllPoints()
+			plate.castBar.icon:SetTexCoord(.078, .92, .079, .937)
 			
-			if IsAddOnLoaded'modui' then
-				--TEXTURE = [[Interface\AddOns\modui\statusbar\texture\sb.tga]]
-				plate.castBar:SetStatusBarTexture([[Interface\AddOns\modui\statusbar\texture\sb.tga]])
-				
-				modSkin(plate.castBar.icon.border, 8)
-				modSkinColor(plate.castBar.icon.border, .2, .2, .2)
-			end
+			plate.castBar.iconborder.b = CreateBorder(nil, plate.castBar.iconborder, 12) 
 		end
 
 		plate.castBar:Hide()
@@ -125,22 +121,21 @@
 				if i == 1 then
 					plate.buffs[i]:SetPoint('BOTTOMLEFT', plate, 'TOPLEFT', 5, -2)
 				else
-					plate.buffs[i]:SetPoint('LEFT', plate.buffs[i-1], 'RIGHT', 7, 0)
+					plate.buffs[i]:SetPoint('LEFT', plate.buffs[i-1], 'RIGHT', 8, 0)
 				end
-								
-				if IsAddOnLoaded'modui' then
-					modSkin(plate.buffs[i], 14.5)
-					modSkinPadding(plate.buffs[i], 2)
-				end
+						
+				plate.buffs[i].border = CreateBorder(nil, plate.buffs[i], 14)
+				plate.buffs[i].border:SetPadding(1.2)
 
 				plate.buffs[i].icon = plate.buffs[i]:CreateTexture(nil, 'ARTWORK')
 				plate.buffs[i].icon:SetAllPoints()
 				plate.buffs[i].icon:SetTexCoord(.1, .9, .25, .75)
 
-				plate.buffs[i].duration = plate.buffs[i]:CreateFontString(nil, 'OVERLAY')--, 'GameFontNormalSmall')
+				plate.buffs[i].duration = plate.buffs[i].border:CreateFontString(nil, 'OVERLAY')--, 'GameFontNormalSmall')
 				plate.buffs[i].duration:SetFont(STANDARD_TEXT_FONT, 10, 'OUTLINE')
-				plate.buffs[i].duration:SetTextColor(1, 1, 1)
+				plate.buffs[i].duration:SetTextColor(.9, .9, .2, 1)
 				plate.buffs[i].duration:SetPoint('CENTER', plate.buffs[i], 'BOTTOM', 0, -2)
+				
 			end
 		end
 		
@@ -153,11 +148,9 @@
 			plate.buffs[i]:Show()
 			plate.buffs[i].icon:SetTexture(e.icon)
 			plate.buffs[i].duration:SetText(getTimerLeft(e.timeEnd))
-			if IsAddOnLoaded'modui' then
-				local r, g, b = e.border[1], e.border[2], e.border[3]
-				modSkinColor(plate.buffs[i], r, g, b)
-			end
-			
+
+			local r, g, b = e.border[1], e.border[2], e.border[3]
+			plate.buffs[i].border:SetColor( r, g, b)			
 		end
 
 	end

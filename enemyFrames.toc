@@ -9,9 +9,11 @@ globals\spellInfo.lua
 globals\wsgHandler.lua
 globals\settings.lua
 globals\commHandler.lua
+globals\smoothBar.lua
 
 UIElements\BindingsHandler.lua
 UIElements\nameplatesHandler.lua
+UIElements\customBorder.lua
 UIElements\targetframe.lua
 UIElements\customCooldown.lua
 UIElements\UIElementsTemplate.lua

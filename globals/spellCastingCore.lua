@@ -63,7 +63,7 @@ buff.create = function(tar, t, s, buffType, factor, time)
 	acnt.timeStart 	= time
 	acnt.timeEnd   	= time + buffType['duration'] * factor
 	acnt.prio		= buffType['prio'] and buffType['prio'] or 0
-	acnt.border		= buffType['type'] and RGB_BORDER_DEBUFFS_COLOR[buffType['type']] or {.2, .2, .2}	-- border rgb values depending on type of buff/debuff
+	acnt.border		= buffType['type'] and RGB_BORDER_DEBUFFS_COLOR[buffType['type']] or {.1, .1, .1}	-- border rgb values depending on type of buff/debuff
 	acnt.display 	= buffType['display'] == nil and true or buffType['display']
 	return acnt
 end
@@ -714,6 +714,11 @@ SPELLCASTINGCOREgetBuffs = function(name)
 	return list
 end
 
+SPELLCASTINGCORErefreshBuff = function(t, b, s)
+	if SPELLINFO_DEBUFF_REFRESHING_SPELLS[b] then
+		refreshBuff(t, b, s)
+	end
+end
 ------------------------------------
 
 local f = CreateFrame('Frame', 'spellCastingCore', UIParent)

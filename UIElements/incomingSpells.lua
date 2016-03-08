@@ -24,13 +24,12 @@
 			incFrame:SetBackdrop(BACKDROP)
 			incFrame:SetBackdropColor(0, 0, 0, 0) 
 			
-			incFrame.border = CreateFrame('Frame', nil, incFrame)
-			incFrame.border:SetAllPoints()
+			incFrame.border = CreateBorder(nil, incFrame, 16)
 			incFrame.border:Hide()
 			
 			incFrame.title = incFrame:CreateFontString(nil, 'OVERLAY')
 			incFrame.title:SetFont(STANDARD_TEXT_FONT, 14, 'OUTLINE')
-			incFrame.title:SetPoint('CENTER', incFrame, 'CENTER')
+			incFrame.title:SetPoint('CENTER', incFrame, 'CENTER', 0, 4)
 			incFrame.title:SetText('')
 	-------------------------------------------------------------------------------
 	for i=1,unitsLimit do
@@ -114,21 +113,6 @@
 		end
 	end
 	-------------------------------------------------------------------------------
-	local moduiReSkin = function()
-		modSkin(incFrame.border, 14)
-		modSkinPadding(incFrame.border, 3)
-		modSkinColor(incFrame.border, .2, .2, .2)
-			
-		for i=1,unitsLimit do
-			modSkin(units[i].border, 14)
-			modSkinPadding(units[i].border, 3)
-			modSkinColor(units[i].border, .2, .2, .2)
-		end
-	end
-	if IsAddOnLoaded'modui' then
-		moduiReSkin()
-	end
-	-------------------------------------------------------------------------------
 	local removeDoubleEntry = function(c)
 		for k, v in pairs(playerCastList) do
 			if v['name'] == c then
@@ -179,11 +163,7 @@
 	end
 	-------------------------------------------------------------------------------
 	local eventHandler = function()
-		if event == 'ADDON_LOADED' then
-			if arg1 == 'modui' then
-				moduiReSkin()
-			end
-		elseif event == 'PLAYER_ENTERING_WORLD' or event == 'ZONE_CHANGED_NEW_AREA' then
+		if event == 'PLAYER_ENTERING_WORLD' or event == 'ZONE_CHANGED_NEW_AREA' then
 			--incFrame:Hide()
 			incFrame:SetScript('OnUpdate', nil)
 		elseif event == 'CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE' then
@@ -195,7 +175,6 @@
 	-------------------------------------------------------------------------------
 	incFrame:RegisterEvent'PLAYER_ENTERING_WORLD'
 	incFrame:RegisterEvent'ZONE_CHANGED_NEW_AREA'
-	incFrame:RegisterEvent'ADDON_LOADED'
 	incFrame:RegisterEvent'CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE'
 	incFrame:SetScript('OnEvent', eventHandler)
 	

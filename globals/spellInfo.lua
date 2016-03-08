@@ -355,7 +355,7 @@
 		['Evocation']               = {['icon'] = [[Interface\Icons\Spell_nature_purge]], 		['casttime'] = 8},
 		
 		-- PRIEST
-		['Mind Flay']   	       	= {['icon'] = [[Interface\Icons\Spell_shadow_siphonmana]], 	['casttime'] = 2.5, 	['tick'] = 1},
+		['Mind Flay']   	       	= {['icon'] = [[Interface\Icons\Spell_shadow_siphonmana]], 	['casttime'] = 3, 	['tick'] = 1},
 		['Mind Vision']             = {['icon'] = [[Interface\Icons\Spell_holy_mindvision]], 	['casttime'] = 30},
 		
 		-- WARLOCK
@@ -452,9 +452,9 @@
     	['Fire Ward']              	= {['icon'] = [[Interface\Icons\Spell_fire_firearmor]], 			['duration'] = 30, 	['type'] = 'magic'},
 		--['Ice Barrier']				= {['icon'] = [[Interface\Icons\Spell_ice_lament]], 				['duration'] = 60, 	['type'] = 'magic'},
     	['Ice Block']              	= {['icon'] = [[Interface\Icons\Spell_frost_frost]], 				['duration'] = 10, 	['prio'] = 4},
-		["Polymorph"] 				= {['icon'] = [[Interface\Icons\Spell_nature_polymorph]], 			['duration'] = 11, 	['type'] = 'magic', 	['prio'] = 3, 	['dr'] = 'Disorient'},
-		['Polymorph: Pig']          = {['icon'] = [[Interface\Icons\Spell_magic_polymorphpig]], 		['duration'] = 11, 	['type'] = 'magic', 	['prio'] = 3, 	['dr'] = 'Disorient'},
-		['Polymorph: Turtle']       = {['icon'] = [[Interface\Icons\Ability_hunter_pet_turtle]],		['duration'] = 11, 	['type'] = 'magic', 	['prio'] = 3, 	['dr'] = 'Disorient'},
+		["Polymorph"] 				= {['icon'] = [[Interface\Icons\Spell_nature_polymorph]], 			['duration'] = 11, 	['type'] = 'magic', 	['prio'] = 3, 	['dr'] = 'Polymorph'},
+		['Polymorph: Pig']          = {['icon'] = [[Interface\Icons\Spell_magic_polymorphpig]], 		['duration'] = 11, 	['type'] = 'magic', 	['prio'] = 3, 	['dr'] = 'Polymorph'},
+		['Polymorph: Turtle']       = {['icon'] = [[Interface\Icons\Ability_hunter_pet_turtle]],		['duration'] = 11, 	['type'] = 'magic', 	['prio'] = 3, 	['dr'] = 'Polymorph'},
 		['Winter\'s Chill']			= {['icon'] = [[Interface\Icons\Spell_frost_chillingblast]], 		['duration'] = 15, 	['type'] = 'magic', 	['display'] = false,},
 		
             -- PALADIN
@@ -463,6 +463,7 @@
     	['Divine Protection']      	= {['icon'] = [[Interface\Icons\Spell_holy_restoration]], 			['duration'] = 8, 	['prio'] = 4},
 		['Divine Shield']			= {['icon'] = [[Interface\Icons\Spell_holy_divineintervention]], 	['duration'] = 10, 	['prio'] = 4},
 		["Hammer of Justice"] 		= {['icon'] = [[Interface\Icons\Spell_holy_sealofmight]], 			['duration'] = 5, 	['type'] = 'magic',		['dr'] = 'Controlled Stun'},
+		['Judgement of the Crusader'] = {['icon'] = [[Interface\Icons\Spell_holy_holysmite]], 			['duration'] = 10, 	['type'] = 'magic',		['display'] = false,},
 		
             -- PRIEST
     	['Power Word: Shield']    	= {['icon'] = [[Interface\Icons\Spell_holy_powerwordshield]], 		['duration'] = 30, 	['type'] = 'magic'},
@@ -536,6 +537,8 @@
 		['Cone of Cold'] 	= {'Winter\'s Chill',},
 		['Frost Nova'] 		= {'Winter\'s Chill',},
 		['Frostbolt'] 		= {'Frostbolt', 'Winter\'s Chill',},
+		-- PALADIN
+		['Judgement of the Crusader'] = {'Judgement of the Crusader',},
 		-- SHAMAN
 		['Flame Shock']		= {'Flame Shock',},
 		['Frost Shock']		= {'Frost Shock',},

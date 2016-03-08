@@ -1,5 +1,5 @@
 	-------------------------------------------------------------------------------
-	local TEXTURE 	= [[Interface\AddOns\enemyFrames\globals\resources\barTexture.tga]]
+	local TEXTURE 	= [[Interface\AddOns\enemyFrames\globals\resources\barTexture]]
 	local BACKDROP 	= {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]],}
 	local ISTEXTURE = [[Interface\AddOns\enemyFrames\globals\resources\arrow2]]
 	-------------------------------------------------------------------------------
@@ -13,8 +13,10 @@
 		--self:SetFrameLevel(0)
 		self:SetWidth(unitWidth)	self:SetHeight(unitHeight)
 		self:RegisterForClicks('LeftButtonUp', 'RightButtonUp')		
-		self.mo = false
-			
+		self.mo = false		
+		
+		self.border = CreateBorder(nil, self, 13)
+															
 		-- health statusbar
 		self.hpbar = CreateFrame('StatusBar', nil, self)
 		self.hpbar:SetFrameLevel(1)
@@ -25,6 +27,8 @@
 		
 		self.hpbar:SetBackdrop(BACKDROP)
 		self.hpbar:SetBackdropColor(0, 0, 0, .6)
+		
+		SmoothBar(self.hpbar)
 			
 		-- mana statusbar
 		self.manabar = CreateFrame('StatusBar', nil, self)
@@ -37,6 +41,7 @@
 		self.manabar:SetBackdrop(BACKDROP)
 		self.manabar:SetBackdropColor(0, 0, 0)
 		
+		SmoothBar(self.manabar)
 		
 		-- cast bar --
 		self.castbar = CreateFrame('StatusBar', nil, self)
@@ -48,12 +53,15 @@
 		self.castbar:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', self.castbar:GetHeight(), -3)
 		
 		self.castbar:SetBackdrop(BACKDROP)
-		self.castbar:SetBackdropColor(0, 0, 0, .6)
+		self.castbar:SetBackdropColor(0, 0, 0, .6)	
 		
+		self.castbar.b = CreateBorder(nil, self.castbar, 9)	
 		
 		self.castbar.iconborder = CreateFrame('Frame', nil, self.castbar)
 		self.castbar.iconborder:SetWidth(self.castbar:GetHeight()+1)	self.castbar.iconborder:SetHeight(self.castbar:GetHeight()+1)
 		self.castbar.iconborder:SetPoint('RIGHT', self.castbar, 'LEFT')
+		
+		self.castbar.iconborder.border = CreateBorder(nil, self.castbar.iconborder, 8)
 		
 		self.castbar.icon = self.castbar.iconborder:CreateTexture(nil, 'ARTWORK')
 		self.castbar.icon:SetTexCoord(.078, .92, .079, .937)
@@ -88,7 +96,7 @@
 		self.raidTarget = CreateFrame('Frame', nil, self)
 		self.raidTarget:SetWidth(ccIconWidth-2) self.raidTarget:SetHeight(unitHeight-2)
 		self.raidTarget:SetPoint('CENTER', self,'TOPRIGHT', 0, -4)
-		self.raidTarget:SetFrameLevel(6)
+		self.raidTarget:SetFrameLevel(7)
 		
 		self.raidTarget.icon = self.raidTarget:CreateTexture(nil, 'ARTWORK')
 		self.raidTarget.icon:SetTexture([[Interface\TargetingFrame\UI-RaidTargetingIcons]])
@@ -98,10 +106,9 @@
 		---- CC ------
 		self.cc = CreateFrame('Frame', name..'CC', self)
 		self.cc:SetWidth(ccIconWidth) self.cc:SetHeight(unitHeight)
-		self.cc:SetPoint('TOPLEFT', self,'TOPRIGHT', 4, 0)
+		self.cc:SetPoint('TOPLEFT', self,'TOPRIGHT', 3, 0)
 		
-		self.cc.border = CreateFrame('Frame', nil, self.cc)
-		self.cc.border:SetAllPoints()
+		self.cc.border = CreateBorder(nil, self.cc, 13)
 		self.cc.border:SetFrameLevel(5)
 		
 		self.cc.icon = self.cc:CreateTexture(nil, 'ARTWORK')
@@ -141,11 +148,7 @@
 		self.icon:SetAllPoints()	
 		self.icon:SetTexCoord(.1, .9, .25, .75)
 		
-		self.border = CreateFrame('Frame', nil, self)
-		self.border:SetWidth(ISWidth)
-		self.border:SetHeight(ISHeight)
-		self.border:ClearAllPoints()
-		self.border:SetPoint('CENTER', self)
+		self.border = CreateBorder(nil, self, 16)
 		
 		self.arrow = CreateFrame('statusbar', nil, self)
 		self.arrow:SetStatusBarTexture(ISTEXTURE)
