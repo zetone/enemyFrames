@@ -13,6 +13,7 @@ ENEMYFRAMESPLAYERDATA =
 	['layout']				= 'block',
 	['frameMovable'] 		= true,
 	['displayNames']		= true,
+	['displayHealthValues'] = false,
 	['displayManabar']		= false,
 	['displayOnlyNearby']	= false,
 	['mouseOver']			= false,
@@ -23,6 +24,7 @@ ENEMYFRAMESPLAYERDATA =
 	['offY']				= 0,
 	
 	['nameplatesdebuffs'] 	= true,
+	['nameplatesCastbar']	= true,
 }
 
 
@@ -33,17 +35,21 @@ local checkBoxFeaturesN, checkBoxFeatures  = 3, { 	[1] = {['id'] = 'enableOutdoo
 													[2] = {['id'] = 'mouseOver', 			['label'] = 'Mouseover cast on frames'},	
 													[3] = {['id'] = 'incomingSpells', 		['label'] = 'Display Incoming Spells (BGs only)'},
 													}
-local checkBoxOptionalsN, checkBoxOptionals  = 4, { [1] = {['id'] = 'displayNames', 		['label'] = 'Display names'}, 
+local checkBoxOptionalsN, checkBoxOptionals  = 3, { [1] = {['id'] = 'displayNames', 		['label'] = 'Display names'}, 
+													--[2] = {['id'] = 'displayHealthValues', 	['label'] = 'Display Health %'}, 
 													[2] = {['id'] = 'displayManabar', 		['label'] = 'Display mana bar'},
 													[3] = {['id'] = 'displayOnlyNearby', 	['label'] = 'Display nearby units only'},
-													[4] = {['id'] = 'nameplatesdebuffs', 	['label'] = 'Display nameplates debuffs'},
+													}
+													
+local checkBoxPlatesOptN, checkBoxPlatesOpt  = 2, { [1] = {['id'] = 'nameplatesdebuffs', 	['label'] = 'Display nameplates debuffs'},
+													[2] = {['id'] = 'nameplatesCastbar', 	['label'] = 'Display nameplates cast bars'},
 													}
 local enemyFramesDisplayShow = false
 
 local settings = CreateFrame('Frame', 'enemyFramesSettings', UIParent)
 settings:ClearAllPoints()
 settings:SetWidth(290) settings:SetHeight(320)
---settings:SetFrameLevel(6)
+settings:SetFrameLevel(60)
 settings:SetPoint('CENTER', UIParent, -UIParent:GetWidth()/3, 0)
 settings:SetBackdrop({bgFile   = [[Interface\Tooltips\UI-Tooltip-Background]],
 				  edgeFile = [[Interface\DialogFrame\UI-DialogBox-Border]],
@@ -99,10 +105,10 @@ settings.container.scale:SetText'scale'
 settings.container.scaleSlider = CreateFrame('Slider', 'enemyFramesScaleSlider', settings.container, 'OptionsSliderTemplate')
 settings.container.scaleSlider:SetWidth(205) 	settings.container.scaleSlider:SetHeight(14)
 settings.container.scaleSlider:SetPoint('LEFT', settings.container.scale, 'LEFT', 0, -30)
-settings.container.scaleSlider:SetMinMaxValues(0.8, 1.4)
+settings.container.scaleSlider:SetMinMaxValues(0.8, 1.5)
 settings.container.scaleSlider:SetValueStep(.05)
 _G[settings.container.scaleSlider:GetName()..'Low']:SetText'0.8'
-_G[settings.container.scaleSlider:GetName()..'High']:SetText'1.4'
+_G[settings.container.scaleSlider:GetName()..'High']:SetText'1.5'
 
 
 settings.container.scaleSlider:SetScript('OnValueChanged', function() 
@@ -185,6 +191,29 @@ for i = 1, checkBoxOptionalsN, 1 do
 	end)
 end
 
+-- nameplates optionals
+
+settings.container.platesLabel = settings.container:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
+settings.container.platesLabel:SetPoint('LEFT', settings.container.optinalsList[checkBoxOptionalsN], 'LEFT', 0, -30)
+settings.container.platesLabel:SetText'nameplates'
+
+settings.container.platesList = {}
+for i = 1, checkBoxPlatesOptN, 1 do
+	settings.container.platesList[i] = CreateFrame('CheckButton', 'enemyFramesPlatesOptionalsCheckButton'..i, settings.container, 'UICheckButtonTemplate')
+	settings.container.platesList[i]:SetHeight(20) 	settings.container.platesList[i]:SetWidth(20)
+	settings.container.platesList[i]:SetPoint('LEFT', i == 1 and settings.container.platesLabel or settings.container.platesList[i-1], 'LEFT', 0, i == 1 and -30 or -20)
+	_G[settings.container.platesList[i]:GetName()..'Text']:SetText(checkBoxPlatesOpt[i]['label'])
+	_G[settings.container.platesList[i]:GetName()..'Text']:SetPoint('LEFT', settings.container.platesList[i], 'RIGHT', 4, 0)
+	settings.container.platesList[i].i = i
+	settings.container.platesList[i]:SetScript('OnClick', function()
+		if this:GetChecked() then
+			ENEMYFRAMESPLAYERDATA[checkBoxPlatesOpt[this.i]['id']]	= true
+		else
+			ENEMYFRAMESPLAYERDATA[checkBoxPlatesOpt[this.i]['id']]	= false
+		end
+	end)
+end
+
 
 -------------------------------------------
 
@@ -212,6 +241,12 @@ function setupSettings()
 	for i = 1, checkBoxOptionalsN do
 		_G[settings.container.optinalsList[i]:GetName()..'Text']:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
 		settings.container.optinalsList[i]:SetChecked(ENEMYFRAMESPLAYERDATA[checkBoxOptionals[i]['id']])
+	end
+	
+	--plates
+	for i = 1, checkBoxPlatesOptN do
+		_G[settings.container.platesList[i]:GetName()..'Text']:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'], .9)
+		settings.container.platesList[i]:SetChecked(ENEMYFRAMESPLAYERDATA[checkBoxPlatesOpt[i]['id']])
 	end
 
 	settings.container.scaleSlider:SetValue(ENEMYFRAMESPLAYERDATA['scale'])

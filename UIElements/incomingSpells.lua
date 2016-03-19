@@ -29,7 +29,7 @@
 			
 			incFrame.title = incFrame:CreateFontString(nil, 'OVERLAY')
 			incFrame.title:SetFont(STANDARD_TEXT_FONT, 14, 'OUTLINE')
-			incFrame.title:SetPoint('CENTER', incFrame, 'CENTER', 0, 4)
+			incFrame.title:SetPoint('CENTER', incFrame, 'CENTER', 0, 3)
 			incFrame.title:SetText('')
 	-------------------------------------------------------------------------------
 	for i=1,unitsLimit do
@@ -65,8 +65,6 @@
 						if c.school then
 							units[i].arrow:SetStatusBarColor(c.school[1], c.school[2], c.school[3])
 							units[i].arrow.bg:SetVertexColor(c.school[1] - .4, c.school[2] - .4, c.school[3] - .4)
-						else
-							print(c.spell)
 						end
 						
 						units[i].button.target = c.caster
@@ -165,9 +163,10 @@
 	local eventHandler = function()
 		if event == 'PLAYER_ENTERING_WORLD' or event == 'ZONE_CHANGED_NEW_AREA' then
 			--incFrame:Hide()
+			enabled = false
 			incFrame:SetScript('OnUpdate', nil)
 		elseif event == 'CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE' then
-			if enabled then
+			if enabled and ENEMYFRAMESPLAYERDATA['incomingSpells'] then
 				parseCombatLog()
 			end
 		end

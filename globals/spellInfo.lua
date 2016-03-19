@@ -302,8 +302,9 @@
 		-- MISC
 		['Inferno Effect'] = true, ['Reckless Charge'] = true,
 		-- DRUID
-		['Bash'] = true, 					['Bear Form'] = true, 	['Cat Form'] = true, 	['Feral Charge Effect'] = true, ['Moonkin Form'] = true, 
-		['Nature\'s Swiftness'] =  true, 	['Pounce'] = true, 		['Travel Form'] = true, ['Starfire Stun'] = true,
+		['Bash'] = true, 					['Bear Form'] = true, 	['Cat Form'] = true,				['Dire Bear Form'] = true, 	
+		['Feral Charge Effect'] = true, 	['Moonkin Form'] = true,['Nature\'s Swiftness'] =  true, 	['Pounce'] = true, 		
+		['Travel Form'] = true, 			['Starfire Stun'] = true,
 		-- HUNTER
 		['Aspect of the Cheetah'] =  true, 	['Aspect of the Hawk'] =  true, ['Aspect of the Monkey'] =  true, 	['Freezing Trap Effect'] = true, 
 		['Improved Concussive Shot'] = true,['Intimidation'] = true, 		['Scatter Shot'] = true, 			['Wyvern Sting'] = true,
@@ -399,15 +400,15 @@
 		
 		['Fang of the Crystal Spider'] 	= {['mod'] = 1.1, 	['list'] = {'all'}},
 		
-		["Nature's Swiftness"] 			= {['mod'] = 0, 	['list'] = {'Chain Heal', 'Far Sight', 'Ghost Wolf', 'Healing Wave', 'Lesser Healing Wave', 'Lightning Bolt',   -- shaman
+		['Nature\'s Swiftness'] 		= {['mod'] = 0.1, 	['list'] = {'Chain Heal', 'Chain Lightning', 'Far Sight', 'Ghost Wolf', 'Healing Wave', 'Lesser Healing Wave', 'Lightning Bolt',   -- shaman
 															'Entangling Roots', 'Healing Touch', 'Hibernate', 'Rebirth', 'Regrowth', 'Soothe Animal', 'Wrath'}}, -- druid
 								  
 		['Rapid Fire']					= {['mod'] = .6, 	['list'] = {'Aimed Shot'}},
 		['Shadow Trance'] 				= {['mod'] = 0, 	['list'] = {'Shadow Bolt'}},
 		['Fel Domination']				= {['mod'] = 0.05, 	['list'] = {'Summon Felhunter', 'Summon Imp', 'Summon Succubus', 'Summon Voidwalker'}},
 		
-		['Presence of Mind'] 			= {['mod'] = 0.1, 	['list'] = {'Fireball', 'Frostbolt', 'Pyroblast', 'Scorch', 'Polymorph'}},
-		['Mind Quickening']				= {['mod'] = 0.66, 	['list'] = {'Fireball', 'Frostbolt', 'Pyroblast', 'Scorch', 'Polymorph'}},		
+		['Presence of Mind'] 			= {['mod'] = 0, 	['list'] = {'Fireball', 'Frostbolt', 'Pyroblast', 'Scorch', 'Polymorph', 'Polymorph: Pig', 'Polymorph: Turtle'}},
+		['Mind Quickening']				= {['mod'] = 0.66, 	['list'] = {'Fireball', 'Frostbolt', 'Pyroblast', 'Scorch', 'Polymorph', 'Polymorph: Pig', 'Polymorph: Turtle'}},		
 	}
 	
 	SPELLINFO_BUFFS_TO_TRACK = {

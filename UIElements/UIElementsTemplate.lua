@@ -3,184 +3,190 @@
 	local BACKDROP 	= {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]],}
 	local ISTEXTURE = [[Interface\AddOns\enemyFrames\globals\resources\arrow2]]
 	-------------------------------------------------------------------------------
-	local unitWidth, unitHeight, castBarHeight, ccIconWidth, manaBarHeight = 64, 22, 8, 28, 4
+	local unitWidth, unitHeight, castBarHeight, ccIconWidth, manaBarHeight = 64, 22, 8, 28, 6
 	UIElementsGetDimensions = function()
 		return unitWidth, unitHeight, castBarHeight, ccIconWidth, manaBarHeight
 	end
 	CreateEnemyUnitFrame = function(name, parentFrame)
 		-- unit button
-		local self = CreateFrame('Button', name, parentFrame)
-		--self:SetFrameLevel(0)
-		self:SetWidth(unitWidth)	self:SetHeight(unitHeight)
-		self:RegisterForClicks('LeftButtonUp', 'RightButtonUp')		
-		self.mo = false		
+		local this = CreateFrame('Button', name, parentFrame)
+		--this:SetFrameLevel(0)
+		this:SetWidth(unitWidth)	this:SetHeight(unitHeight)
+		this:RegisterForClicks('LeftButtonUp', 'RightButtonUp')		
+		this.mo = false		
 		
-		self.border = CreateBorder(nil, self, 13)
+		this.border = CreateBorder(nil, this, 12.8, 1/4.5)
 															
 		-- health statusbar
-		self.hpbar = CreateFrame('StatusBar', nil, self)
-		self.hpbar:SetFrameLevel(1)
-		self.hpbar:SetStatusBarTexture(TEXTURE)
-		self.hpbar:SetWidth(unitWidth)	self.hpbar:SetHeight(unitHeight)
-		self.hpbar:SetMinMaxValues(0, 100)
-		self.hpbar:SetPoint('TOPLEFT', self, 'TOPLEFT')
+		this.hpbar = CreateFrame('StatusBar', nil, this)
+		this.hpbar:SetFrameLevel(1)
+		this.hpbar:SetStatusBarTexture(TEXTURE)
+		this.hpbar:SetWidth(unitWidth)	this.hpbar:SetHeight(unitHeight)
+		this.hpbar:SetMinMaxValues(0, 100)
+		this.hpbar:SetPoint('TOPLEFT', this, 'TOPLEFT')
 		
-		self.hpbar:SetBackdrop(BACKDROP)
-		self.hpbar:SetBackdropColor(0, 0, 0, .6)
+		this.hpbar:SetBackdrop(BACKDROP)
+		this.hpbar:SetBackdropColor(0, 0, 0, .6)
 		
-		SmoothBar(self.hpbar)
+		SmoothBar(this.hpbar)
 			
 		-- mana statusbar
-		self.manabar = CreateFrame('StatusBar', nil, self)
-		self.manabar:SetFrameLevel(1)
-		self.manabar:SetStatusBarTexture(TEXTURE)
-		self.manabar:SetHeight(manaBarHeight)
-		self.manabar:SetWidth(unitWidth)		
-		self.manabar:SetPoint('TOPLEFT', self.hpbar, 'BOTTOMLEFT')
+		this.manabar = CreateFrame('StatusBar', nil, this)
+		this.manabar:SetFrameLevel(1)
+		this.manabar:SetStatusBarTexture(TEXTURE)
+		this.manabar:SetHeight(manaBarHeight)
+		this.manabar:SetWidth(unitWidth)		
+		this.manabar:SetPoint('TOPLEFT', this.hpbar, 'BOTTOMLEFT')
 		
-		self.manabar:SetBackdrop(BACKDROP)
-		self.manabar:SetBackdropColor(0, 0, 0)
+		this.manabar:SetBackdrop(BACKDROP)
+		this.manabar:SetBackdropColor(0, 0, 0)
 		
-		SmoothBar(self.manabar)
+		SmoothBar(this.manabar)
 		
 		-- cast bar --
-		self.castbar = CreateFrame('StatusBar', nil, self)
-		--self.castbar:SetFrameLevel(0)
-		self.castbar:SetStatusBarTexture(TEXTURE)
-		self.castbar:SetHeight(castBarHeight)
-		self.castbar:SetWidth((unitWidth + ccIconWidth + 4) - (self.castbar:GetHeight()))	
-		self.castbar:SetStatusBarColor(1, .4, 0)
-		self.castbar:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', self.castbar:GetHeight(), -3)
+		this.castbar = CreateFrame('StatusBar', nil, this)
+		--this.castbar:SetFrameLevel(0)
+		this.castbar:SetStatusBarTexture(TEXTURE)
+		this.castbar:SetHeight(castBarHeight)
+		this.castbar:SetWidth((unitWidth + ccIconWidth + 4) - (this.castbar:GetHeight()))	
+		this.castbar:SetStatusBarColor(1, .4, 0)
+		this.castbar:SetPoint('TOPLEFT', this, 'BOTTOMLEFT', this.castbar:GetHeight(), -3)
 		
-		self.castbar:SetBackdrop(BACKDROP)
-		self.castbar:SetBackdropColor(0, 0, 0, .6)	
+		this.castbar:SetBackdrop(BACKDROP)
+		this.castbar:SetBackdropColor(0, 0, 0, .6)	
 		
-		self.castbar.b = CreateBorder(nil, self.castbar, 9)	
+		this.castbar.b = CreateBorder(nil, this.castbar, 9)	
+		this.castbar.b:SetPadding(.4)
 		
-		self.castbar.iconborder = CreateFrame('Frame', nil, self.castbar)
-		self.castbar.iconborder:SetWidth(self.castbar:GetHeight()+1)	self.castbar.iconborder:SetHeight(self.castbar:GetHeight()+1)
-		self.castbar.iconborder:SetPoint('RIGHT', self.castbar, 'LEFT')
+		this.castbar.iconborder = CreateFrame('Frame', nil, this.castbar)
+		this.castbar.iconborder:SetWidth(this.castbar:GetHeight()+1)	this.castbar.iconborder:SetHeight(this.castbar:GetHeight()+1)
+		this.castbar.iconborder:SetPoint('RIGHT', this.castbar, 'LEFT')
 		
-		self.castbar.iconborder.border = CreateBorder(nil, self.castbar.iconborder, 8)
+		this.castbar.iconborder.border = CreateBorder(nil, this.castbar.iconborder, 8)
 		
-		self.castbar.icon = self.castbar.iconborder:CreateTexture(nil, 'ARTWORK')
-		self.castbar.icon:SetTexCoord(.078, .92, .079, .937)
-		self.castbar.icon:SetAllPoints()
-		self.castbar.icon:SetPoint('CENTER', self.castbar.iconborder, 'CENTER')
+		this.castbar.icon = this.castbar.iconborder:CreateTexture(nil, 'ARTWORK')
+		this.castbar.icon:SetTexCoord(.078, .92, .079, .937)
+		this.castbar.icon:SetAllPoints()
+		this.castbar.icon:SetPoint('CENTER', this.castbar.iconborder, 'CENTER')
 		
-		self.castbar.text = self.castbar:CreateFontString(nil, 'OVERLAY')
-		self.castbar.text:SetTextColor(1, 1, 1)
-		self.castbar.text:SetFont(STANDARD_TEXT_FONT, 8, 'OUTLINE')
-		--self.castbar.text:SetShadowOffset(1, -1)
-		self.castbar.text:SetShadowColor(0.4, 0.4, 0.4)
-		self.castbar.text:SetPoint('LEFT', self.castbar, 'LEFT', 1, 1)
+		this.castbar.text = this.castbar:CreateFontString(nil, 'OVERLAY')
+		this.castbar.text:SetTextColor(1, 1, 1)
+		this.castbar.text:SetFont(STANDARD_TEXT_FONT, 8, 'OUTLINE')
+		--this.castbar.text:SetShadowOffset(1, -1)
+		this.castbar.text:SetShadowColor(0.4, 0.4, 0.4)
+		this.castbar.text:SetPoint('LEFT', this.castbar, 'LEFT', 1, 1)
 		
 		
 		--[[
-		self.castbar.timer = self.castbar:CreateFontString(nil, 'OVERLAY')
-		self.castbar.timer:SetFont(STANDARD_TEXT_FONT, 8)
-		self.castbar.timer:SetTextColor(1, 1, 1)
-		self.castbar.timer:SetShadowOffset(1, -1)
-		self.castbar.timer:SetShadowColor(0, 0, 0)
-		self.castbar.timer:SetPoint('LEFT', self.castbar, 'RIGHT', 2, 1)
-		self.castbar.timer:SetText('1.5s')]]--
+		this.castbar.timer = this.castbar:CreateFontString(nil, 'OVERLAY')
+		this.castbar.timer:SetFont(STANDARD_TEXT_FONT, 8)
+		this.castbar.timer:SetTextColor(1, 1, 1)
+		this.castbar.timer:SetShadowOffset(1, -1)
+		this.castbar.timer:SetShadowColor(0, 0, 0)
+		this.castbar.timer:SetPoint('LEFT', this.castbar, 'RIGHT', 2, 1)
+		this.castbar.timer:SetText('1.5s')]]--
 		--------------
 
-		self.name = self:CreateFontString(nil, 'OVERLAY')
-		self.name:SetFont(STANDARD_TEXT_FONT, 11, 'OUTLINE')
-		self.name:SetTextColor(.8, .8, .8, .8)
-		self.name:SetPoint('CENTER', self.hpbar)	
+		this.name = this:CreateFontString(nil, 'OVERLAY')
+		this.name:SetFont(STANDARD_TEXT_FONT, 11, 'OUTLINE')
+		this.name:SetTextColor(.8, .8, .8, .8)
+		this.name:SetPoint('CENTER', this.hpbar)	
+		--this.name:SetPoint('RIGHT', this.hpbar, -2, 0)
 		
+		--this.hpText = this:CreateFontString(nil, 'OVERLAY')
+		--this.hpText:SetFont(STANDARD_TEXT_FONT, 7, 'OUTLINE')
+		--this.hpText:SetTextColor(.8, .8, .8, .8)
+		--this.hpText:SetPoint('LEFT', this.hpbar, 2, 0)
 		
 		---- RAID TARGET
-		self.raidTarget = CreateFrame('Frame', nil, self)
-		self.raidTarget:SetWidth(ccIconWidth-2) self.raidTarget:SetHeight(unitHeight-2)
-		self.raidTarget:SetPoint('CENTER', self,'TOPRIGHT', 0, -4)
-		self.raidTarget:SetFrameLevel(7)
+		this.raidTarget = CreateFrame('Frame', nil, this)
+		this.raidTarget:SetWidth(ccIconWidth-2) this.raidTarget:SetHeight(unitHeight-2)
+		this.raidTarget:SetPoint('CENTER', this,'TOPRIGHT', 0, -4)
+		this.raidTarget:SetFrameLevel(7)
 		
-		self.raidTarget.icon = self.raidTarget:CreateTexture(nil, 'ARTWORK')
-		self.raidTarget.icon:SetTexture([[Interface\TargetingFrame\UI-RaidTargetingIcons]])
-		self.raidTarget.icon:SetAllPoints()
+		this.raidTarget.icon = this.raidTarget:CreateTexture(nil, 'ARTWORK')
+		this.raidTarget.icon:SetTexture([[Interface\TargetingFrame\UI-RaidTargetingIcons]])
+		this.raidTarget.icon:SetAllPoints()
 		
 		
 		---- CC ------
-		self.cc = CreateFrame('Frame', name..'CC', self)
-		self.cc:SetWidth(ccIconWidth) self.cc:SetHeight(unitHeight)
-		self.cc:SetPoint('TOPLEFT', self,'TOPRIGHT', 3, 0)
+		this.cc = CreateFrame('Frame', name..'CC', this)
+		this.cc:SetWidth(ccIconWidth) this.cc:SetHeight(unitHeight)
+		this.cc:SetPoint('TOPLEFT', this,'TOPRIGHT', 3, 0)
 		
-		self.cc.border = CreateBorder(nil, self.cc, 13)
-		self.cc.border:SetFrameLevel(5)
+		this.cc.border = CreateBorder(nil, this.cc, 12.8, 1/4.5)
+		this.cc.border:SetFrameLevel(5)
 		
-		self.cc.icon = self.cc:CreateTexture(nil, 'ARTWORK')
-		self.cc.icon:SetAllPoints()
-		self.cc.icon:SetTexCoord(.1, .9, .25, .75)
+		this.cc.icon = this.cc:CreateTexture(nil, 'ARTWORK')
+		this.cc.icon:SetAllPoints()
+		this.cc.icon:SetTexCoord(.1, .9, .25, .75)
 		
-		self.cc.bg = self.cc:CreateTexture(nil, 'BACKGROUND')
-		self.cc.bg:SetTexture(0, 0, 0, .6)
-		self.cc.bg:SetAllPoints()
+		this.cc.bg = this.cc:CreateTexture(nil, 'BACKGROUND')
+		this.cc.bg:SetTexture(0, 0, 0, .6)
+		this.cc.bg:SetAllPoints()
 
 		-- dummy frame lvl 5 to draw text above cooldown
-		self.cc.durationFrame = CreateFrame('Frame', nil, self.cc)
-		self.cc.durationFrame:SetAllPoints()
-		self.cc.durationFrame:SetFrameLevel(6)
+		this.cc.durationFrame = CreateFrame('Frame', nil, this.cc)
+		this.cc.durationFrame:SetAllPoints()
+		this.cc.durationFrame:SetFrameLevel(6)
 		
-		self.cc.duration = self.cc.durationFrame:CreateFontString(nil, 'OVERLAY')--, 'GameFontNormalSmall')
-		self.cc.duration:SetFont(STANDARD_TEXT_FONT, 10, 'OUTLINE')
-		self.cc.duration:SetTextColor(.9, .9, .2, 1)
-		self.cc.duration:SetShadowOffset(1, -1)
-		self.cc.duration:SetShadowColor(0, 0, 0)
-		self.cc.duration:SetPoint('BOTTOM', self.cc, 'BOTTOM', 0, 1)
+		this.cc.duration = this.cc.durationFrame:CreateFontString(nil, 'OVERLAY')--, 'GameFontNormalSmall')
+		this.cc.duration:SetFont(STANDARD_TEXT_FONT, 10, 'OUTLINE')
+		this.cc.duration:SetTextColor(.9, .9, .2, 1)
+		this.cc.duration:SetShadowOffset(1, -1)
+		this.cc.duration:SetShadowColor(0, 0, 0)
+		this.cc.duration:SetPoint('BOTTOM', this.cc, 'BOTTOM', 0, 1)
 		
 		-- cooldown
-		self.cc.cd = CreateCooldown(self.cc, .58, true)
-		self.cc.cd:SetAlpha(1)
+		this.cc.cd = CreateCooldown(this.cc, .58, true)
+		this.cc.cd:SetAlpha(1)
 	
-		return self
+		return this
 	end
 	-------------------------------------------------------------------------------
 	local ISWidth, ISHeight, arrowWidth, arrowHeight = 26, 20, 66, 14
 	CreateIncomingSpellsFrame = function(parentFrame)
-		local self = CreateFrame('Frame', nil, parentFrame)
-		self:SetWidth(ISWidth)
-		self:SetHeight(ISHeight)
+		local this = CreateFrame('Frame', nil, parentFrame)
+		this:SetWidth(ISWidth)
+		this:SetHeight(ISHeight)
 		
-		self.icon = self:CreateTexture(nil, 'OVERLAY')
-		self.icon:SetAllPoints()	
-		self.icon:SetTexCoord(.1, .9, .25, .75)
+		this.icon = this:CreateTexture(nil, 'OVERLAY')
+		this.icon:SetAllPoints()	
+		this.icon:SetTexCoord(.1, .9, .25, .75)
 		
-		self.border = CreateBorder(nil, self, 16)
+		this.border = CreateBorder(nil, this, 16)
 		
-		self.arrow = CreateFrame('statusbar', nil, self)
-		self.arrow:SetStatusBarTexture(ISTEXTURE)
-		self.arrow:SetFrameLevel(1)
-		self.arrow:SetWidth(arrowWidth)
-		self.arrow:SetHeight(arrowHeight)
-		self.arrow:SetPoint('TOP', self, 'BOTTOM', -1, 0)
+		this.arrow = CreateFrame('statusbar', nil, this)
+		this.arrow:SetStatusBarTexture(ISTEXTURE)
+		this.arrow:SetFrameLevel(1)
+		this.arrow:SetWidth(arrowWidth)
+		this.arrow:SetHeight(arrowHeight)
+		this.arrow:SetPoint('TOP', this, 'BOTTOM', -1, 0)
 
-		self.arrow.bg = self.arrow:CreateTexture(nil, 'BACKGROUND')
-		self.arrow.bg:SetTexture(ISTEXTURE)
-		self.arrow.bg:SetAllPoints()
+		this.arrow.bg = this.arrow:CreateTexture(nil, 'BACKGROUND')
+		this.arrow.bg:SetTexture(ISTEXTURE)
+		this.arrow.bg:SetAllPoints()
 		
-		self.caster = self:CreateFontString(nil, 'OVERLAY')
-		self.caster:SetFont(STANDARD_TEXT_FONT, 16, 'OUTLINE')
-		self.caster:SetPoint('RIGHT', self.arrow, 'TOPLEFT', 4, 4)
+		this.caster = this:CreateFontString(nil, 'OVERLAY')
+		this.caster:SetFont(STANDARD_TEXT_FONT, 16, 'OUTLINE')
+		this.caster:SetPoint('RIGHT', this.arrow, 'TOPLEFT', 4, 4)
 		
-		self.you = self:CreateFontString(nil, 'OVERLAY')
-		self.you:SetFont(STANDARD_TEXT_FONT, 16, 'OUTLINE')
-		self.you:SetPoint('LEFT', self.arrow, 'TOPRIGHT', -2, 4)
-		self.you:SetText("You")
+		this.you = this:CreateFontString(nil, 'OVERLAY')
+		this.you:SetFont(STANDARD_TEXT_FONT, 16, 'OUTLINE')
+		this.you:SetPoint('LEFT', this.arrow, 'TOPRIGHT', -2, 4)
+		this.you:SetText("You")
 		
-		self.button = CreateFrame('Button', nil, self)
-		self.button:SetPoint('TOPLEFT', self.caster, 'TOPLEFT')
-		self.button:SetPoint('BOTTOMRIGHT', self.you, 'BOTTOMRIGHT')
+		this.button = CreateFrame('Button', nil, this)
+		this.button:SetPoint('TOPLEFT', this.caster, 'TOPLEFT')
+		this.button:SetPoint('BOTTOMRIGHT', this.you, 'BOTTOMRIGHT')
 		
-		self.button:SetScript('OnClick', function()
+		this.button:SetScript('OnClick', function()
 			if this.target then
 				TargetByName(this.target, true)
 			end
 		end)
 		
-		return self
+		return this
 	end
 	-------------------------------------------------------------------------------
 	

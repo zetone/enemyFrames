@@ -61,14 +61,15 @@
 			plate.castBar:SetPoint('TOP', health, 'BOTTOM', 0, -12)
 			
 			plate.castBar.border = CreateBorder(nil, plate.castBar, 12)
-			plate.castBar.border:SetPadding(.9)
+			plate.castBar.border:SetPadding(1.2)
 
 			plate.castBar.text = plate.castBar:CreateFontString(nil, 'OVERLAY')
 			plate.castBar.text:SetTextColor(1, 1, 1)
 			plate.castBar.text:SetFont(STANDARD_TEXT_FONT, 10)
 			plate.castBar.text:SetShadowOffset(1, -1)
 			plate.castBar.text:SetShadowColor(0, 0, 0)
-			plate.castBar.text:SetPoint('LEFT', plate.castBar, 2, 0)
+			plate.castBar.text:SetPoint('LEFT', plate.castBar, 2, 1)
+			plate.castBar.text:SetText'Polymorph'
 
 			plate.castBar.timer = plate.castBar:CreateFontString(nil, 'OVERLAY')
 			plate.castBar.timer:SetTextColor(1, 1, 1)
@@ -76,7 +77,7 @@
 			plate.castBar.timer:SetPoint('RIGHT', plate.castBar)
 					
 			plate.castBar.iconborder = CreateFrame('Frame', nil, plate.castBar)
-			plate.castBar.iconborder:SetWidth(14) plate.castBar.iconborder:SetHeight(14)
+			plate.castBar.iconborder:SetWidth(15) plate.castBar.iconborder:SetHeight(15)
 			plate.castBar.iconborder:SetPoint('RIGHT', plate.castBar, 'LEFT', -4, 0)
 			
 			plate.castBar.icon = plate.castBar.iconborder:CreateTexture(nil, 'OVERLAY')--'OVERLAY', nil, 7)
@@ -108,12 +109,12 @@
 	end
 	-------------------------------------------------------------------------------
 	local addBuffs = function(plate, name)
-		local maxBuffs = 3
+		local maxBuffs = 4
 		
 		if not plate.buffs then			
 			plate.buffs = {}
 			for i = 1, maxBuffs do
-				local buffWidth, buffHeight = 24, 16
+				local buffWidth, buffHeight = 20, 16--20, 16
 				
 				plate.buffs[i] = CreateFrame('Frame', 'NamePlateBuff'..i, plate)
 				plate.buffs[i]:SetWidth(buffWidth) plate.buffs[i]:SetHeight(buffHeight)
@@ -136,21 +137,32 @@
 				plate.buffs[i].duration:SetTextColor(.9, .9, .2, 1)
 				plate.buffs[i].duration:SetPoint('CENTER', plate.buffs[i], 'BOTTOM', 0, -2)
 				
+				-- cooldown
+				plate.buffs[i].cdframe = CreateFrame('Frame', 'platebuff'..i..'cdframe', plate.buffs[i])
+				plate.buffs[i].cdframe:SetWidth(buffWidth) plate.buffs[i].cdframe:SetHeight(buffHeight)
+				plate.buffs[i].cdframe:SetFrameLevel(1)
+				plate.buffs[i].cdframe:SetPoint('CENTER', plate.buffs[i], 0, -1)
+				plate.buffs[i].cd = CreateCooldown(plate.buffs[i].cdframe, .46, true)
+				plate.buffs[i].cd:SetAlpha(1)				
 			end
 		end
 		
-        local v = SPELLCASTINGCOREgetPrioBuff(name, maxBuffs)
+        
         for i = 1, maxBuffs do
             plate.buffs[i]:Hide()
         end
-
+		
+		local v = SPELLCASTINGCOREgetPrioBuff(name, maxBuffs)
 		for i, e in pairs(v) do
 			plate.buffs[i]:Show()
 			plate.buffs[i].icon:SetTexture(e.icon)
 			plate.buffs[i].duration:SetText(getTimerLeft(e.timeEnd))
 
 			local r, g, b = e.border[1], e.border[2], e.border[3]
-			plate.buffs[i].border:SetColor( r, g, b)			
+			plate.buffs[i].border:SetColor( r, g, b)
+
+			plate.buffs[i].cd:SetTimers(e.timeStart, e.timeEnd)
+			plate.buffs[i].cd:Show()			
 		end
 
 	end
@@ -178,11 +190,11 @@
 					addRaidTarget(plate, player['name'], raidTargets)
 					-- class colors
 					addClassColor(health, player['class'])
-					-- castbars	--either all or enemies only
-					--addCastbar(plate, SPELLCASTINGCOREgetCast(n))--player['castinfo'])
 				end
 				-- everyone's casts
-				addCastbar(plate, n)
+				if ENEMYFRAMESPLAYERDATA['nameplatesCastbar'] then
+					addCastbar(plate, n)
+				end
 				-- everyone's auras
 				if ENEMYFRAMESPLAYERDATA['nameplatesdebuffs'] then
 					addBuffs(plate, n)

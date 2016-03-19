@@ -2,24 +2,31 @@
 	local borderTexture = [[Interface\AddOns\enemyFrames\globals\resources\border.tga]]
 	local BACKDROP 	= {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]],}
 		
-	local tcutsize = 1/4
-	local sides = 
-	{
-		[1] = {0, tcutsize, tcutsize, 1-tcutsize},	[2] = {1-tcutsize, 1, tcutsize, 1-tcutsize}, -- left right	
-		[3] = {tcutsize,1-tcutsize, 0, tcutsize},	[4] = {tcutsize, 1-tcutsize, 1-tcutsize, 1}, -- top bottom
-	}
+	local defaultTcut = 1/4.2
 	
-	local corners = 
-	{
-		[1] = {{0, tcutsize, 0, tcutsize}, 'TOPLEFT'}, 	[2] = {{1-tcutsize, 1, 0, tcutsize}, 'TOPRIGHT'},
-		[3] = {{0, tcutsize, 1-tcutsize, 1}, 'BOTTOMLEFT'},	[4] = {{1-tcutsize, 1, 1-tcutsize, 1}, 'BOTTOMRIGHT'},
-	}
+	local getTextCoords = function(tcutsize)
+		local sides = 
+		{
+			[1] = {0, tcutsize, tcutsize, 1-tcutsize},	[2] = {1-tcutsize, 1, tcutsize, 1-tcutsize}, -- left right	
+			[3] = {tcutsize,1-tcutsize, 0, tcutsize},	[4] = {tcutsize, 1-tcutsize, 1-tcutsize, 1}, -- top bottom
+		}		
+		local corners = 
+		{
+			[1] = {{0, tcutsize, 0, tcutsize}, 'TOPLEFT'}, 	[2] = {{1-tcutsize, 1, 0, tcutsize}, 'TOPRIGHT'},
+			[3] = {{0, tcutsize, 1-tcutsize, 1}, 'BOTTOMLEFT'},	[4] = {{1-tcutsize, 1, 1-tcutsize, 1}, 'BOTTOMRIGHT'},
+		}
+		
+		return corners, sides
+	end
 	-------------------------------------------------------------------------------
-	CreateBorder = function(name, parent, size)
+	CreateBorder = function(name, parent, size, tcut)
 		local this = CreateFrame('Frame', name, parent)
 		this:SetAllPoints()	
 		this:SetFrameLevel(parent:GetFrameLevel()+1)		
 		
+		local tcutsize = tcut and tcut or defaultTcut
+		
+		local corners, sides = getTextCoords(tcutsize)
 		-- corners
 		this.c = {}
 		for i = 1, 4 do
@@ -63,8 +70,9 @@
 		end				
 		this:SetColor(.1, .1, .1)	
 		
-		function this:SetPadding(spacing)
-			local x0, x1, y0, y1 = -spacing, spacing, -spacing, spacing
+		function this:SetPadding(x, y)
+			local spacingx, spacingy = x, y and y or x
+			local x0, x1, y0, y1 = -spacingx, spacingx, -spacingy, spacingy
 			for i = 1, 4 do
 				local xo, yo = (i == 1 or i == 3) and -1/8 or 1/8, (i == 1 or i == 2) and 1/8 or -1/8
 				local x, y = (i == 1 or i == 3) and x0 or x1, (i == 1 or i == 2) and y1 or y0

@@ -249,6 +249,7 @@ local function refreshBuff(tar, b, s)
 		for k, v in pairs(buffList) do
 			if v.caster == tar and v.spell == j then
 				newbuff(tar, j, s, false)
+				return
 			end
 		end
 	end
@@ -619,11 +620,23 @@ local fear = function()
 end
 
 ----------------------------------------------------------------------------
-local parsingCheck = function(out)
-	if not out then
-		--print('Parsing failed:')
-		--print(event)
-		--print(arg1)
+local singleEventdebug = function()
+	--local c = '(.+) casts Grounding Totem.'
+	--local g = '(.+) gains Grounding Totem'
+	local i = 'interrupt'
+	local a = 'Grounding Totem'
+	
+	if string.find(arg1, i) or string.find(arg1, a) then
+		print(event)
+		print(arg1)
+	end
+end
+
+local parsingCheck = function(out, display)
+	if (not out) and display then
+		print('Parsing failed:')
+		print(event)
+		print(arg1)
 	end
 end
 
@@ -634,6 +647,8 @@ local combatlogParser = function()
 	local dSpell 	= 'CHAT_MSG_SPELL_(.+)'					local fdSpell 		= string.find(event, dSpell)	
 	local death		= 'CHAT_MSG_COMBAT_(.+)_DEATH'			local fdeath 		= string.find(event, death)
 	local mEmote	= 'CHAT_MSG_MONSTER_EMOTE'				local fmEmote		= string.find(event, mEmote)
+	
+	--if arg1 then singleEventdebug() end -- testin
 	
 	-- periodic damage/buff spells
 	if fpSpell then
@@ -652,8 +667,8 @@ local combatlogParser = function()
 		parsingCheck(fear())
 	else
 		--unparsed event!
-		print('untreated event')
-		parsingCheck(false)
+		--print('untreated event')
+		--parsingCheck(false, true)
 	end
 end
 
@@ -765,6 +780,8 @@ f:RegisterEvent'CHAT_MSG_SPELL_BREAK_AURA'
 f:RegisterEvent'CHAT_MSG_SPELL_AURA_GONE_SELF'
 f:RegisterEvent'CHAT_MSG_SPELL_AURA_GONE_PARTY'
 f:RegisterEvent'CHAT_MSG_SPELL_AURA_GONE_OTHER'
+f:RegisterEvent'CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF'
+f:RegisterEvent'CHAT_MSG_SPELL_DAMAGESHIELDS_ON_OTHERS'
 
 f:RegisterEvent'CHAT_MSG_COMBAT_HOSTILE_DEATH'
 f:RegisterEvent'CHAT_MSG_COMBAT_FRIENDLY_DEATH'
@@ -774,7 +791,9 @@ f:RegisterEvent'CHAT_MSG_COMBAT_FRIENDLY_DEATH'
 f:SetScript('OnEvent', function()
 	if event == 'PLAYER_ENTERING_WORLD' then
 		tableMaintenance(true)
-	else combatlogParser()  end
+	else 
+		combatlogParser()  
+	end
 end)
 
 --
