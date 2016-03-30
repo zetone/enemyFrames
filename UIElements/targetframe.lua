@@ -8,6 +8,7 @@
 	raidTargetFrame.icon:SetTexture([[Interface\TargetingFrame\UI-RaidTargetingIcons]])
 	raidTargetFrame.icon:SetAllPoints()
 	-------------------------------------------------------------------------------
+	local refreshInterval, nextRefresh = 1/60, 0
 	local TEXTURE = [[Interface\AddOns\modui\statusbar\texture\sb.tga]]
     local BACKDROP = {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]],}
 	
@@ -23,7 +24,7 @@
 	
 	TargetFrame.cast:SetPoint('TOP', TargetFrame, 'BOTTOM', 0, -45)
     TargetFrame.cast:SetValue(0)
-    --TargetFrame.cast:Hide()
+    TargetFrame.cast:Hide()
 	
 	TargetFrame.cast.border = CreateBorder(nil, TargetFrame.cast, 6.5, 1/8.5)
 	TargetFrame.cast.border:SetPadding(2.5, 1.7)
@@ -41,7 +42,7 @@
     TargetFrame.cast.timer:SetFont(STANDARD_TEXT_FONT, 9, 'OUTLINE')
     --TargetFrame.cast.timer:SetShadowOffset(1, -1)
     TargetFrame.cast.timer:SetShadowColor(0, 0, 0)
-    TargetFrame.cast.timer:SetPoint('RIGHT', TargetFrame.cast, -1, 1)
+    TargetFrame.cast.timer:SetPoint('RIGHT', TargetFrame.cast, -1, .5)
     TargetFrame.cast.timer:SetText'3.5s'
 
     TargetFrame.cast.icon = TargetFrame.cast:CreateTexture(nil, 'OVERLAY', nil, 7)
@@ -87,6 +88,18 @@
 			end
 		end
     end
+	local castbarFrame = CreateFrame'Frame'
+	castbarFrame:SetScript('OnUpdate', function()
+		nextRefresh = nextRefresh - arg1
+		if nextRefresh < 0 then
+			if ENEMYFRAMESPLAYERDATA['targetFrameCastbar'] then
+				showCast()
+			else
+				TargetFrame.cast:Hide()
+			end
+			nextRefresh = refreshInterval			
+		end
+	end)
 	-------------------------------------------------------------------------------
 	local function raidTargetOnUpdate()
 		local rt = ENEMYFRAMECOREGetRaidTarget()
@@ -98,8 +111,6 @@
 		else
 			raidTargetFrame:Hide()
 		end
-		
-		showCast()
 	end
 	-------------------------------------------------------------------------------
 	local f = CreateFrame'Frame'	
