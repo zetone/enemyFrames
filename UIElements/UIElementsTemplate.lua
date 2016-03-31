@@ -77,14 +77,12 @@
 		this.castbar.text:SetPoint('LEFT', this.castbar, 'LEFT', 1, 1)
 		
 		
-		--[[
 		this.castbar.timer = this.castbar:CreateFontString(nil, 'OVERLAY')
-		this.castbar.timer:SetFont(STANDARD_TEXT_FONT, 8)
+		this.castbar.timer:SetFont(STANDARD_TEXT_FONT, 7, 'OUTLINE')
 		this.castbar.timer:SetTextColor(1, 1, 1)
-		this.castbar.timer:SetShadowOffset(1, -1)
-		this.castbar.timer:SetShadowColor(0, 0, 0)
-		this.castbar.timer:SetPoint('LEFT', this.castbar, 'RIGHT', 2, 1)
-		this.castbar.timer:SetText('1.5s')]]--
+		this.castbar.timer:SetShadowColor(0.4, 0.4, 0.4)
+		this.castbar.timer:SetPoint('RIGHT', this.castbar, 'RIGHT', 0, 0)
+		this.castbar.timer:SetText('1.5s')
 		--------------
 
 		this.name = this:CreateFontString(nil, 'OVERLAY')

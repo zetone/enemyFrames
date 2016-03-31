@@ -78,6 +78,8 @@
 		['skull'] 		= {.75, 1, .25, .5},
 	}
 	SPELLINFO_TRADECASTS_TO_TRACK = {
+		-- MISC
+		['Fishing']									= {['icon'] = [[Interface\Icons\Trade_Fishing]], 	['casttime'] = 30},
 		-- ALCHEMY
 		['Greater Healing Potion']					= {['icon'] = [[Interface\Icons\Inv_potion_52]], ['casttime'] = 3},
 		['Greater Fire Protection Potion']			= {['icon'] = [[Interface\Icons\Inv_potion_24]], ['casttime'] = 3},
@@ -340,7 +342,6 @@
 
 	SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK = {
 		-- MISC
-		['Fishing']					= {['icon'] = [[Interface\Icons\Trade_Fishing]], 			['casttime'] = 30},
 		
 		-- DRUID
 		['Hurricane']				= {['icon'] = [[Interface\Icons\Spell_nature_cyclone]], 	['casttime'] = 9.5, 	['tick'] = 1},

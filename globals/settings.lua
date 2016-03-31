@@ -19,6 +19,7 @@ ENEMYFRAMESPLAYERDATA =
 	['mouseOver']			= false,
 	['enableOutdoors']		= false,
 	['incomingSpells']		= false,
+	['castTimers']			= false,
 	
 	['offX']				= 0,
 	['offY']				= 0,
@@ -36,15 +37,16 @@ local checkBoxFeaturesN, checkBoxFeatures  = 3, { 	[1] = {['id'] = 'enableOutdoo
 													[2] = {['id'] = 'mouseOver', 			['label'] = 'Mouseover cast on frames'},	
 													[3] = {['id'] = 'incomingSpells', 		['label'] = 'Display Incoming Spells (BGs only)'},
 													}
-local checkBoxOptionalsN, checkBoxOptionals  = 4, { [1] = {['id'] = 'displayNames', 		['label'] = 'Display names'}, 
+local checkBoxOptionalsN, checkBoxOptionals  = 5, { [1] = {['id'] = 'displayNames', 		['label'] = 'Display names'}, 
 													--[2] = {['id'] = 'displayHealthValues', 	['label'] = 'Display Health %'}, 
 													[2] = {['id'] = 'displayManabar', 		['label'] = 'Display mana bar'},
-													[3] = {['id'] = 'displayOnlyNearby', 	['label'] = 'Display nearby units only'},
-													[4] = {['id'] = 'targetFrameCastbar', 	['label'] = 'Display cast bar on Target Frame'},
+													[3] = {['id'] = 'castTimers', 			['label'] = 'Display cast timers'},
+													[4] = {['id'] = 'displayOnlyNearby', 	['label'] = 'Display nearby units only'},
+													[5] = {['id'] = 'targetFrameCastbar', 	['label'] = 'Display cast bar on Target Frame'},
 													}
 													
 local checkBoxPlatesOptN, checkBoxPlatesOpt  = 2, { [1] = {['id'] = 'nameplatesdebuffs', 	['label'] = 'Enable nameplate debuffs'},
-													[2] = {['id'] = 'nameplatesCastbar', 	['label'] = 'Enable nameplate cast bars'},
+													[2] = {['id'] = 'nameplatesCastbar', 	['label'] = 'Enable nameplate cast bar'},
 													}
 local enemyFramesDisplayShow = false
 
@@ -68,7 +70,7 @@ settings:Hide()
 
 settings.x = CreateFrame('Button', 'enemyFramesSettingsCloseButton', settings, 'UIPanelCloseButton')
 settings.x:SetPoint('TOPRIGHT',  -6, -6)
-settings.x:SetScript('OnClick', function() settings:Hide() if not enemyFramesDisplayShow then _G['enemyFrameDisplay']:Hide() end INCOMINGSPELLSsettings(false) end)
+settings.x:SetScript('OnClick', function() settings:Hide() if not enemyFramesDisplayShow then _G['enemyFrameDisplay']:Hide() end INCOMINGSPELLSsettings(false) TARGETFRAMECASTBARsettings(false) end)
 
 settings.header = settings:CreateTexture(nil, 'ARTWORK')
 settings.header:SetWidth(320) settings.header:SetHeight(64)
@@ -266,6 +268,7 @@ function setupSettings()
 	
 	ENEMYFRAMESsettings()
 	INCOMINGSPELLSsettings(ENEMYFRAMESPLAYERDATA['incomingSpells'])
+	TARGETFRAMECASTBARsettings(true)
 end
 
 local function eventHandler()

@@ -26,6 +26,13 @@
     TargetFrame.cast:SetValue(0)
     TargetFrame.cast:Hide()
 	
+	TargetFrame.cast:SetMovable(true) TargetFrame.cast:SetUserPlaced(true)
+	TargetFrame.cast:SetClampedToScreen(true)
+	TargetFrame.cast:RegisterForDrag'LeftButton' TargetFrame.cast:EnableMouse(true)
+	local castbarmoveable = false
+	TargetFrame.cast:SetScript('OnDragStart', function() if castbarmoveable then this:StartMoving() end end)
+	TargetFrame.cast:SetScript('OnDragStop', function() if castbarmoveable then this:StopMovingOrSizing() end end)
+	
 	TargetFrame.cast.border = CreateBorder(nil, TargetFrame.cast, 6.5, 1/8.5)
 	TargetFrame.cast.border:SetPadding(2.5, 1.7)
 
@@ -35,7 +42,7 @@
     --TargetFrame.cast.text:SetShadowOffset(1, -1)
     TargetFrame.cast.text:SetShadowColor(0, 0, 0)
     TargetFrame.cast.text:SetPoint('LEFT', TargetFrame.cast, 2, .5)
-    TargetFrame.cast.text:SetText'Evocation'
+    TargetFrame.cast.text:SetText('drag-me')
 
     TargetFrame.cast.timer = TargetFrame.cast:CreateFontString(nil, 'OVERLAY')
     TargetFrame.cast.timer:SetTextColor(1, 1, 1)
@@ -49,7 +56,7 @@
     TargetFrame.cast.icon:SetWidth(18) TargetFrame.cast.icon:SetHeight(16)
     TargetFrame.cast.icon:SetPoint('RIGHT', TargetFrame.cast, 'LEFT', -8, 0)
     TargetFrame.cast.icon:SetTexCoord(.1, .9, .15, .85)
-	TargetFrame.cast.icon:SetTexture([[Interface\Icons\Spell_nature_polymorph]])
+	TargetFrame.cast.icon:SetTexture([[Interface\Icons\Inv_misc_gem_sapphire_01]])
 	
 	local ic = CreateFrame('Frame', nil, TargetFrame.cast)
     ic:SetAllPoints(TargetFrame.cast.icon)
@@ -67,7 +74,11 @@
 	end
 	-------------------------------------------------------------------------------
 	local showCast = function()
-        TargetFrame.cast:Hide()
+		if castbarmoveable then
+			TargetFrame.cast:Show()
+		else
+			TargetFrame.cast:Hide()
+		end
 		if UnitExists'target' then
 			local v = SPELLCASTINGCOREgetCast(UnitName'target')
 			if v ~= nil then
@@ -100,6 +111,10 @@
 			nextRefresh = refreshInterval			
 		end
 	end)
+	
+	function TARGETFRAMECASTBARsettings(b)
+		castbarmoveable = b
+	end
 	-------------------------------------------------------------------------------
 	local function raidTargetOnUpdate()
 		local rt = ENEMYFRAMECOREGetRaidTarget()

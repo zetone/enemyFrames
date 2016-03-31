@@ -276,6 +276,13 @@ local function optionals()
 			units[i].hpbar:SetHeight(unitHeight - manaBarHeight)
 			units[i].manabar:Show()
 		end
+		
+		-- display cast timer
+		if not ENEMYFRAMESPLAYERDATA['castTimers'] then
+			units[i].castbar.timer:Hide()
+		else
+			units[i].castbar.timer:Show()
+		end
 	end
 end
 local function setccIcon(p)

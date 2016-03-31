@@ -178,9 +178,11 @@ local newCast = function(caster, spell, channel)
 		if SPELLINFO_CHANNELED_HEALS_SPELLCASTS_TO_TRACK[spell] ~= nil then info = SPELLINFO_CHANNELED_HEALS_SPELLCASTS_TO_TRACK[spell]
 		elseif SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[spell] ~= nil then info = SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[spell] end
 	else
-		if SPELLINFO_SPELLCASTS_TO_TRACK[spell] ~= nil then info = SPELLINFO_SPELLCASTS_TO_TRACK[spell] 
-		elseif SPELLINFO_TRADECASTS_TO_TRACK[spell] ~= nil then info = SPELLINFO_TRADECASTS_TO_TRACK[spell] end
+		if SPELLINFO_SPELLCASTS_TO_TRACK[spell] ~= nil then info = SPELLINFO_SPELLCASTS_TO_TRACK[spell] end
 	end
+	
+	if SPELLINFO_TRADECASTS_TO_TRACK[spell] ~= nil then info = SPELLINFO_TRADECASTS_TO_TRACK[spell] end
+	
 	if info ~= nil then
 		if not checkForChannels(caster, spell) then
 			removeDoubleCast(caster)
@@ -291,8 +293,15 @@ local CastCraftPerform = function()
 		local m = fperform and perform or fbperform and bperform
 		local c = gsub(arg1, m, '%1')
 		local s = gsub(arg1, m, '%2')
-		newCast(c, s, true)
+		newCast(c, s, fperform and true or bperform and false)
 		
+	-- object spawn casts (totems, traps, etc)
+	elseif fcast then
+		local m = cast
+		local c = gsub(arg1, m, '%1')
+		--local s = gsub(arg1, m, '%2')
+		
+		forceHideTableItem(casts, c, nil)
 		--on standby
 		--[[ finished casts CC(?)	
 	elseif fpcastFin or fcastFin then
@@ -332,7 +341,7 @@ local handleHeal = function()
 		local s = gsub(arg1, m, '%2')
 		
 		if SPELLINFO_INSTANT_SPELLCASTS_TO_TRACK[s] then
-			forceHideTableItem(casts, s, nil)
+			forceHideTableItem(casts, c, nil)
 		end
 	end
 	
