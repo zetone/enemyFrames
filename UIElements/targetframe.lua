@@ -18,11 +18,10 @@
     TargetFrame.cast:SetBackdrop(BACKDROP)
     TargetFrame.cast:SetBackdropColor(0, 0, 0)
     TargetFrame.cast:SetHeight(10)
-    TargetFrame.cast:SetPoint('LEFT', TargetFrame, 32, 0)
-    TargetFrame.cast:SetPoint('RIGHT', TargetFrame, -50, 0)
-    TargetFrame.cast:SetPoint('TOP', TargetFrame, 'BOTTOM', 0, -2)
+	TargetFrame.cast:SetWidth(160)
+	--TargetFrame.cast:ClearAllPoints()
+	TargetFrame.cast:SetPoint('LEFT', TargetFrame, 'LEFT', 26, -45)
 	
-	TargetFrame.cast:SetPoint('TOP', TargetFrame, 'BOTTOM', 0, -45)
     TargetFrame.cast:SetValue(0)
     TargetFrame.cast:Hide()
 	
