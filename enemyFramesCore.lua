@@ -15,7 +15,7 @@ local refreshUnits = true
 local playerList = {}
 local raidTargets = {}
 local prioMembers = {}
-local nearbyList, notnearbyList = {}, {}
+local nearbyList = {}
 local maxUnitsDisplayed = 15
 -- DUMMY FRAME
 local f = CreateFrame('Frame', 'enemyFramesCore', UIParent)
@@ -48,6 +48,7 @@ local function fillPlayerList()
 	for k, v in pairs(playerList) do
 		if l[v['name']] == nil then	
 			playerList[v['name']] = nil	
+			nearbyList[v['name']] = nil	
 				
 			refreshUnits = true 
 		end
@@ -355,7 +356,7 @@ local function initializeValues()
 	playerList = {}
 	raidTargets = {}
 	prioMembers = {}
-	nearbyList, notnearbyList = {}, {}
+	nearbyList = {}
 		
 	local maxUnits = bgs[GetZoneText()] and bgs[GetZoneText()] or ENEMYFRAMESPLAYERDATA['enableOutdoors'] and maxUnitsDisplayed or nil
 	if maxUnits then
