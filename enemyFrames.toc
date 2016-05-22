@@ -18,6 +18,7 @@ UIElements\targetframe.lua
 UIElements\customCooldown.lua
 UIElements\UIElementsTemplate.lua
 UIElements\incomingSpells.lua
+UIElements\pvpmap.lua
 
 enemyFrames.lua
 enemyFramesCore.lua

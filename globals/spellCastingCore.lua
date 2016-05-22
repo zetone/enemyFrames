@@ -410,7 +410,7 @@ local GainAfflict = function()
 		
 		s = auxS
 		
-		-- spell interrupting debuffs (stuns, incapacitate ...)
+		-- spell interrupting debuffs (stuns, incapacitates ...)
 		if SPELLINFO_INTERRUPTS_TO_TRACK[s] then
 			forceHideTableItem(casts, c, nil)
 		end
@@ -544,7 +544,7 @@ local channelDot = function()
 	local channelpDot 	= '(.+) suffers (.+) from your (.+).'		local fchannelpDot	= string.find(arg1, channelpDot)
 	local pchannelDot 	= "You suffer (.+) from (.+)'s (.+)."		local fpchannelDot = string.find(arg1, pchannelDot)
 				
-	local MDrain = "(.+)\'s (.+) drains (.+) Mana from"				local fMDrain = string.find(arg1, MDrain)
+	local MDrain = '(.+)\'s (.+) drains (.+) Mana from' 			local fMDrain = string.find(arg1, MDrain)
 	
 	-- channeling dmg spells on other (mind flay, life drain(?))
 	if fchannelDot then
@@ -575,6 +575,7 @@ local channelDot = function()
 		local c = gsub(arg1, m, '%1')
 		local s = gsub(arg1, m, '%2')
 		
+		--print(arg1)
 		if SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[s] then
 			newCast(c, s, true)
 		end	
@@ -630,12 +631,10 @@ end
 
 ----------------------------------------------------------------------------
 local singleEventdebug = function()
-	--local c = '(.+) casts Grounding Totem.'
-	--local g = '(.+) gains Grounding Totem'
-	local i = 'interrupt'
-	local a = 'Grounding Totem'
+	local m = '(.+)\'s Drain Mana drains (.+) Mana from (.+). (.+) gains (.+) Mana.'
+	local fa = '(.+) gains (.+) health from (.+)\'s First Aid.'
 	
-	if string.find(arg1, i) or string.find(arg1, a) then
+	if string.find(arg1, m) or string.find(arg1, fa) then
 		print(event)
 		print(arg1)
 	end

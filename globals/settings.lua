@@ -7,26 +7,31 @@ tlength = function(t)	local i = 0 for k, j in ipairs(t) do i = i + 1 end return 
 
 ENEMYFRAMESPLAYERDATA = 
 {
-	['defaultIcon'] 		= 'rank',
-	['scale']				= 1,
-	['groupsize']			= 5,
-	['layout']				= 'block',
-	['frameMovable'] 		= true,
-	['displayNames']		= true,
-	['displayHealthValues'] = false,
-	['displayManabar']		= false,
-	['displayOnlyNearby']	= false,
-	['mouseOver']			= false,
-	['enableOutdoors']		= false,
-	['incomingSpells']		= false,
-	['castTimers']			= false,
+	-- options
+	['defaultIcon'] 			= 'rank',
+	['scale']					= 1,
+	['groupsize']				= 5,
+	['layout']					= 'block',
+	['frameMovable'] 			= true,
+	-- features
+	['mouseOver']				= false,
+	['enableOutdoors']			= false,
+	['incomingSpells']			= false,
+	-- display
+	['displayNames']			= true,
+	--['displayHealthValues'] = false,
+	['displayManabar']			= false,
+	['displayOnlyNearby']		= false,
+	['castTimers']				= false,
+	['targetFrameCastbar']		= true,
+	-- nameplates
+	['nameplatesClassColor'] 	= true,
+	['nameplatesdebuffs'] 		= true,
+	['nameplatesCastbar']		= true,
+	
 	
 	['offX']				= 0,
 	['offY']				= 0,
-	
-	['nameplatesdebuffs'] 	= true,
-	['nameplatesCastbar']	= true,
-	['targetFrameCastbar']	= true,
 }
 
 
@@ -45,8 +50,9 @@ local checkBoxOptionalsN, checkBoxOptionals  = 5, { [1] = {['id'] = 'displayName
 													[5] = {['id'] = 'targetFrameCastbar', 	['label'] = 'Display cast bar on Target Frame'},
 													}
 													
-local checkBoxPlatesOptN, checkBoxPlatesOpt  = 2, { [1] = {['id'] = 'nameplatesdebuffs', 	['label'] = 'Enable nameplate debuffs'},
-													[2] = {['id'] = 'nameplatesCastbar', 	['label'] = 'Enable nameplate cast bar'},
+local checkBoxPlatesOptN, checkBoxPlatesOpt  = 3, { [1] = {['id'] = 'nameplatesClassColor', ['label'] = 'Class Color on nameplates'},
+													[2] = {['id'] = 'nameplatesdebuffs', 	['label'] = 'Enable nameplate debuffs'},
+													[3] = {['id'] = 'nameplatesCastbar', 	['label'] = 'Enable nameplate cast bar'},
 													}
 local enemyFramesDisplayShow = false
 

@@ -189,7 +189,9 @@
 					-- raid target
 					addRaidTarget(plate, player['name'], raidTargets)
 					-- class colors
-					addClassColor(health, player['class'])
+					if ENEMYFRAMESPLAYERDATA['nameplatesClassColor'] then
+						addClassColor(health, player['class'])
+					end
 				end
 				-- everyone's casts
 				if ENEMYFRAMESPLAYERDATA['nameplatesCastbar'] then

@@ -81,7 +81,7 @@
 		this.castbar.timer:SetFont(STANDARD_TEXT_FONT, 7, 'OUTLINE')
 		this.castbar.timer:SetTextColor(1, 1, 1)
 		this.castbar.timer:SetShadowColor(0.4, 0.4, 0.4)
-		this.castbar.timer:SetPoint('RIGHT', this.castbar, 'RIGHT', 0, 0)
+		this.castbar.timer:SetPoint('RIGHT', this.castbar, 'RIGHT', 0, 1)
 		this.castbar.timer:SetText('1.5s')
 		--------------
 

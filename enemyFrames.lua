@@ -236,7 +236,7 @@ for i = 1, unitLimit,1 do
 		
 	units[i]:SetScript('OnClick', function()	if arg1 == 'LeftButton' and this.tar ~= nil  then  	TargetByName(this.tar, true)			end
 		if arg1 == 'RightButton' then	
-		spawnRTMenu(this, this.tar)	end
+			spawnRTMenu(this, this.tar)	end
 	end)
 end
 
@@ -526,8 +526,8 @@ local function drawUnits(list)
 			end)
 		end
 				
-		units[i].name:SetText(v['name'])
-		units[i].name:SetText(string.sub(units[i].name:GetText(), 1, 7))
+		--units[i].name:SetText(v['name'])
+		units[i].name:SetText(string.sub(v['name'], 1, 7))
 		
 		-- button function to target unit
 		units[i].tar = v['name']
@@ -624,8 +624,8 @@ local function updateUnits()
 			units[i].cc.cd:SetTimers(b.timeStart, b.timeEnd)
 			units[i].cc.cd:Show()
 			
-			local r, g, b = b.border[1], b.border[2], b.border[3]
-			units[i].cc.border:SetColor(r, g, b)
+			local br, bg, bb = b.border[1], b.border[2], b.border[3]
+			units[i].cc.border:SetColor(br, bg, bb)
 		else
 			-- signal FC or class / rank
 			units[i].cc.icon:SetTexture(v['fc'] and SPELLINFO_WSG_FLAGS[playerFaction]['icon'] or SetDefaultIconTex(v))
