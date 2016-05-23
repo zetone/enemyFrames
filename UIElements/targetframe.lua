@@ -8,6 +8,8 @@
 	raidTargetFrame.icon:SetTexture([[Interface\TargetingFrame\UI-RaidTargetingIcons]])
 	raidTargetFrame.icon:SetAllPoints()
 	-------------------------------------------------------------------------------
+	local flagCarriers = {}
+	-------------------------------------------------------------------------------
 	local refreshInterval, nextRefresh = 1/60, 0
 	local TEXTURE = [[Interface\AddOns\modui\statusbar\texture\sb.tga]]
     local BACKDROP = {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]],}
@@ -98,12 +100,41 @@
 			end
 		end
     end
+	-------------------------------------------------------------------------------
+	PVPMAPsetFC = function(fc)
+		flagCarriers = fc	
+	end
+	-------------------------------------------------------------------------------
+	local auxText = TargetFrame:CreateTexture()
+	--auxText:SetHeight(64)	auxText:SetWidth(64)
+	auxText:SetPoint('TOPLEFT', TargetPortrait, 'TOPLEFT', 7, -7)
+	auxText:SetPoint('BOTTOMRIGHT', TargetPortrait, 'BOTTOMRIGHT', -7, 6)
+	auxText:SetTexCoord(.1, .9, .1, .9)
+	local showPortraitDebuff = function()
+		if UnitExists'target' then
+			local xtFaction = UnitFactionGroup'target' == 'Alliance' and 'Horde' or 'Alliance'
+			local prioBuff = SPELLCASTINGCOREgetPrioBuff(UnitName'target', 1)[1]
+			
+			if UnitName'target' == flagCarriers[xtFaction] then
+				SetPortraitTexture(SPELLINFO_WSG_FLAGS[xtFaction]['icon'], 'target')
+			elseif prioBuff ~= nil then
+				--SetPortraitTexture(prioBuff.icon, 'target')
+				auxText:SetTexture(prioBuff.icon)
+				--SetPortraitTexture(nil, 'target')
+				--/Script SetPortraitTexture([[Interface\Icons\Spell_frost_frost]], 'player')
+			else
+				auxText:SetTexture()
+			end			
+		end
+	end
+	-------------------------------------------------------------------------------
 	local castbarFrame = CreateFrame'Frame'
 	castbarFrame:SetScript('OnUpdate', function()
 		nextRefresh = nextRefresh - arg1
 		if nextRefresh < 0 then
 			if ENEMYFRAMESPLAYERDATA['targetFrameCastbar'] then
 				showCast()
+				--showPortraitDebuff()
 			else
 				TargetFrame.cast:Hide()
 			end

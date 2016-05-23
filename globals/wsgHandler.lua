@@ -26,7 +26,6 @@ local eventHandler = function()
 	end
 	
 	ENEMYFRAMECOREUpdateFlagCarriers(flagCarriers)
-	PVPMAPsetFC(flagCarriers)
 end
 
 local f = CreateFrame'Frame'

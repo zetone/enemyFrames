@@ -257,6 +257,7 @@ function ENEMYFRAMECOREUpdateFlagCarriers(fc)
 		v['refresh'] = f ~= v['fc'] and true or false
 	end
 	refreshUnits = true
+	PVPMAPsetFC(fc)
 end
 
 function ENEMYFRAMECORESetPlayersData(list)

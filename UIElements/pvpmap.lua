@@ -16,7 +16,7 @@
 			icon:SetTexture('Interface\\WorldStateFrame\\'..f..'Flag')
 			icon:SetVertexColor(1, 1, 1)
 		else				
-			if GetNumRaidMembers() > 0 then
+			if string.find('raid', blip.unit) then--GetNumRaidMembers() > 0 then
 				local _, _, subgroup = GetRaidRosterInfo(string.sub(blip.unit, 5))
 				icon:SetTexture(blipTexture..subgroup)
 			else
@@ -57,7 +57,7 @@
 	PVPMAPsetFC = function(fc)
 		flagCarriers = fc
 		updateBlips(worldMapTableBlips)
-		if isAddOnLoaded'Blizzard_BattlefieldMinimap' then 
+		if IsAddOnLoaded'Blizzard_BattlefieldMinimap' then 
 			updateBlips(minimapTableBlips)
 		end		
 	end
@@ -71,7 +71,7 @@
 			end
 		else
 			updateBlips(worldMapTableBlips)
-			if isAddOnLoaded'Blizzard_BattlefieldMinimap' then 
+			if IsAddOnLoaded'Blizzard_BattlefieldMinimap' then 
 				updateBlips(minimapTableBlips)
 			end	
 		end
