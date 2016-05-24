@@ -24,6 +24,7 @@ ENEMYFRAMESPLAYERDATA =
 	['displayOnlyNearby']		= false,
 	['castTimers']				= false,
 	['targetFrameCastbar']		= true,
+	['targetPortraitDebuff']	= false,
 	-- nameplates
 	['nameplatesClassColor'] 	= true,
 	['nameplatesdebuffs'] 		= true,
@@ -42,12 +43,13 @@ local checkBoxFeaturesN, checkBoxFeatures  = 3, { 	[1] = {['id'] = 'enableOutdoo
 													[2] = {['id'] = 'mouseOver', 			['label'] = 'Mouseover cast on frames'},	
 													[3] = {['id'] = 'incomingSpells', 		['label'] = 'Display Incoming Spells (BGs only)'},
 													}
-local checkBoxOptionalsN, checkBoxOptionals  = 5, { [1] = {['id'] = 'displayNames', 		['label'] = 'Display names'}, 
+local checkBoxOptionalsN, checkBoxOptionals  = 6, { [1] = {['id'] = 'displayNames', 		['label'] = 'Display names'}, 
 													--[2] = {['id'] = 'displayHealthValues', 	['label'] = 'Display Health %'}, 
 													[2] = {['id'] = 'displayManabar', 		['label'] = 'Display mana bar'},
 													[3] = {['id'] = 'castTimers', 			['label'] = 'Display cast timers'},
 													[4] = {['id'] = 'displayOnlyNearby', 	['label'] = 'Display nearby units only'},
 													[5] = {['id'] = 'targetFrameCastbar', 	['label'] = 'Display cast bar on Target Frame'},
+													[6] = {['id'] = 'targetPortraitDebuff', ['label'] = 'Display debuff on Target Portrait'},
 													}
 													
 local checkBoxPlatesOptN, checkBoxPlatesOpt  = 3, { [1] = {['id'] = 'nameplatesClassColor', ['label'] = 'Class Color on nameplates'},
@@ -58,7 +60,7 @@ local enemyFramesDisplayShow = false
 
 local settings = CreateFrame('Frame', 'enemyFramesSettings', UIParent)
 settings:ClearAllPoints()
-settings:SetWidth(290) settings:SetHeight(320)
+settings:SetWidth(300) settings:SetHeight(340)
 settings:SetFrameLevel(60)
 settings:SetPoint('CENTER', UIParent, -UIParent:GetWidth()/3, 0)
 settings:SetBackdrop({bgFile   = [[Interface\Tooltips\UI-Tooltip-Background]],

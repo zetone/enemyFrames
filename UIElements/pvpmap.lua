@@ -1,7 +1,7 @@
 	-------------------------------------------------------------------------------	
 	local flagCarriers = {}
 	local blipTexture = [[Interface\addons\enemyFrames\globals\resources\blips\blip]]
-	local minimapTableBlips 	= {{'BattlefieldMinimapParty', 17, MAX_PARTY_MEMBERS}, {'BattlefieldMinimapRaid', 17, MAX_RAID_MEMBERS}}
+	local minimapTableBlips 	= {{'BattlefieldMinimapParty', 16, MAX_PARTY_MEMBERS}, {'BattlefieldMinimapRaid', 16, MAX_RAID_MEMBERS}}
 	local worldMapTableBlips 	= {{'WorldMapRaid', 19, MAX_RAID_MEMBERS}, {'WorldMapParty', 19, MAX_PARTY_MEMBERS}}
 	-------------------------------------------------------------------------------
 	local icon, name, color
@@ -16,7 +16,7 @@
 			icon:SetTexture('Interface\\WorldStateFrame\\'..f..'Flag')
 			icon:SetVertexColor(1, 1, 1)
 		else				
-			if string.find('raid', blip.unit) then--GetNumRaidMembers() > 0 then
+			if string.find(blip.unit, 'raid') then--GetNumRaidMembers() > 0 then
 				local _, _, subgroup = GetRaidRosterInfo(string.sub(blip.unit, 5))
 				icon:SetTexture(blipTexture..subgroup)
 			else

@@ -683,6 +683,7 @@ function ENEMYFRAMESAnnounceRT(rt, p)
 	local tCoords = RAID_TARGET_TCOORDS[raidTargets[p['name']]['icon']]
 	enemyFrame.raidTargetFrame.iconl:SetTexCoord(tCoords[1], tCoords[2], tCoords[3], tCoords[4])
 	enemyFrame.raidTargetFrame.iconr:SetTexCoord(tCoords[1], tCoords[2], tCoords[3], tCoords[4])
+	PlaySound('RaidWarning', 'master')
 	
 	enemyFrame.raidTargetFrame:Show()
 	ktEndtime = GetTime() + ktInterval

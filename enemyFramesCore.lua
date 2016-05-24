@@ -258,6 +258,7 @@ function ENEMYFRAMECOREUpdateFlagCarriers(fc)
 	end
 	refreshUnits = true
 	PVPMAPsetFC(fc)
+	TARGETFRAMEsetFC(fc)
 end
 
 function ENEMYFRAMECORESetPlayersData(list)

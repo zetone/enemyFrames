@@ -11,7 +11,7 @@
 	local flagCarriers = {}
 	-------------------------------------------------------------------------------
 	local refreshInterval, nextRefresh = 1/60, 0
-	local TEXTURE = [[Interface\AddOns\modui\statusbar\texture\sb.tga]]
+	local TEXTURE = [[Interface\AddOns\enemyFrames\globals\resources\barTexture.tga]]
     local BACKDROP = {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]],}
 	
 	TargetFrame.cast = CreateFrame('StatusBar', 'enemyFramesTargetFrameCastbar', TargetFrame)
@@ -101,29 +101,77 @@
 		end
     end
 	-------------------------------------------------------------------------------
-	PVPMAPsetFC = function(fc)
+	TARGETFRAMEsetFC = function(fc)
 		flagCarriers = fc	
 	end
 	-------------------------------------------------------------------------------
-	local auxText = TargetFrame:CreateTexture()
-	--auxText:SetHeight(64)	auxText:SetWidth(64)
-	auxText:SetPoint('TOPLEFT', TargetPortrait, 'TOPLEFT', 7, -7)
-	auxText:SetPoint('BOTTOMRIGHT', TargetPortrait, 'BOTTOMRIGHT', -7, 6)
-	auxText:SetTexCoord(.1, .9, .1, .9)
+	local portraitDebuff = CreateFrame('Frame', 'TargetPortraitDebuff', TargetFrame)
+	portraitDebuff:SetFrameLevel(0)
+	portraitDebuff:SetPoint('TOPLEFT', TargetPortrait, 'TOPLEFT', 7, -2)
+	portraitDebuff:SetPoint('BOTTOMRIGHT', TargetPortrait, 'BOTTOMRIGHT', -5.5, 4)
+	
+	-- circle texture
+	portraitDebuff.bgText = TargetFrame:CreateTexture(nil, 'OVERLAY')
+	portraitDebuff.bgText:SetPoint('TOPLEFT', TargetPortrait, 'TOPLEFT', 3, -4.5)
+	portraitDebuff.bgText:SetPoint('BOTTOMRIGHT', TargetPortrait, 'BOTTOMRIGHT', -4, 3)
+	portraitDebuff.bgText:SetVertexColor(.3, .3, .3)
+	portraitDebuff.bgText:SetTexture([[Interface\AddOns\enemyFrames\globals\resources\portraitBg.tga]])
+	-- debuff texture
+	portraitDebuff.debuffText = TargetFrame:CreateTexture()
+	portraitDebuff.debuffText:SetPoint('TOPLEFT', TargetPortrait, 'TOPLEFT', 7.5, -8)
+	portraitDebuff.debuffText:SetPoint('BOTTOMRIGHT', TargetPortrait, 'BOTTOMRIGHT', -7.5, 4.5)	
+	portraitDebuff.debuffText:SetTexCoord(.12, .88, .12, .88)
+	-- duration text
+	local portraitDurationFrame = CreateFrame('Frame', nil, TargetFrame)
+	portraitDurationFrame:SetAllPoints()
+	portraitDurationFrame:SetFrameLevel(2)
+	
+	portraitDebuff.duration = portraitDurationFrame:CreateFontString(nil, 'OVERLAY')--, 'GameFontNormalSmall')
+	portraitDebuff.duration:SetFont(STANDARD_TEXT_FONT, 13, 'OUTLINE')
+	portraitDebuff.duration:SetTextColor(.9, .9, .2, 1)
+	portraitDebuff.duration:SetShadowOffset(1, -1)
+	portraitDebuff.duration:SetShadowColor(0, 0, 0)
+	portraitDebuff.duration:SetPoint('CENTER', TargetPortrait, 'CENTER', 0, -7)
+	-- cooldown spiral
+	portraitDebuff.cd = CreateCooldown(portraitDebuff, 1.054, true)
+	portraitDebuff.cd:SetAlpha(1)
+	-------------------------------------------------------------------------------
+	local a, maxa, b, c = .002, .058, 0, 1
 	local showPortraitDebuff = function()
 		if UnitExists'target' then
 			local xtFaction = UnitFactionGroup'target' == 'Alliance' and 'Horde' or 'Alliance'
 			local prioBuff = SPELLCASTINGCOREgetPrioBuff(UnitName'target', 1)[1]
+
+			if prioBuff ~= nil then
+				local d = 1
+				if b > maxa then c = -1 end
+				if b < 0 then c = 1 end
+				b = b + a * c 
+				d = -b 
+				
+				--portraitDebuff.debuffText:SetTexCoord(.12+b, .88+d, .12+d, .88+b)
 			
-			if UnitName'target' == flagCarriers[xtFaction] then
-				SetPortraitTexture(SPELLINFO_WSG_FLAGS[xtFaction]['icon'], 'target')
-			elseif prioBuff ~= nil then
-				--SetPortraitTexture(prioBuff.icon, 'target')
-				auxText:SetTexture(prioBuff.icon)
-				--SetPortraitTexture(nil, 'target')
-				--/Script SetPortraitTexture([[Interface\Icons\Spell_frost_frost]], 'player')
+				portraitDebuff.debuffText:SetTexture(prioBuff.icon)
+				portraitDebuff.duration:SetText(getTimerLeft(prioBuff.timeEnd))
+				portraitDebuff.bgText:Show()
+				portraitDebuff.cd:SetTimers(prioBuff.timeStart, prioBuff.timeEnd)
+				portraitDebuff.cd:Show()
+				
+				local br, bg, bb = prioBuff.border[1], prioBuff.border[2], prioBuff.border[3]
+				portraitDebuff.bgText:SetVertexColor(br, bg, bb)
+				
+			elseif UnitName'target' == flagCarriers[xtFaction] then
+				portraitDebuff.debuffText:SetTexture(SPELLINFO_WSG_FLAGS[xtFaction]['icon'])
+				portraitDebuff.bgText:Show()
+				portraitDebuff.duration:SetText('')
+				portraitDebuff.cd:Hide()
+				portraitDebuff.bgText:SetVertexColor(.1, .1, .1)
+				
 			else
-				auxText:SetTexture()
+				portraitDebuff.cd:Hide()				
+				portraitDebuff.debuffText:SetTexture()
+				portraitDebuff.duration:SetText('')
+				portraitDebuff.bgText:Hide()
 			end			
 		end
 	end
@@ -133,11 +181,19 @@
 		nextRefresh = nextRefresh - arg1
 		if nextRefresh < 0 then
 			if ENEMYFRAMESPLAYERDATA['targetFrameCastbar'] then
-				showCast()
-				--showPortraitDebuff()
+				showCast()				
 			else
 				TargetFrame.cast:Hide()
 			end
+			if ENEMYFRAMESPLAYERDATA['targetPortraitDebuff'] then
+				showPortraitDebuff()				
+			else
+				portraitDebuff.cd:Hide()				
+				portraitDebuff.debuffText:SetTexture()
+				portraitDebuff.duration:SetText('')
+				portraitDebuff.bgText:Hide()
+			end
+			
 			nextRefresh = refreshInterval			
 		end
 	end)
@@ -165,6 +221,7 @@
 	end
 	-------------------------------------------------------------------------------
 	local function eventHandler()
+		flagCarriers = {}
 		f:SetScript('OnUpdate', nil)
 		raidTargetFrame:Hide()
 	end
