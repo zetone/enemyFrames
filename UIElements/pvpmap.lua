@@ -6,27 +6,29 @@
 	-------------------------------------------------------------------------------
 	local icon, name, color
 	local skinBlip = function(f, blip, size)
-		icon = _G[blip:GetName()..'Icon']
-		if not blip.unit then return end
-		name = blip.name or UnitName(blip.unit)
-		
-		blip:SetHeight(size)	blip:SetWidth(size)
-		if flagCarriers[f] == name then
-			blip:SetHeight(size+3)	blip:SetWidth(size+3)
-			icon:SetTexture('Interface\\WorldStateFrame\\'..f..'Flag')
-			icon:SetVertexColor(1, 1, 1)
-		else				
-			if string.find(blip.unit, 'raid') then--GetNumRaidMembers() > 0 then
-				local _, _, subgroup = GetRaidRosterInfo(string.sub(blip.unit, 5))
-				icon:SetTexture(blipTexture..subgroup)
-			else
-				icon:SetTexture(blipTexture)
-			end
+		if ENEMYFRAMESPLAYERDATA['pvpmapblips'] then
+			icon = _G[blip:GetName()..'Icon']
+			if not blip.unit then return end
+			name = blip.name or UnitName(blip.unit)
+			
+			blip:SetHeight(size)	blip:SetWidth(size)
+			if flagCarriers[f] == name then
+				blip:SetHeight(size+3)	blip:SetWidth(size+3)
+				icon:SetTexture('Interface\\WorldStateFrame\\'..f..'Flag')
+				icon:SetVertexColor(1, 1, 1)
+			else				
+				if string.find(blip.unit, 'raid') then--GetNumRaidMembers() > 0 then
+					local _, _, subgroup = GetRaidRosterInfo(string.sub(blip.unit, 5))
+					icon:SetTexture(blipTexture..subgroup)
+				else
+					icon:SetTexture(blipTexture)
+				end
 
-			local _, class  = UnitClass(blip.unit)
-			color = RAID_CLASS_COLORS[class]
-			if color then
-				icon:SetVertexColor(color.r, color.g, color.b)
+				local _, class  = UnitClass(blip.unit)
+				color = RAID_CLASS_COLORS[class]
+				if color then
+					icon:SetVertexColor(color.r, color.g, color.b)
+				end
 			end
 		end
 	end

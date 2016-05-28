@@ -16,11 +16,16 @@
 	playerDebuffFrame:SetPoint('BOTTOMRIGHT', PlayerPortrait, 'BOTTOMRIGHT', -5.5, 4)
 	
 	-- circle texture
-	playerDebuffFrame.bgText = PlayerFrame:CreateTexture(nil, 'OVERLAY')
-	playerDebuffFrame.bgText:SetPoint('TOPLEFT', PlayerPortrait, 'TOPLEFT', 3.5, -4.5)
-	playerDebuffFrame.bgText:SetPoint('BOTTOMRIGHT', PlayerPortrait, 'BOTTOMRIGHT', -3.5, 2.5)
-	playerDebuffFrame.bgText:SetVertexColor(.3, .3, .3)
-	playerDebuffFrame.bgText:SetTexture([[Interface\AddOns\enemyFrames\globals\resources\portraitBg.tga]])
+	local playerPortraitbgFrame = CreateFrame('Frame', nil, PlayerFrame)
+	playerPortraitbgFrame:SetFrameLevel(1)
+	playerPortraitbgFrame:SetPoint('TOPLEFT', PlayerPortrait, 'TOPLEFT', 7, -2)
+	playerPortraitbgFrame:SetPoint('BOTTOMRIGHT', PlayerPortrait, 'BOTTOMRIGHT', -5.5, 4)
+	
+	playerPortraitbgFrame.bgText = playerPortraitbgFrame:CreateTexture(nil, 'OVERLAY')
+	playerPortraitbgFrame.bgText:SetPoint('TOPLEFT', PlayerPortrait, 'TOPLEFT', 3.5, -4.5)
+	playerPortraitbgFrame.bgText:SetPoint('BOTTOMRIGHT', PlayerPortrait, 'BOTTOMRIGHT', -3.5, 2.5)
+	playerPortraitbgFrame.bgText:SetVertexColor(.3, .3, .3)
+	playerPortraitbgFrame.bgText:SetTexture([[Interface\AddOns\enemyFrames\globals\resources\portraitBg.tga]])
 	-- debuff texture
 	playerDebuffFrame.debuffText = PlayerFrame:CreateTexture(nil, 'OVERLAY')
 	playerDebuffFrame.debuffText:SetPoint('TOPLEFT', PlayerPortrait, 'TOPLEFT', 7.5, -8)
@@ -57,18 +62,18 @@
 		
 			playerDebuffFrame.debuffText:SetTexture(prioBuff.icon)
 			playerDebuffFrame.duration:SetText(getTimerLeft(prioBuff.timeEnd))
-			playerDebuffFrame.bgText:Show()
+			playerPortraitbgFrame.bgText:Show()
 			playerDebuffFrame.cd:SetTimers(prioBuff.timeStart, prioBuff.timeEnd)
 			playerDebuffFrame.cd:Show()
 			
 			local br, bg, bb = prioBuff.border[1], prioBuff.border[2], prioBuff.border[3]
-			playerDebuffFrame.bgText:SetVertexColor(br, bg, bb)
+			playerPortraitbgFrame.bgText:SetVertexColor(br, bg, bb)
 						
 		else
 			playerDebuffFrame.cd:Hide()				
-			playerDebuffFrame.debuffText:SetTexture([)
+			playerDebuffFrame.debuffText:SetTexture()
 			playerDebuffFrame.duration:SetText('')
-			playerDebuffFrame.bgText:Hide()
+			playerPortraitbgFrame.bgText:Hide()
 		end			
 			
 	end
@@ -76,13 +81,13 @@
 	playerDebuffFrame:SetScript('OnUpdate', function()
 		nextRefresh = nextRefresh - arg1
 		if nextRefresh < 0 then
-			if ENEMYFRAMESPLAYERDATA['targetPortraitDebuff'] then
+			if ENEMYFRAMESPLAYERDATA['playerPortraitDebuff'] then
 				showPortraitDebuff()				
 			else
 				playerDebuffFrame.cd:Hide()				
 				playerDebuffFrame.debuffText:SetTexture()
 				playerDebuffFrame.duration:SetText('')
-				playerDebuffFrame.bgText:Hide()
+				playerPortraitbgFrame.bgText:Hide()
 			end
 			
 			nextRefresh = refreshInterval			

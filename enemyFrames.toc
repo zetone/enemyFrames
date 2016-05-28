@@ -7,16 +7,20 @@ globals\actionHandler.lua
 globals\spellCastingCore.lua
 globals\spellInfo.lua
 globals\wsgHandler.lua
-globals\settings.lua
 globals\commHandler.lua
 globals\smoothBar.lua
+globals\settings\settings.lua
+globals\settings\general.lua
+globals\settings\features.lua
+globals\settings\nameplates.lua
+globals\settings\optionals.lua
 
 UIElements\BindingsHandler.lua
 UIElements\nameplatesHandler.lua
 UIElements\customBorder.lua
 UIElements\customCooldown.lua
 UIElements\targetframe.lua
-#UIElements\playerFrame.lua
+UIElements\playerFrame.lua
 UIElements\UIElementsTemplate.lua
 UIElements\incomingSpells.lua
 UIElements\pvpmap.lua

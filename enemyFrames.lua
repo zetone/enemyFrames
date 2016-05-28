@@ -697,7 +697,9 @@ function ENEMYFRAMESInitialize(maxUnits, isBG)
 		optionals()
 		enabled = true
 		
-		enemyFrame:Show()
+		if ENEMYFRAMESPLAYERDATA['enableFrames'] then
+			enemyFrame:Show()
+		end
 		enemyFrame:SetScript('OnUpdate', enemyFramesOnUpdate)
 	else
 		enemyFrame:SetScript('OnUpdate', nil)
@@ -715,6 +717,12 @@ function ENEMYFRAMESsettings()
 	end
 	
 	arrangeUnits()
+	
+	if ENEMYFRAMESPLAYERDATA['enableFrames'] then
+		enemyFrame:Show()
+	else
+		enemyFrame:Hide()
+	end
 end
 ---------------------
 

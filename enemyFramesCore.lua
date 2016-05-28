@@ -332,19 +332,21 @@ local function enemyFramesCoreOnUpdate()
 	-- remove inactive players
 	updatePlayerListInfo()	
 	
-	if refreshUnits then
-		refreshUnits = false
-		ENEMYFRAMESUpdatePlayers(orderUnitsforOutput())--playerList
-	end
-	
-	
-	-- hide if no horde while outdoors
-	 if not _G['enemyFramesSettings']:IsShown() then		
-		if not insideBG then
-			if tlength(playerList) == 0 then				
+	if ENEMYFRAMESPLAYERDATA['enableFrames'] then
+		if refreshUnits then
+			refreshUnits = false
+			ENEMYFRAMESUpdatePlayers(orderUnitsforOutput())--playerList
+		end
+		
+		
+		-- hide if no enemies while outdoors
+		if not _G['enemyFramesSettings']:IsShown() then		
+			if not insideBG then
+				if tlength(playerList) == 0 then				
 					_G['enemyFrameDisplay']:Hide()
-			else
-				_G['enemyFrameDisplay']:Show()
+				else
+					_G['enemyFrameDisplay']:Show()
+				end
 			end
 		end
 	end

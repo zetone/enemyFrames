@@ -11,10 +11,18 @@
 		return true
 	end
 	-------------------------------------------------------------------------------
+	local addSmooth = function(plate)
+		if not plate.smooth then
+			local health = plate:GetChildren()
+			SmoothBar(health)
+			plate.smooth = true
+		end
+	end
+	-------------------------------------------------------------------------------
 	local addRaidTarget = function(plate, n, raidTargets)
 		local _, _, name = plate:GetRegions()
 		if not plate.raidTarget then
-			-- set killtarget icon
+			-- create killtarget icon
 			plate.raidTarget = plate:CreateTexture(nil, 'OVERLAY')
 			plate.raidTarget:SetTexture([[Interface\TargetingFrame\UI-RaidTargetingIcons]])
 			plate.raidTarget:SetHeight(38)	plate.raidTarget:SetWidth(38)
@@ -119,8 +127,11 @@
 				plate.buffs[i] = CreateFrame('Frame', 'NamePlateBuff'..i, plate)
 				plate.buffs[i]:SetWidth(buffWidth) plate.buffs[i]:SetHeight(buffHeight)
 				
+				--scale
+				plate.buffs[i]:SetScale(ENEMYFRAMESPLAYERDATA['plateDebuffSize'] and ENEMYFRAMESPLAYERDATA['plateDebuffSize'] or 1)
+				
 				if i == 1 then
-					plate.buffs[i]:SetPoint('BOTTOMLEFT', plate, 'TOPLEFT', 5, -2)
+					plate.buffs[i]:SetPoint('BOTTOMLEFT', plate, 'TOPLEFT', 5, 0)
 				else
 					plate.buffs[i]:SetPoint('LEFT', plate.buffs[i-1], 'RIGHT', 8, 0)
 				end
@@ -131,11 +142,13 @@
 				plate.buffs[i].icon = plate.buffs[i]:CreateTexture(nil, 'ARTWORK')
 				plate.buffs[i].icon:SetAllPoints()
 				plate.buffs[i].icon:SetTexCoord(.1, .9, .25, .75)
+				plate.buffs[i].icon:SetTexture([[Interface\Icons\Spell_frost_frostnova]])
 
 				plate.buffs[i].duration = plate.buffs[i].border:CreateFontString(nil, 'OVERLAY')--, 'GameFontNormalSmall')
 				plate.buffs[i].duration:SetFont(STANDARD_TEXT_FONT, 10, 'OUTLINE')
 				plate.buffs[i].duration:SetTextColor(.9, .9, .2, 1)
 				plate.buffs[i].duration:SetPoint('CENTER', plate.buffs[i], 'BOTTOM', 0, -2)
+				plate.buffs[i].duration:SetText('8')
 				
 				-- cooldown
 				plate.buffs[i].cdframe = CreateFrame('Frame', 'platebuff'..i..'cdframe', plate.buffs[i])
@@ -147,22 +160,30 @@
 			end
 		end
 		
-        
         for i = 1, maxBuffs do
-            plate.buffs[i]:Hide()
+			if ENEMYFRAMESPLAYERDATA['nameplatesdebuffs'] and _G['enemyFramesSettings']:IsShown() then
+				plate.buffs[i]:Show()
+			else
+				plate.buffs[i]:Hide()
+			end
+			if ENEMYFRAMESPLAYERDATA['plateDebuffSize'] and plate.buffs[i]:GetScale() ~= ENEMYFRAMESPLAYERDATA['plateDebuffSize'] then
+				plate.buffs[i]:SetScale(ENEMYFRAMESPLAYERDATA['plateDebuffSize'])
+			end
         end
 		
-		local v = SPELLCASTINGCOREgetPrioBuff(name, maxBuffs)
-		for i, e in pairs(v) do
-			plate.buffs[i]:Show()
-			plate.buffs[i].icon:SetTexture(e.icon)
-			plate.buffs[i].duration:SetText(getTimerLeft(e.timeEnd))
+		if ENEMYFRAMESPLAYERDATA['nameplatesdebuffs'] then
+			local v = SPELLCASTINGCOREgetPrioBuff(name, maxBuffs)
+			for i, e in pairs(v) do
+				plate.buffs[i]:Show()
+				plate.buffs[i].icon:SetTexture(e.icon)
+				plate.buffs[i].duration:SetText(getTimerLeft(e.timeEnd))
 
-			local r, g, b = e.border[1], e.border[2], e.border[3]
-			plate.buffs[i].border:SetColor( r, g, b)
+				local r, g, b = e.border[1], e.border[2], e.border[3]
+				plate.buffs[i].border:SetColor( r, g, b)
 
-			plate.buffs[i].cd:SetTimers(e.timeStart, e.timeEnd)
-			plate.buffs[i].cd:Show()			
+				plate.buffs[i].cd:SetTimers(e.timeStart, e.timeEnd)
+				plate.buffs[i].cd:Show()			
+			end
 		end
 
 	end
@@ -183,14 +204,14 @@
 					list[n] = {['name'] = n, ['health'] = h}
 				end
 				
-				-- add additional nameplate elements
-				local player = ENEMYFRAMECOREgetPlayer(n)
-				if player then
+				-- additional nameplate elements
+				local unit = ENEMYFRAMECOREgetPlayer(n)
+				if unit then
 					-- raid target
-					addRaidTarget(plate, player['name'], raidTargets)
+					addRaidTarget(plate, unit['name'], raidTargets)
 					-- class colors
 					if ENEMYFRAMESPLAYERDATA['nameplatesClassColor'] then
-						addClassColor(health, player['class'])
+						addClassColor(health, unit['class'])
 					end
 				end
 				-- everyone's casts
@@ -198,9 +219,11 @@
 					addCastbar(plate, n)
 				end
 				-- everyone's auras
-				if ENEMYFRAMESPLAYERDATA['nameplatesdebuffs'] then
+				--if ENEMYFRAMESPLAYERDATA['nameplatesdebuffs'] then
 					addBuffs(plate, n)
-				end
+				--end
+				
+				addSmooth(plate)
 			end
 		end
 		

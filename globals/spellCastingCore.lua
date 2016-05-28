@@ -575,7 +575,7 @@ local channelDot = function()
 		local c = gsub(arg1, m, '%1')
 		local s = gsub(arg1, m, '%2')
 		
-		--print(arg1)
+		print(arg1)
 		if SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[s] then
 			newCast(c, s, true)
 		end	
@@ -633,8 +633,9 @@ end
 local singleEventdebug = function()
 	local m = '(.+)\'s Drain Mana drains (.+) Mana from (.+). (.+) gains (.+) Mana.'
 	local fa = '(.+) gains (.+) health from (.+)\'s First Aid.'
+	local v = '(.+) gains Vanish.'
 	
-	if string.find(arg1, m) or string.find(arg1, fa) then
+	if string.find(arg1, m) or string.find(arg1, fa) or string.find(arg1, v) then
 		print(event)
 		print(arg1)
 	end
@@ -656,23 +657,23 @@ local combatlogParser = function()
 	local death		= 'CHAT_MSG_COMBAT_(.+)_DEATH'			local fdeath 		= string.find(event, death)
 	local mEmote	= 'CHAT_MSG_MONSTER_EMOTE'				local fmEmote		= string.find(event, mEmote)
 	
-	--if arg1 then singleEventdebug() end -- testin
+	--if arg1 then singleEventdebug() end -- testing
 	
 	-- periodic damage/buff spells
 	if fpSpell then
-		parsingCheck(GainAfflict() or handleHeal()  or channelDot() or channelHeal())	
+		parsingCheck(GainAfflict() or handleHeal()  or channelDot() or channelHeal(), false)	
 	-- fade/remove buffs
 	elseif fbreakAura or fauraGone then
-		parsingCheck(FadeRem())
+		parsingCheck(FadeRem(), false)
 	-- direct damage/buff spells
 	elseif fdSpell then
-		parsingCheck(CastCraftPerform() or handleHeal() or DirectInterrupt() or HitsCrits())
+		parsingCheck(CastCraftPerform() or handleHeal() or DirectInterrupt() or HitsCrits(), false)
 	-- player death
 	elseif fdeath then
-		parsingCheck(playerDeath())
+		parsingCheck(playerDeath(), false)
 	-- creature runs in fear
 	elseif fmEmote then
-		parsingCheck(fear())
+		parsingCheck(fear(), false)
 	else
 		--unparsed event!
 		--print('untreated event')
