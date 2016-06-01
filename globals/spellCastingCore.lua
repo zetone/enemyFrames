@@ -575,7 +575,7 @@ local channelDot = function()
 		local c = gsub(arg1, m, '%1')
 		local s = gsub(arg1, m, '%2')
 		
-		print(arg1)
+		--print(arg1)
 		if SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[s] then
 			newCast(c, s, true)
 		end	
