@@ -327,13 +327,13 @@ end
 local function showHideBars()
 	if ENEMYFRAMESPLAYERDATA['frameMovable'] then
 		enemyFrame.spawnText.Button.tt = 'lock'
-		enemyFrame.top:SetAlpha(1)
-		enemyFrame.bottom:SetAlpha(1)
+		enemyFrame.top:Show()--SetAlpha(1)
+		enemyFrame.bottom:Show()--SetAlpha(1)
 		enemyFrame.spawnText:SetText('-')		
 	else
 		enemyFrame.spawnText.Button.tt = 'unlock'
-		enemyFrame.top:SetAlpha(0)
-		enemyFrame.bottom:SetAlpha(0)
+		enemyFrame.top:Hide()--SetAlpha(0)
+		enemyFrame.bottom:Hide()--SetAlpha(0)
 		enemyFrame.spawnText:SetText('+')
 	end
 	enemyFrame:EnableMouse(ENEMYFRAMESPLAYERDATA['frameMovable'])
@@ -523,6 +523,7 @@ local function drawUnits(list)
 			units[i]:SetScript('OnLeave', function()
 				units[this.index].name:SetTextColor(colour.r / 2, colour.g / 2, colour.b / 2, .6)
 				this.mo = false
+				MOUSEOVERUNINAME = nil
 			end)
 		end
 				
@@ -609,8 +610,10 @@ local function updateUnits()
 				units[i].castbar:SetValue(mod((GetTime() - castInfo.timeStart), castInfo.timeEnd - castInfo.timeStart))					
 			end
 			units[i].castbar.text:SetText(castInfo.spell)
-			units[i].castbar.text:SetText(string.sub(units[i].castbar.text:GetText(), 1, 18))
-			--units[i].castbar.timer:SetText(getTimerLeft(castInfo.timeEnd))--..'s')
+			units[i].castbar.text:SetText(string.sub(units[i].castbar.text:GetText(), 1, 15))
+			
+			units[i].castbar.timer:SetText(getTimerLeft(castInfo.timeEnd))--..'s')
+			
 			units[i].castbar.icon:SetTexture(castInfo.icon)
 			units[i].castbar:Show()		
 		end
@@ -691,6 +694,7 @@ end
 
 function ENEMYFRAMESInitialize(maxUnits, isBG)
 	insideBG = isBG
+	MOUSEOVERUNINAME = nil
 	if maxUnits then
 		SetupFrames(maxUnits)
 		arrangeUnits()

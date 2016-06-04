@@ -5,6 +5,10 @@ print = function(m) DEFAULT_CHAT_FRAME:AddMessage(m) end
 
 tlength = function(t)	local i = 0 for k, j in ipairs(t) do i = i + 1 end return i end
 
+ENEMYFRAMESVERSION = 1.15
+ENEMYFRAMESNEWVERSION = 0
+ENEMYFRAMESVERSIONFOUND = false
+
 ENEMYFRAMESPLAYERDATA = 
 {
 	-- options
@@ -47,7 +51,7 @@ local enemyFramesDisplayShow = false
 
 local settings = CreateFrame('Frame', 'enemyFramesSettings', UIParent)
 settings:ClearAllPoints()
-settings:SetWidth(320) settings:SetHeight(320)
+settings:SetWidth(320) settings:SetHeight(340)
 settings:SetFrameLevel(60)
 settings:SetPoint('CENTER', UIParent, -UIParent:GetWidth()/3, 0)
 settings:SetBackdrop({bgFile   = [[Interface\Tooltips\UI-Tooltip-Background]],
@@ -152,11 +156,12 @@ function setupSettings()
 	
 	settings:Show()
 	
-	if _G['enemyFrameDisplay']:IsShown() then
-		enemyFramesDisplayShow = true
-	else
-		enemyFramesDisplayShow = false
-		if ENEMYFRAMESPLAYERDATA['enableFrames'] then
+	if ENEMYFRAMESPLAYERDATA['enableFrames'] then
+		if _G['enemyFrameDisplay']:IsShown() then
+			enemyFramesDisplayShow = true
+		else
+			enemyFramesDisplayShow = false
+			
 			_G['enemyFrameDisplay']:Show()
 		end		
 		--tinsert(UISpecialFrames, 'enemyFrameDisplay')
@@ -169,7 +174,7 @@ end
 
 local closeSettings = function()
 	settings:Hide() 
-	if not enemyFramesDisplayShow then 
+	if not enemyFramesDisplayShow and not IsInsideBG() then 
 		_G['enemyFrameDisplay']:Hide() 
 	end 
 	INCOMINGSPELLSsettings(false) TARGETFRAMECASTBARsettings(false)

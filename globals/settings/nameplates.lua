@@ -8,7 +8,7 @@
 	container:EnableMouseWheel(true)
 	container:Hide()
 	-------------------------------------------------------------------------------
-	local checkBoxPlatesOptN, checkBoxPlatesOpt  = 3, { [1] = {['id'] = 'nameplatesClassColor', ['label'] = 'Class Color on nameplates'},														
+	local checkBoxPlatesOptN, checkBoxPlatesOpt  = 3, { [1] = {['id'] = 'nameplatesClassColor', ['label'] = 'Class color on enemy nameplates'},														
 														[2] = {['id'] = 'nameplatesCastbar', 	['label'] = 'Enable nameplate cast bar'},
 														[3] = {['id'] = 'nameplatesdebuffs', 	['label'] = 'Enable nameplate debuffs'},
 													}

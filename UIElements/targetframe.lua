@@ -91,7 +91,7 @@
 						TargetFrame.cast:SetValue(mod((GetTime() - v.timeStart), v.timeEnd - v.timeStart))					
 					end
 					
-					TargetFrame.cast.text:SetText(v.spell)
+					TargetFrame.cast.text:SetText(string.sub(v.spell, 1, 17))
 					TargetFrame.cast.timer:SetText(getTimerLeft(v.timeEnd)..'s')
 					TargetFrame.cast.icon:SetTexture(v.icon)
 					TargetFrame.cast:Show()

@@ -8,7 +8,7 @@
 	container:EnableMouseWheel(true)
 	container:Hide()
 	-------------------------------------------------------------------------------
-	local checkBoxGeneralN, checkBoxGeneral  = 1, { 	[1] = {['id'] = 'enableFrames', 		['label'] = 'Enable enemyFrames'},
+	local checkBoxGeneralN, checkBoxGeneral  = 1, { 	[1] = {['id'] = 'enableFrames', 		['label'] = 'Show enemyFrames'},
 													}
 	-------------------------------------------------------------------------------
 	-- general checkbox
@@ -76,6 +76,35 @@
 		ENEMYFRAMESPLAYERDATA['groupsize']  = g
 		ENEMYFRAMESsettings()
 	end)
+	
+	
+	-- version
+	container.version = container:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
+	container.version:SetPoint('LEFT', container.layoutSlider, 'LEFT', 0, -80)
+	container.version:SetJustifyH('LEFT')
+	container.version:SetTextColor(1, 1, 1)
+	container.version:SetText('enemyFrames by kuurtz \nver - |cffffff00' .. ENEMYFRAMESVERSION)
+	
+	container.forumlink = CreateFrame('EditBox', 'enemyFrame_forumlink', container, 'InputBoxTemplate')
+    container.forumlink:SetFont(STANDARD_TEXT_FONT, 12)
+    container.forumlink:SetWidth(240) container.forumlink:SetHeight(10)
+	container.forumlink:SetPoint('TOPLEFT', container.version, 'BOTTOMLEFT', 0, -15)
+    container.forumlink:SetAutoFocus(false)
+    
+	
+	container.newversion = container:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
+	container.newversion:SetPoint('TOP', container.forumlink, 'BOTTOM', -2, -10)
+	container.newversion:SetText('( !ver '..ENEMYFRAMESNEWVERSION..' available! )')
+	container.newversion:Hide()
+	
+	container.forumlink:SetScript('OnShow', function()
+        this:SetText'https://forum.twinstar.cz/showthread.php/105235-AddOn-enemyFrames'
+		
+		if ENEMYFRAMESVERSIONFOUND then
+			container.newversion:Show()
+		end
+    end)
+	
 	-------------------------------------------------------------------------------
 	GENERALSSETTINGSInit = function(color)
 		_G[container.scaleSlider:GetName()..'Low']:SetTextColor(color['r'], color['g'], color['b'], .9)
@@ -90,5 +119,7 @@
 		
 		container.scaleSlider:SetValue(ENEMYFRAMESPLAYERDATA['scale'])
 		container.layoutSlider:SetValue(ENEMYFRAMESPLAYERDATA['layout'] == 'horizontal' and 0 or ENEMYFRAMESPLAYERDATA['layout'] == 'hblock' and 1 or ENEMYFRAMESPLAYERDATA['layout'] == 'block' and 2 or ENEMYFRAMESPLAYERDATA['layout'] == 'vblock' and 3 or 4)
+		
+		container.newversion:SetTextColor(color['r'], color['g'], color['b'], .9)
 	end
 	-------------------------------------------------------------------------------

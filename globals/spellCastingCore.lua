@@ -137,7 +137,7 @@ end
 local checkForChannels = function(caster, spell)
 	local k = 1
 	for i, j in casts do
-		if j.caster == caster and j.spell == spell and SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[spell] ~= nil then 
+		if j.caster == caster and j.spell == spell and (SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[spell] ~= nil or SPELLINFO_CHANNELED_HEALS_SPELLCASTS_TO_TRACK[spell] ~= nil) then 
 			j.nextTick = j.nextTick + j.tick
 			return true 
 		end
@@ -346,6 +346,21 @@ local handleHeal = function()
 	end
 	
 	return fh or fc or fhot or foheal or focheal
+end
+
+local processUniqueSpell = function()
+	local vanish = '(.+) performs Vanish'		local fvanish = string.find(arg1, vanish)
+	
+	if fvanish then
+		local m = vanish
+		local c = gsub(arg1, m, '%1')
+		--print(arg1)
+		for k, v in pairs(SPELLINFO_ROOTS_SNARES) do
+			forceHideTableItem(buffList, c, k)
+		end
+	end
+	
+	return fvanish
 end
 
 local DirectInterrupt = function()
@@ -575,8 +590,8 @@ local channelDot = function()
 		local c = gsub(arg1, m, '%1')
 		local s = gsub(arg1, m, '%2')
 		
-		--print(arg1)
 		if SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[s] then
+			--print(arg1)
 			newCast(c, s, true)
 		end	
 	end
@@ -584,19 +599,30 @@ local channelDot = function()
 end
 
 local channelHeal = function()
-	local hot = '(.+) gains (.+) health from (.+)\'s (.+).'			local fhot = string.find(arg1, hot)
+	local hot  = '(.+) gains (.+) health from (.+)\'s (.+).'		local fhot = string.find(arg1, hot)
 	local phot = 'You gain (.+) health from (.+)\'s (.+).'			local fphot = string.find(arg1, phot)
+	local shot = 'You gain (.+) health from (.+).'					local fshot = string.find(arg1, shot)	
 	
-	if fhot then
+	if fhot or fphot then
 		local m = fhot and hot or fphot and phot
 		local c = fhot and gsub(arg1, m, '%3') or fphot and gsub(arg1, m, '%2')
 		local s = fhot and gsub(arg1, m, '%4') or fphot and gsub(arg1, m, '%3')
-		local t = fhot and gsub(arg1, m, '%1') or nil
+		--local t = fhot and gsub(arg1, m, '%1') or nil
 		
 		if SPELLINFO_CHANNELED_HEALS_SPELLCASTS_TO_TRACK[s] then
 			newCast(c, s, true)
 		end	
+	elseif fshot then
+		local m = shot
+		local c = playerName
+		local s = gsub(arg1, m, '%2')
+		
+		if SPELLINFO_CHANNELED_HEALS_SPELLCASTS_TO_TRACK[s] then
+			newCast(c, s, true)
+		end
 	end
+	
+	return fhot or fphot or fshot
 end
 
 local playerDeath = function()
@@ -631,11 +657,10 @@ end
 
 ----------------------------------------------------------------------------
 local singleEventdebug = function()
-	local m = '(.+)\'s Drain Mana drains (.+) Mana from (.+). (.+) gains (.+) Mana.'
-	local fa = '(.+) gains (.+) health from (.+)\'s First Aid.'
-	local v = '(.+) gains Vanish.'
+	local m = '(.+)\'s Drain Mana drains (.+) Mana from (.+).'
+	local v = '(.+) performs Vanish'
 	
-	if string.find(arg1, m) or string.find(arg1, fa) or string.find(arg1, v) then
+	if string.find(arg1, m) or string.find(arg1, v) then
 		print(event)
 		print(arg1)
 	end
@@ -660,14 +685,14 @@ local combatlogParser = function()
 	--if arg1 then singleEventdebug() end -- testing
 	
 	-- periodic damage/buff spells
-	if fpSpell then
-		parsingCheck(GainAfflict() or handleHeal()  or channelDot() or channelHeal(), false)	
+	if fpSpell then	
+		parsingCheck(channelDot() or channelHeal() or GainAfflict() or handleHeal(), false)
 	-- fade/remove buffs
 	elseif fbreakAura or fauraGone then
 		parsingCheck(FadeRem(), false)
 	-- direct damage/buff spells
 	elseif fdSpell then
-		parsingCheck(CastCraftPerform() or handleHeal() or DirectInterrupt() or HitsCrits(), false)
+		parsingCheck(processUniqueSpell() or CastCraftPerform() or handleHeal() or DirectInterrupt() or HitsCrits(), false)
 	-- player death
 	elseif fdeath then
 		parsingCheck(playerDeath(), false)

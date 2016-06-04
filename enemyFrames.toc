@@ -25,6 +25,7 @@ UIElements\playerFrame.lua
 UIElements\UIElementsTemplate.lua
 UIElements\incomingSpells.lua
 UIElements\pvpmap.lua
+UIElements\scoreBoard.lua
 
 enemyFrames.lua
 enemyFramesCore.lua

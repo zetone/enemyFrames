@@ -257,7 +257,6 @@ function ENEMYFRAMECOREUpdateFlagCarriers(fc)
 		v['refresh'] = f ~= v['fc'] and true or false
 	end
 	refreshUnits = true
-	PVPMAPsetFC(fc)
 	TARGETFRAMEsetFC(fc)
 end
 
@@ -281,7 +280,7 @@ function  ENEMYFRAMECORESendRaidTarget(icon, name)
 		name = 0
 	end
 	
-	sendMSG('RT', name, icon)
+	sendMSG('RT', name, icon, insideBG)
 	ENEMYFRAMECORESetRaidTarget(nil, name, icon)
 end
 
@@ -306,6 +305,10 @@ function ENEMYFRAMECOREGetRaidTargetbyIcon(icon)
 			return v['name']
 		end
 	end
+end
+
+IsInsideBG = function()
+	return insideBG
 end
 --
 --#################--
@@ -371,7 +374,6 @@ local function initializeValues()
 		f:SetScript('OnUpdate', enemyFramesCoreOnUpdate)
 		-- enable ui elements
 		ENEMYFRAMESInitialize(maxUnits, insideBG)
-		namePlatesHandlerInit()
 		targetframeInit()
 		bindingsInit()
 		INCOMINGSPELLSinit(insideBG)
@@ -394,12 +396,15 @@ local function eventHandler()
 				playerListRefresh = now + playerListInterval
 			end
 		end	
+	elseif event == 'RAID_ROSTER_UPDATE' then
+		sendMSG('AV', ENEMYFRAMESVERSION, nil, insideBG)
 	end
 end
 
 
 f:RegisterEvent'PLAYER_ENTERING_WORLD'
 f:RegisterEvent'ZONE_CHANGED_NEW_AREA'
+f:RegisterEvent'RAID_ROSTER_UPDATE'
 
 
 f:SetScript('OnEvent', eventHandler)

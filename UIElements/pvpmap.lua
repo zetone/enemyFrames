@@ -1,5 +1,4 @@
 	-------------------------------------------------------------------------------	
-	local flagCarriers = {}
 	local blipTexture = [[Interface\addons\enemyFrames\globals\resources\blips\blip]]
 	local minimapTableBlips 	= {{'BattlefieldMinimapParty', 16, MAX_PARTY_MEMBERS}, {'BattlefieldMinimapRaid', 16, MAX_RAID_MEMBERS}}
 	local worldMapTableBlips 	= {{'WorldMapRaid', 19, MAX_RAID_MEMBERS}, {'WorldMapParty', 19, MAX_PARTY_MEMBERS}}
@@ -11,24 +10,18 @@
 			if not blip.unit then return end
 			name = blip.name or UnitName(blip.unit)
 			
-			blip:SetHeight(size)	blip:SetWidth(size)
-			if flagCarriers[f] == name then
-				blip:SetHeight(size+3)	blip:SetWidth(size+3)
-				icon:SetTexture('Interface\\WorldStateFrame\\'..f..'Flag')
-				icon:SetVertexColor(1, 1, 1)
-			else				
-				if string.find(blip.unit, 'raid') then--GetNumRaidMembers() > 0 then
-					local _, _, subgroup = GetRaidRosterInfo(string.sub(blip.unit, 5))
-					icon:SetTexture(blipTexture..subgroup)
-				else
-					icon:SetTexture(blipTexture)
-				end
+			blip:SetHeight(size)	blip:SetWidth(size)			
+			if string.find(blip.unit, 'raid') then--GetNumRaidMembers() > 0 then
+				local _, _, subgroup = GetRaidRosterInfo(string.sub(blip.unit, 5))
+				icon:SetTexture(blipTexture..subgroup)
+			else
+				icon:SetTexture(blipTexture)
+			end
 
-				local _, class  = UnitClass(blip.unit)
-				color = RAID_CLASS_COLORS[class]
-				if color then
-					icon:SetVertexColor(color.r, color.g, color.b)
-				end
+			local _, class  = UnitClass(blip.unit)
+			color = RAID_CLASS_COLORS[class]
+			if color then
+				icon:SetVertexColor(color.r, color.g, color.b)
 			end
 		end
 	end
@@ -56,18 +49,8 @@
 	end
 	addOnShow(worldMapTableBlips)
 	-------------------------------------------------------------------------------
-	PVPMAPsetFC = function(fc)
-		flagCarriers = fc
-		updateBlips(worldMapTableBlips)
-		if IsAddOnLoaded'Blizzard_BattlefieldMinimap' then 
-			updateBlips(minimapTableBlips)
-		end		
-	end
-	-------------------------------------------------------------------------------
 	local eventHandler = function()
-		if event == 'ZONE_CHANGED_NEW_AREA' then
-			flagCarriers = {}
-		elseif event == 'ADDON_LOADED' then
+		if event == 'ADDON_LOADED' then
 			if arg1 == 'Blizzard_BattlefieldMinimap' then
 				addOnShow(minimapTableBlips)
 			end

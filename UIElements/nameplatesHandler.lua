@@ -73,7 +73,7 @@
 
 			plate.castBar.text = plate.castBar:CreateFontString(nil, 'OVERLAY')
 			plate.castBar.text:SetTextColor(1, 1, 1)
-			plate.castBar.text:SetFont(STANDARD_TEXT_FONT, 10)
+			plate.castBar.text:SetFont(STANDARD_TEXT_FONT, 10) --, 'OUTLINE')
 			plate.castBar.text:SetShadowOffset(1, -1)
 			plate.castBar.text:SetShadowColor(0, 0, 0)
 			plate.castBar.text:SetPoint('LEFT', plate.castBar, 2, 1)
@@ -81,7 +81,7 @@
 
 			plate.castBar.timer = plate.castBar:CreateFontString(nil, 'OVERLAY')
 			plate.castBar.timer:SetTextColor(1, 1, 1)
-			plate.castBar.timer:SetFont(STANDARD_TEXT_FONT, 9)
+			plate.castBar.timer:SetFont(STANDARD_TEXT_FONT, 9) --, 'OUTLINE')
 			plate.castBar.timer:SetPoint('RIGHT', plate.castBar, -1, 0)
 					
 			plate.castBar.iconborder = CreateFrame('Frame', nil, plate.castBar)
@@ -97,20 +97,22 @@
 
 		plate.castBar:Hide()
 
-		local castInfo = SPELLCASTINGCOREgetCast(name)
-		if castInfo then
-			if GetTime() < castInfo.timeEnd then
-				plate.castBar:SetMinMaxValues(0, castInfo.timeEnd - castInfo.timeStart)
-				if castInfo.inverse then
-					plate.castBar:SetValue(mod((castInfo.timeEnd - GetTime()), castInfo.timeEnd - castInfo.timeStart))
-				else
-					plate.castBar:SetValue(mod((GetTime() - castInfo.timeStart), castInfo.timeEnd - castInfo.timeStart))					
+		if ENEMYFRAMESPLAYERDATA['nameplatesCastbar'] then
+			local castInfo = SPELLCASTINGCOREgetCast(name)
+			if castInfo then
+				if GetTime() < castInfo.timeEnd then
+					plate.castBar:SetMinMaxValues(0, castInfo.timeEnd - castInfo.timeStart)
+					if castInfo.inverse then
+						plate.castBar:SetValue(mod((castInfo.timeEnd - GetTime()), castInfo.timeEnd - castInfo.timeStart))
+					else
+						plate.castBar:SetValue(mod((GetTime() - castInfo.timeStart), castInfo.timeEnd - castInfo.timeStart))					
+					end
+					plate.castBar.text:SetText(castInfo.spell)
+					plate.castBar.timer:SetText(getTimerLeft(castInfo.timeEnd)..'s')
+					plate.castBar.icon:SetTexture(castInfo.icon)
+					plate.castBar:SetAlpha(plate:GetAlpha())
+					plate.castBar:Show()
 				end
-				plate.castBar.text:SetText(castInfo.spell)
-				plate.castBar.timer:SetText(getTimerLeft(castInfo.timeEnd)..'s')
-				plate.castBar.icon:SetTexture(castInfo.icon)
-				plate.castBar:SetAlpha(plate:GetAlpha())
-				plate.castBar:Show()
 			end
 		end
 
@@ -213,11 +215,12 @@
 					if ENEMYFRAMESPLAYERDATA['nameplatesClassColor'] then
 						addClassColor(health, unit['class'])
 					end
+				elseif plate.raidTarget then
+					plate.raidTarget:Hide()
 				end
 				-- everyone's casts
-				if ENEMYFRAMESPLAYERDATA['nameplatesCastbar'] then
 					addCastbar(plate, n)
-				end
+					
 				-- everyone's auras
 				--if ENEMYFRAMESPLAYERDATA['nameplatesdebuffs'] then
 					addBuffs(plate, n)
@@ -233,22 +236,11 @@
 		end
 	end
 	-------------------------------------------------------------------------------
-	-- global access
-	function namePlatesHandlerInit()
-		f:SetScript('OnUpdate', function()
-			nextRefresh = nextRefresh - arg1
-			if nextRefresh < 0 then
-				namePlateHandlerOnUpdate()
-				nextRefresh = refreshInterval
-			end
-		end)
-	end
-	-------------------------------------------------------------------------------
-	local function eventHandler()
-		f:SetScript('OnUpdate', nil)
-	end
-		
-	f:RegisterEvent'PLAYER_ENTERING_WORLD'
-	f:RegisterEvent'ZONE_CHANGED_NEW_AREA'
-	f:SetScript('OnEvent', eventHandler)
+	f:SetScript('OnUpdate', function()
+		nextRefresh = nextRefresh - arg1
+		if nextRefresh < 0 then
+			namePlateHandlerOnUpdate()
+			nextRefresh = refreshInterval
+		end
+	end)
 	-------------------------------------------------------------------------------
