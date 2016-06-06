@@ -5,7 +5,7 @@ print = function(m) DEFAULT_CHAT_FRAME:AddMessage(m) end
 
 tlength = function(t)	local i = 0 for k, j in ipairs(t) do i = i + 1 end return i end
 
-ENEMYFRAMESVERSION = 1.15
+ENEMYFRAMESVERSION = 1.16
 ENEMYFRAMESNEWVERSION = 0
 ENEMYFRAMESVERSIONFOUND = false
 
@@ -25,6 +25,7 @@ ENEMYFRAMESPLAYERDATA =
 	['pvpmapblips']				= false,
 	['playerPortraitDebuff']	= false,
 	['targetPortraitDebuff']	= false,
+	['efcBGannouncement']		= false,
 	-- optionals
 	['displayNames']			= true,
 	--['displayHealthValues'] = false,
@@ -32,6 +33,7 @@ ENEMYFRAMESPLAYERDATA =
 	['displayOnlyNearby']		= false,
 	['castTimers']				= false,
 	['targetFrameCastbar']		= true,	
+	['targetCounter']			= false,
 	-- nameplates
 	['nameplatesClassColor'] 	= true,
 	['nameplatesdebuffs'] 		= true,

@@ -283,6 +283,13 @@ local function optionals()
 		else
 			units[i].castbar.timer:Show()
 		end
+
+		-- display target counter
+		if not ENEMYFRAMESPLAYERDATA['targetCounter'] then
+			units[i].targetCount.text:Hide()
+		else
+			units[i].targetCount.text:Show()
+		end
 	end
 end
 local function setccIcon(p)
@@ -494,6 +501,8 @@ local function drawUnits(list)
 			units[i].manabar:SetStatusBarColor(powerColor[1], powerColor[2], powerColor[3])			
 			units[i].cc.icon:SetVertexColor(1, 1, 1, 1)
 			
+			--units[i].targetCount.text:SetTextColor(.898, 898, .199)
+			
 			units[i]:SetScript('OnEnter', function()	
 				units[this.index].name:SetTextColor(enemyFactionColor['r'], enemyFactionColor['g'], enemyFactionColor['b'])	
 				this.mo = true
@@ -511,6 +520,8 @@ local function drawUnits(list)
 			if not units[i].mo then
 				units[i].name:SetTextColor(colour.r / 2, colour.g / 2, colour.b / 2, .7)
 			end		
+			
+			--units[i].targetCount.text:SetTextColor(.898 / 2, .898 / 2, .199 / 2)
 
 			if v['fc'] then
 				units[i].cc.icon:SetVertexColor(1, 1, 1, 1)
@@ -533,6 +544,8 @@ local function drawUnits(list)
 		-- button function to target unit
 		units[i].tar = v['name']
 		
+		-- target count
+		units[i].targetCount.text:SetText(v['targetcount'] and (v['targetcount'] > 0 and v['targetcount'] or '') or '')
 		
 		-- hp & mana
 		units[i].hpbar:SetMinMaxValues(0, v['maxhealth'] and v['maxhealth'] or 100)

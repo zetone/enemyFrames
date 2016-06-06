@@ -8,13 +8,14 @@
 	container:EnableMouseWheel(true)
 	container:Hide()
 	-------------------------------------------------------------------------------
-	local checkBoxFeaturesN, checkBoxFeatures  = 7, { 	[1] = {['id'] = 'enableOutdoors', 		['label'] = 'Enable outside of BattleGrounds'},
+	local checkBoxFeaturesN, checkBoxFeatures  = 8, { 	[1] = {['id'] = 'enableOutdoors', 		['label'] = 'Enable outside of BattleGrounds'},
 														[2] = {['id'] = 'mouseOver', 			['label'] = 'Mouseover cast on frames'},	
 														[3] = {['id'] = 'incomingSpells', 		['label'] = 'Display Incoming Spells (BGs only)'},
 														[4] = {['id'] = 'pvpmapblips', 			['label'] = 'Display class colored map blips'},
 														[5] = {['id'] = 'targetFrameCastbar', 	['label'] = 'Display cast bar on Target Frame'},														
 														[6] = {['id'] = 'targetPortraitDebuff', ['label'] = 'Display prio debuff on Target Portrait'},
 														[7] = {['id'] = 'playerPortraitDebuff', ['label'] = 'Display prio debuff on Player Portrait'},
+														[8] = {['id'] = 'efcBGannouncement', 	['label'] = 'Enable Low Health EFC announcement'},
 													}
 	-------------------------------------------------------------------------------
 	-- features

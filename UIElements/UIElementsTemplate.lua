@@ -81,7 +81,7 @@
 		this.castbar.timer:SetFont(STANDARD_TEXT_FONT, 7, 'OUTLINE')
 		this.castbar.timer:SetTextColor(1, 1, 1)
 		this.castbar.timer:SetShadowColor(0.4, 0.4, 0.4)
-		this.castbar.timer:SetPoint('RIGHT', this.castbar, 'RIGHT', 0, 1)
+		this.castbar.timer:SetPoint('RIGHT', this.castbar, 'RIGHT', 0, 0)
 		this.castbar.timer:SetText('1.5')
 		--------------
 
@@ -95,6 +95,20 @@
 		--this.hpText:SetFont(STANDARD_TEXT_FONT, 7, 'OUTLINE')
 		--this.hpText:SetTextColor(.8, .8, .8, .8)
 		--this.hpText:SetPoint('LEFT', this.hpbar, 2, 0)
+		
+		--- TARGET COUNT ---
+		this.targetCount = CreateFrame('Frame', nil, this)
+		this.targetCount:SetWidth(ccIconWidth-2) this.targetCount:SetHeight(unitHeight-2)
+		this.targetCount:SetPoint('CENTER', this,'TOPLEFT', 1, -1)
+		this.targetCount:SetFrameLevel(7)
+		
+		this.targetCount.text = this.targetCount:CreateFontString(nil, 'OVERLAY')--, 'GameFontNormalSmall')
+		this.targetCount.text:SetFont(STANDARD_TEXT_FONT, 10, 'OUTLINE')
+		this.targetCount.text:SetTextColor(.9, .9, .2, 1)
+		this.targetCount.text:SetShadowOffset(1, -1)
+		this.targetCount.text:SetShadowColor(0, 0, 0)
+		this.targetCount.text:SetPoint('CENTER', this.targetCount)
+		this.targetCount.text:SetText('8')
 		
 		---- RAID TARGET
 		this.raidTarget = CreateFrame('Frame', nil, this)

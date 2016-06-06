@@ -8,11 +8,13 @@
 	container:EnableMouseWheel(true)
 	container:Hide()
 	-------------------------------------------------------------------------------
-	local checkBoxOptionalsN, checkBoxOptionals  = 4, { [1] = {['id'] = 'displayNames', 		['label'] = 'Display names'}, 
+	local checkBoxOptionalsN, checkBoxOptionals  = 5, { [1] = {['id'] = 'displayNames', 		['label'] = 'Display names'}, 
 														--[2] = {['id'] = 'displayHealthValues', 	['label'] = 'Display Health %'}, 
 														[2] = {['id'] = 'displayManabar', 		['label'] = 'Display mana bar'},
 														[3] = {['id'] = 'castTimers', 			['label'] = 'Display cast timers'},
-														[4] = {['id'] = 'displayOnlyNearby', 	['label'] = 'Display nearby units only'},														
+														[4] = {['id'] = 'displayOnlyNearby', 	['label'] = 'Display nearby units only'},
+														[5] = {['id'] = 'targetCounter', 		['label'] = 'Display Target Counter'},
+														
 													}
 	-------------------------------------------------------------------------------
 	-- optionals

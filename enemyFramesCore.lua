@@ -75,6 +75,9 @@ local function addNearbyPlayers(players)
 
 					if v['sex']	then			playerList[v['name']]['sex']		= v['sex'] 				end
 					
+					if GetTime() > enemyNearbyRefresh then
+						playerList[v['name']]['targetcount'] = playerList[v['name']]['targetcount'] and  playerList[v['name']]['targetcount'] + 1 or 1
+					end
 				--end
 
 				playerList[v['name']]['nextCheck'] 	= nextCheck
@@ -110,6 +113,11 @@ local function verifyUnitInfo(unit)
 		u['sex']		= (s == 1 or s == 2) and 'MALE' or s == 3 and 'FEMALE' 
 
 		addNearbyPlayers({u})
+		-- update fc health text
+		if playerList[u['name']] and playerList[u['name']]['fc'] then WSGUIupdateFChealth(unit) end
+		
+		--u['targetcount'] = u['targetcount'] and u['targetcount'] + 1 or 1
+		
 		return true
 	end
 	return false
@@ -239,6 +247,12 @@ local function orderUnitsforOutput()
 	return list
 end
 
+local function resetTargetCount()
+	for k, v in pairs(playerList) do
+		v['targetcount'] = 0
+	end
+end
+
 --- GLOBAL ACCESS ---
 function ENEMYFRAMECOREgetPlayer(name)
 	return playerList[name]
@@ -258,6 +272,7 @@ function ENEMYFRAMECOREUpdateFlagCarriers(fc)
 	end
 	refreshUnits = true
 	TARGETFRAMEsetFC(fc)
+	WSGUIupdateFC(fc)
 end
 
 function ENEMYFRAMECORESetPlayersData(list)
@@ -322,10 +337,13 @@ local function enemyFramesCoreOnUpdate()
 	verifyUnitInfo('target')
 	verifyUnitInfo('mouseover')
 	
+	
 	getRaidMembersTarget()
 	-- check raid targets every enemyNearbyInterval seconds
 	local now = GetTime()
 	if now > enemyNearbyRefresh then
+		resetTargetCount()
+		
 		checkPrioMembers()
 		enemyNearbyRefresh = now + enemyNearbyInterval
 	end	
@@ -364,13 +382,14 @@ local function initializeValues()
 	raidTargets = {}
 	prioMembers = {}
 	nearbyList = {}
+	playerListRefresh = 0
 		
 	local maxUnits = bgs[GetZoneText()] and bgs[GetZoneText()] or ENEMYFRAMESPLAYERDATA['enableOutdoors'] and maxUnitsDisplayed or nil
 	if maxUnits then
 		--
 		insideBG = bgs[GetZoneText()] and true or false
 		
-		if insideBG then f:RegisterEvent'UPDATE_BATTLEFIELD_SCORE'	end
+		if insideBG then f:RegisterEvent'UPDATE_BATTLEFIELD_SCORE'	WSGUIinit()	end
 		f:SetScript('OnUpdate', enemyFramesCoreOnUpdate)
 		-- enable ui elements
 		ENEMYFRAMESInitialize(maxUnits, insideBG)
@@ -398,6 +417,8 @@ local function eventHandler()
 		end	
 	elseif event == 'RAID_ROSTER_UPDATE' then
 		sendMSG('AV', ENEMYFRAMESVERSION, nil, insideBG)
+	elseif event == 'UNIT_HEALTH' then
+		WSGUIupdateFChealth(arg1)
 	end
 end
 
@@ -405,6 +426,7 @@ end
 f:RegisterEvent'PLAYER_ENTERING_WORLD'
 f:RegisterEvent'ZONE_CHANGED_NEW_AREA'
 f:RegisterEvent'RAID_ROSTER_UPDATE'
+f:RegisterEvent'UNIT_HEALTH'
 
 
 f:SetScript('OnEvent', eventHandler)
