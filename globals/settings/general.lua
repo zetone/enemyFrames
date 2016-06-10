@@ -23,13 +23,9 @@
 		end
 		_G[container.generalList[i]:GetName()..'Text']:SetText(checkBoxGeneral[i]['label'])
 		_G[container.generalList[i]:GetName()..'Text']:SetPoint('LEFT', container.generalList[i], 'RIGHT', 4, 0)
-		container.generalList[i].i = i
+		container.generalList[i].id = checkBoxGeneral[i]['id']
 		container.generalList[i]:SetScript('OnClick', function()
-			if this:GetChecked() then
-				ENEMYFRAMESPLAYERDATA[checkBoxGeneral[this.i]['id']]	= true
-			else
-				ENEMYFRAMESPLAYERDATA[checkBoxGeneral[this.i]['id']]	= false
-			end
+			ENEMYFRAMESPLAYERDATA[this.id] = this:GetChecked()
 			ENEMYFRAMESsettings()
 		end)
 	end

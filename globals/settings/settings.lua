@@ -5,7 +5,7 @@ print = function(m) DEFAULT_CHAT_FRAME:AddMessage(m) end
 
 tlength = function(t)	local i = 0 for k, j in ipairs(t) do i = i + 1 end return i end
 
-ENEMYFRAMESVERSION = 1.16
+ENEMYFRAMESVERSION = 1.17
 ENEMYFRAMESNEWVERSION = 0
 ENEMYFRAMESVERSIONFOUND = false
 
@@ -46,7 +46,7 @@ ENEMYFRAMESPLAYERDATA =
 }
 
 
-local playerFaction
+local playerFaction, insideBG = false
 ------------ UI ELEMENTS ------------------
 local enemyFactionColor
 local enemyFramesDisplayShow = false
@@ -66,7 +66,7 @@ settings:SetClampedToScreen(true)
 settings:RegisterForDrag'LeftButton' settings:EnableMouse(true)
 settings:SetScript('OnDragStart', function() settings:StartMoving() end)
 settings:SetScript('OnDragStop', function() settings:StopMovingOrSizing() end)
---tinsert(UISpecialFrames, 'enemyFramesSettings')
+tinsert(UISpecialFrames, 'enemyFramesSettings')
 settings:Hide()
 
 settings.x = CreateFrame('Button', 'enemyFramesSettingsCloseButton', settings, 'UIPanelCloseButton')
@@ -175,15 +175,17 @@ function setupSettings()
 end
 
 local closeSettings = function()
-	settings:Hide() 
-	if not enemyFramesDisplayShow and not IsInsideBG() then 
+	--settings:Hide() 
+	if not enemyFramesDisplayShow and not insideBG then 
 		_G['enemyFrameDisplay']:Hide() 
 	end 
+
 	INCOMINGSPELLSsettings(false) TARGETFRAMECASTBARsettings(false)
 end
 -- x button
 settings.x:SetScript('OnClick', function() 
-	 closeSettings()
+	 --closeSettings()
+	 settings:Hide()
 end)
 
 local function eventHandler()
@@ -197,13 +199,19 @@ local function eventHandler()
 		local point, relativeTo, relativePoint, xOfs, yOfs = _G['enemyFrameDisplay']:GetPoint()
 		ENEMYFRAMESPLAYERDATA['offX'] = xOfs
 		ENEMYFRAMESPLAYERDATA['offY'] = yOfs
+	elseif event == 'ZONE_CHANGED_NEW_AREA' then
+		insideBG = IsInsideBG()
 	end
 end
 
 local f = CreateFrame'Frame'
 f:RegisterEvent'PLAYER_LOGIN'
 f:RegisterEvent'PLAYER_LOGOUT'
+f:RegisterEvent'ZONE_CHANGED_NEW_AREA'
 f:SetScript('OnEvent', eventHandler)
+
+settings:SetScript('OnHide', closeSettings)
+
 
 SLASH_ENEMYFRAMESSETTINGS1 = '/efs'
 SlashCmdList["ENEMYFRAMESSETTINGS"] = function(msg)

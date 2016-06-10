@@ -1,33 +1,75 @@
 	-------------------------------------------------------------------------------
 	local flagCarriers = {}
 	local fcHealth = {}
-	local sentAnnoucement, healthWarnings = false, {10, 30, 50}
+	local sentAnnoucement, healthWarnings = false, {10, 20, 40}
 	local nextAnnouncement = 0
 	-------------------------------------------------------------------------------
-	local h = UIParent:CreateFontString(nil, 'OVERLAY')
+	local h = WorldStateAlwaysUpFrame:CreateFontString(nil, 'OVERLAY')
     h:SetFontObject(GameFontNormalSmall)
     h:SetTextColor(RGB_FACTION_COLORS['Alliance']['r'], RGB_FACTION_COLORS['Alliance']['g'], RGB_FACTION_COLORS['Alliance']['b'])
     h:SetJustifyH'LEFT'
 	h:SetText('horde')
 	
-	local hh = UIParent:CreateFontString(nil, 'OVERLAY')
+	local hb = CreateFrame('Button', nil, WorldStateAlwaysUpFrame)
+    hb:SetFrameLevel(2)
+    hb:SetAllPoints(h)
+    hb:EnableMouse(true)
+    
+	
+	local hh = WorldStateAlwaysUpFrame:CreateFontString(nil, 'OVERLAY')
     hh:SetFontObject(GameFontNormalSmall)
 	--hh:SetTextColor(.59, .98, .59)
     hh:SetJustifyH'RIGHT'
     hh:SetPoint('LEFT', h, 'RIGHT', 2, 0)
 
 	
-    local a = UIParent:CreateFontString(nil, 'OVERLAY')
+    local a = WorldStateAlwaysUpFrame:CreateFontString(nil, 'OVERLAY')
     a:SetFontObject(GameFontNormalSmall)
 	a:SetTextColor(RGB_FACTION_COLORS['Horde']['r'], RGB_FACTION_COLORS['Horde']['g'], RGB_FACTION_COLORS['Horde']['b'])
     a:SetJustifyH'LEFT'
 	a:SetText('alliance')
 	
-	local ah = UIParent:CreateFontString(nil, 'OVERLAY')
+	local ab = CreateFrame('Button', nil, WorldStateAlwaysUpFrame)
+    ab:SetFrameLevel(2)
+    ab:SetAllPoints(a)
+    ab:EnableMouse(true)
+    
+	
+	local ah = WorldStateAlwaysUpFrame:CreateFontString(nil, 'OVERLAY')
     ah:SetFontObject(GameFontNormalSmall)
 	--ah:SetTextColor(.59, .98, .59)
     ah:SetJustifyH'RIGHT'
     ah:SetPoint('LEFT', a, 'RIGHT', 2, 0)
+	-------------------------------------------------------------------------------
+	local OnEnter = function()
+		local label = this == hb and h or a
+		label:SetTextColor(.9, .9, .4)
+		if label:GetText() ~= '' then
+			GameTooltip:SetOwner(this, 'ANCHOR_TOPRIGHT', -40, 10)
+			GameTooltip:SetText('Click to target '..label:GetText())
+			GameTooltip:Show()
+		end
+	end
+	local OnLeave = function()
+		local label = this == hb and h or a
+		local f = label == a and 'Horde' or 'Alliance'
+		label:SetTextColor(RGB_FACTION_COLORS[f]['r'], RGB_FACTION_COLORS[f]['g'], RGB_FACTION_COLORS[f]['b'])
+		GameTooltip:Hide()
+	end
+	local target = function()
+        local text = this == hb and h or a
+        local t = text:GetText()
+        TargetByName(t, true)
+    end
+	
+	
+	hb:SetScript('OnClick', target)
+	hb:SetScript('OnEnter', OnEnter)
+	hb:SetScript('OnLeave', OnLeave)
+	
+	ab:SetScript('OnClick', target)
+	ab:SetScript('OnEnter', OnEnter)
+	ab:SetScript('OnLeave', OnLeave)
 	-------------------------------------------------------------------------------
 	WSGUIupdateFC = function(fc)
 		flagCarriers = fc
@@ -59,11 +101,11 @@
 			for i = 1, tlength(healthWarnings) do
 				if fcHealth[f] < healthWarnings[i]  then
 					if (not sentAnnoucement or healthWarnings[i] < w) and now > nextAnnouncement then
-						nextAnnouncement = now + 3
+						nextAnnouncement = now + 2
 						w = healthWarnings[i]
 						--print('EFC has less than '..healthWarnings[i]..'%! Get ready to cap!')
 						local msgb = flagCarriers[x] and ' Get ready to cap!' or ''
-						SendChatMessage('EFC is less than '..healthWarnings[i]..'%!'.. msgb, 'BATTLEGROUND')
+						SendChatMessage('EFC has less than '..healthWarnings[i]..'% Health!'.. msgb, 'BATTLEGROUND')
 						sentAnnoucement = true
 					end
 					return
@@ -99,15 +141,15 @@
 	end
 	-------------------------------------------------------------------------------
 	WSGUIinit = function()
-		local hb = _G['AlwaysUpFrame1DynamicIconButton']
-		h:SetPoint('LEFT', hb, 'RIGHT', 4, 2)
+		local hdb = _G['AlwaysUpFrame1DynamicIconButton']
+		h:SetPoint('LEFT', hdb, 'RIGHT', 4, 2)
 		h:Show()
 		h:SetText('')
 		hh:Show()		
 		hh:SetText('')
 		
-		local ab = _G['AlwaysUpFrame2DynamicIconButton']
-		a:SetPoint('LEFT', ab, 'RIGHT', 4, 2)
+		local adb = _G['AlwaysUpFrame2DynamicIconButton']
+		a:SetPoint('LEFT', adb, 'RIGHT', 4, 2)
 		a:Show()
 		a:SetText('')			
 		ah:Show()

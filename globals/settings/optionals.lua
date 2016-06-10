@@ -29,13 +29,10 @@
 		container.optinalsList[i]:SetPoint('LEFT', i == 1 and container.optionals or container.optinalsList[i-1], 'LEFT', 0, i == 1 and -40 or -30)
 		_G[container.optinalsList[i]:GetName()..'Text']:SetText(checkBoxOptionals[i]['label'])
 		_G[container.optinalsList[i]:GetName()..'Text']:SetPoint('LEFT', container.optinalsList[i], 'RIGHT', 4, 0)
-		container.optinalsList[i].i = i
+
+		container.optinalsList[i].id = checkBoxOptionals[i]['id']
 		container.optinalsList[i]:SetScript('OnClick', function()
-			if this:GetChecked() then
-				ENEMYFRAMESPLAYERDATA[checkBoxOptionals[this.i]['id']]	= true
-			else
-				ENEMYFRAMESPLAYERDATA[checkBoxOptionals[this.i]['id']]	= false
-			end
+			ENEMYFRAMESPLAYERDATA[this.id]	= this:GetChecked()
 			ENEMYFRAMESsettings()
 		end)
 	end

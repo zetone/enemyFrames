@@ -33,6 +33,7 @@ local function fillPlayerList()
 		if faction == f then
 			race = race == 'Undead' and 'SCOURGE' or race == 'Night Elf' and 'nightelf' or race
 			l[name] = {['name'] = name, ['class'] = string.upper(class), ['rank'] = rank-4, ['race'] = string.upper(race), ['sex'] = 'MALE'} -- rank starts at -4 apparently
+			l[name]['powerType']  =  l[name]['class'] == 'ROGUE' and 'energy' or l[name]['class'] == 'WARRIOR' and 'rage' or 'mana'
 			gotData = true
 		end
 	end	
@@ -74,6 +75,7 @@ local function addNearbyPlayers(players)
 					if v['maxmana']	then		playerList[v['name']]['maxmana'] 	= v['maxmana']			end
 
 					if v['sex']	then			playerList[v['name']]['sex']		= v['sex'] 				end
+					if v['powerType'] then		playerList[v['name']]['powerType']	= v['powerType'] 		end
 					
 					if GetTime() > enemyNearbyRefresh then
 						playerList[v['name']]['targetcount'] = playerList[v['name']]['targetcount'] and  playerList[v['name']]['targetcount'] + 1 or 1
@@ -109,6 +111,8 @@ local function verifyUnitInfo(unit)
 		u['maxhealth'] 	= UnitHealthMax(unit)
 		u['mana'] 		= UnitMana(unit)
 		u['maxmana']	= UnitManaMax(unit)
+		local power = UnitPowerType(unit)
+		u['powerType']  =  power == 3 and 'energy' or power == 1 and 'rage' or 'mana'
 		local s = UnitSex(unit)
 		u['sex']		= (s == 1 or s == 2) and 'MALE' or s == 3 and 'FEMALE' 
 
@@ -134,8 +138,9 @@ local function getRaidMembersTarget()
 	local numRaidMembers = UnitInRaid('player') and GetNumRaidMembers() or GetNumPartyMembers() 
 	if numRaidMembers == 0 then return end
 	
-	if verifyUnitInfo('raid' .. raidMemberIndex .. 'target') then 
-		prioMembers[raidMemberIndex] = 'raid' .. raidMemberIndex .. 'target'	
+	local groupType = UnitInRaid('player') and 'raid' or 'party'
+	if verifyUnitInfo(groupType .. raidMemberIndex .. 'target') then 
+		prioMembers[raidMemberIndex] = groupType .. raidMemberIndex .. 'target'	
 	end
 
 	raidMemberIndex = raidMemberIndex < numRaidMembers and raidMemberIndex + 1 or 1

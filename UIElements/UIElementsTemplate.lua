@@ -74,7 +74,7 @@
 		this.castbar.text:SetFont(STANDARD_TEXT_FONT, 8, 'OUTLINE')
 		--this.castbar.text:SetShadowOffset(1, -1)
 		this.castbar.text:SetShadowColor(0.4, 0.4, 0.4)
-		this.castbar.text:SetPoint('LEFT', this.castbar, 'LEFT', 1, 1)
+		this.castbar.text:SetPoint('LEFT', this.castbar, 'LEFT', 1, .5)
 		
 		
 		this.castbar.timer = this.castbar:CreateFontString(nil, 'OVERLAY')
@@ -103,7 +103,7 @@
 		this.targetCount:SetFrameLevel(7)
 		
 		this.targetCount.text = this.targetCount:CreateFontString(nil, 'OVERLAY')--, 'GameFontNormalSmall')
-		this.targetCount.text:SetFont(STANDARD_TEXT_FONT, 10, 'OUTLINE')
+		this.targetCount.text:SetFont(STANDARD_TEXT_FONT, 11, 'OUTLINE')
 		this.targetCount.text:SetTextColor(.9, .9, .2, 1)
 		this.targetCount.text:SetShadowOffset(1, -1)
 		this.targetCount.text:SetShadowColor(0, 0, 0)

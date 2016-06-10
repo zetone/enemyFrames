@@ -25,13 +25,9 @@
 		container.platesList[i]:SetPoint('LEFT', i == 1 and container.platesLabel or container.platesList[i-1], 'LEFT', 0, i == 1 and -40 or -30)
 		_G[container.platesList[i]:GetName()..'Text']:SetText(checkBoxPlatesOpt[i]['label'])
 		_G[container.platesList[i]:GetName()..'Text']:SetPoint('LEFT', container.platesList[i], 'RIGHT', 4, 0)
-		container.platesList[i].i = i
+		container.platesList[i].id = checkBoxPlatesOpt[i]['id']
 		container.platesList[i]:SetScript('OnClick', function()
-			if this:GetChecked() then
-				ENEMYFRAMESPLAYERDATA[checkBoxPlatesOpt[this.i]['id']]	= true
-			else
-				ENEMYFRAMESPLAYERDATA[checkBoxPlatesOpt[this.i]['id']]	= false
-			end
+			ENEMYFRAMESPLAYERDATA[this.id]	= this:GetChecked()
 		end)
 	end
 	--plate debuff size slider

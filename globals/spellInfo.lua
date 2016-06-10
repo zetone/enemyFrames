@@ -28,7 +28,7 @@
 		['Horde'] 		= {['r'] = 1, ['g'] = .1, ['b'] = .1}
 	}
 	
-	local RGB_POWER_COLORS =
+	RGB_POWER_COLORS =
 	{
 		['energy']		= {1, 1, 0},
 		['focus']		= {1, .5, .25},
@@ -37,9 +37,6 @@
 		
 	}
 		
-	GET_RGB_POWER_COLORS_BY_CLASS = function(class)
-		return class == 'ROGUE' and RGB_POWER_COLORS['energy'] or class == 'WARRIOR' and RGB_POWER_COLORS['rage'] or RGB_POWER_COLORS['mana']
-	end
 	
 	RGB_BORDER_DEBUFFS_COLOR =
 	{
@@ -415,6 +412,7 @@
 	SPELLINFO_BUFFS_TO_TRACK = {
 	
         -- MISC
+		['Flee']					= {['icon'] = [[Interface\Icons\spell_magic_polymorphchicken]],		['duration'] = 10,},
     	['Free Action']     		= {['icon'] = [[Interface\Icons\Inv_potion_04]], 					['duration'] = 30, 	['type'] = 'magic', 	['prio'] = 4},
 		['Invulnerability']        	= {['icon'] = [[Interface\Icons\Spell_holy_divineintervention]], 	['duration'] = 6, 	['type'] = 'magic',		['prio'] = 5},
 		['Living Free Action'] 		= {['icon'] = [[Interface\Icons\Inv_potion_07]], 					['duration'] = 5, 	['type'] = 'magic', 	['prio'] = 4},

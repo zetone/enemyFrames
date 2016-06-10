@@ -490,7 +490,7 @@ local function drawUnits(list)
 		-- set for redrawn
 		
 		local colour = RAID_CLASS_COLORS[v['class']]
-		local powerColor = GET_RGB_POWER_COLORS_BY_CLASS(v['class'])
+		local powerColor = RGB_POWER_COLORS[v['powerType']]--GET_RGB_POWER_COLORS_BY_CLASS(v['class'])
 		
 		-- hightlight nearby unit
 		if v['nearby'] then		
@@ -553,7 +553,9 @@ local function drawUnits(list)
 		units[i].manabar:SetMinMaxValues(0, v['maxmana'] and v['maxmana'] or 100)
 		units[i].manabar:SetValue(v['mana'] and v['mana'] or not (v['nearby'] and v['maxmana']) and v['maxmana'] or 100)
 		
-		units[i]:Show()
+		--units[i]:Show()
+		if ENEMYFRAMESPLAYERDATA['displayOnlyNearby'] and not v['nearby'] then units[i]:Hide()	else units[i]:Show() end
+
 		
 		nearU = v['nearby'] and nearU + 1 or nearU
 		i = i + 1
@@ -623,7 +625,8 @@ local function updateUnits()
 				units[i].castbar:SetValue(mod((GetTime() - castInfo.timeStart), castInfo.timeEnd - castInfo.timeStart))					
 			end
 			units[i].castbar.text:SetText(castInfo.spell)
-			units[i].castbar.text:SetText(string.sub(units[i].castbar.text:GetText(), 1, 15))
+			local charLim = ENEMYFRAMESPLAYERDATA['castTimers'] and 14 or 15
+			units[i].castbar.text:SetText(string.sub(units[i].castbar.text:GetText(), 1, charLim))
 			
 			units[i].castbar.timer:SetText(getTimerLeft(castInfo.timeEnd))--..'s')
 			
@@ -666,9 +669,10 @@ local function updateUnits()
 			units[i].raidTarget:Hide()
 		end	
 		
-		if not v['nearby'] then
-			if ENEMYFRAMESPLAYERDATA['displayOnlyNearby'] then units[i]:Hide()	else units[i]:Show() end
-		end
+		--if not v['nearby'] then
+		--	if ENEMYFRAMESPLAYERDATA['displayOnlyNearby'] then units[i]:Hide()	else units[i]:Show() end
+		--end
+		if ENEMYFRAMESPLAYERDATA['displayOnlyNearby'] and not v['nearby'] then units[i]:Hide()	else units[i]:Show() end
 				
 		i = i + 1
 		if i > unitLimit then return end
