@@ -1,5 +1,5 @@
 	-------------------------------------------------------------------------------
-	local msgPrefix = {['RT'] = 'BGEFRT', ['EFC'] = 'BGEFEFC', ['AV'] = 'BGEFEAV'}
+	local msgPrefix = {['RT'] = 'BGEFRT', ['EFC'] = 'BGEFEFC', ['AV'] = 'BGEFEAV', ['BF'] = 'BGEFEBF'}
 
 	function sendMSG(typ, d, icon, bg)	
 		if icon == nil then icon = '' end
@@ -38,6 +38,22 @@
 		end
 	end
 	-------------------------------------------------------------------------------
+	local handleBuff = function()
+		--print(arg1) print(arg2)
+		local m = '(.+)/(.+)/(.+)/(.+)'	local fm = string.find(arg2, m)
+				
+		if fm then
+			local sender 	= gsub(arg2, m, '%1')
+			local tar 		= gsub(arg2, m, '%2')
+			local spell		= gsub(arg2, m, '%3')
+			local dur		= gsub(arg2, m, '%4')
+
+			if sender ~= UnitName'player' then
+				SPELLCASTINGCOREqueueBuff(tar, spell, dur)
+			end
+		end
+	end
+	-------------------------------------------------------------------------------
 	local function eventHandler()
 		local prefix = 'BGEF(.+)'			local fprefix = string.find(arg1, prefix)
 
@@ -52,7 +68,10 @@
 			-- announce version
 			elseif arg1 == msgPrefix['AV']  then
 				--print(arg1) print(arg2)
-				newVersion()				
+				newVersion()	
+			-- unique debuff
+			elseif arg1 == msgPrefix['BF']  then
+				handleBuff()
 			end
 		end
 	end

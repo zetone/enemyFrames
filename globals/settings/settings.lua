@@ -21,10 +21,11 @@ ENEMYFRAMESPLAYERDATA =
 	-- features
 	['mouseOver']				= false,
 	['enableOutdoors']			= false,
-	['incomingSpells']			= false,
-	['pvpmapblips']				= false,
 	['playerPortraitDebuff']	= false,
 	['targetPortraitDebuff']	= false,
+	-- bgs
+	['incomingSpells']			= false,
+	['pvpmapblips']				= false,	
 	['efcBGannouncement']		= false,
 	-- optionals
 	['displayNames']			= true,
@@ -39,6 +40,7 @@ ENEMYFRAMESPLAYERDATA =
 	['nameplatesdebuffs'] 		= true,
 	['nameplatesCastbar']		= true,
 	['plateDebuffSize']			= 1,
+	['nameplatesRaidMarks']		= true,
 	
 	
 	['offX']				= 0,

@@ -5,7 +5,7 @@ local bgs = {['Warsong Gulch'] = 10,
 			 --['Alterac Valley'] = 40
 			 }
 -- TIMERS
-local playerListInterval, playerListRefresh, enemyNearbyInterval, enemyNearbyRefresh = 45, 0, .3, 0
+local playerListInterval, playerListRefresh, enemyNearbyInterval, enemyNearbyRefresh = 30, 0, .3, 0
 local raidMemberIndex = 1
 local playerOutdoorLastseen = 60
 local insideBG = false
@@ -105,7 +105,9 @@ local function verifyUnitInfo(unit)
 			u['class']		= c
 			u['rank']		= UnitPVPRank(unit) - 4
 			local r = UnitRace(unit)
-			u['race']		= r == 'Undead' and 'SCOURGE' or r == 'Night Elf' and 'NIGHTELF' or string.upper(r)
+			if r then
+				u['race']		= r == 'Undead' and 'SCOURGE' or r == 'Night Elf' and 'NIGHTELF' or string.upper(r)
+			end
 		end
 		u['health'] 	= UnitHealth(unit)
 		u['maxhealth'] 	= UnitHealthMax(unit)
@@ -394,13 +396,14 @@ local function initializeValues()
 		--
 		insideBG = bgs[GetZoneText()] and true or false
 		
-		if insideBG then f:RegisterEvent'UPDATE_BATTLEFIELD_SCORE'	WSGUIinit()	end
+		if insideBG then f:RegisterEvent'UPDATE_BATTLEFIELD_SCORE'	end
 		f:SetScript('OnUpdate', enemyFramesCoreOnUpdate)
 		-- enable ui elements
 		ENEMYFRAMESInitialize(maxUnits, insideBG)
 		targetframeInit()
 		bindingsInit()
 		INCOMINGSPELLSinit(insideBG)
+		WSGUIinit(insideBG)
 	else
 		f:UnregisterEvent'UPDATE_BATTLEFIELD_SCORE'
 		-- nil value to disable ui elements

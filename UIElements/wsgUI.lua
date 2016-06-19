@@ -20,7 +20,7 @@
     hh:SetFontObject(GameFontNormalSmall)
 	--hh:SetTextColor(.59, .98, .59)
     hh:SetJustifyH'RIGHT'
-    hh:SetPoint('LEFT', h, 'RIGHT', 2, 0)
+    hh:SetPoint('LEFT', h, 'RIGHT', 5, 0)
 
 	
     local a = WorldStateAlwaysUpFrame:CreateFontString(nil, 'OVERLAY')
@@ -39,7 +39,7 @@
     ah:SetFontObject(GameFontNormalSmall)
 	--ah:SetTextColor(.59, .98, .59)
     ah:SetJustifyH'RIGHT'
-    ah:SetPoint('LEFT', a, 'RIGHT', 2, 0)
+    ah:SetPoint('LEFT', a, 'RIGHT', 5, 0)
 	-------------------------------------------------------------------------------
 	local OnEnter = function()
 		local label = this == hb and h or a
@@ -140,30 +140,27 @@
 		end
 	end
 	-------------------------------------------------------------------------------
-	WSGUIinit = function()
-		local hdb = _G['AlwaysUpFrame1DynamicIconButton']
-		h:SetPoint('LEFT', hdb, 'RIGHT', 4, 2)
-		h:Show()
-		h:SetText('')
-		hh:Show()		
-		hh:SetText('')
-		
-		local adb = _G['AlwaysUpFrame2DynamicIconButton']
-		a:SetPoint('LEFT', adb, 'RIGHT', 4, 2)
-		a:Show()
-		a:SetText('')			
-		ah:Show()
-		ah:SetText('')
+	WSGUIinit = function(insideBG)
+		if insideBG then
+			local hdb = _G['AlwaysUpFrame1DynamicIconButton']
+			h:SetPoint('LEFT', hdb, 'RIGHT', 4, 2)
+			h:Show()
+			h:SetText('')
+			hh:Show()		
+			hh:SetText('')
+			
+			local adb = _G['AlwaysUpFrame2DynamicIconButton']
+			a:SetPoint('LEFT', adb, 'RIGHT', 4, 2)
+			a:Show()
+			a:SetText('')			
+			ah:Show()
+			ah:SetText('')
+		else
+			h:Hide()
+			hh:Hide()
+			a:Hide()
+			ah:Hide()
+			flagCarriers = {}
+		end
 	end
-	-------------------------------------------------------------------------------
-	local f = CreateFrame'Frame'
-	f:RegisterEvent'ZONE_CHANGED_NEW_AREA'
-	f:RegisterEvent'PLAYER_ENTERING_WORLD'
-	f:SetScript('OnEvent', function()
-		--h:Hide()
-		hh:Hide()
-		--a:Hide()
-		ah:Hide()
-		flagCarriers = {}
-	end)
 	-------------------------------------------------------------------------------

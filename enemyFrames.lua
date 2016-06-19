@@ -10,7 +10,8 @@ local playerList = {}
 local unitLimit = 15
 local units = {}
 local raidTargets = {}
-local raidIcons, raidIconsN = {[1] = 'skull', [2] = 'moon', [3] = 'square', [4] = 'triangle'}, 4
+local raidIcons, raidIconsN = { [1] = 'skull', [2] = 'moon', [3] = 'square', [4] = 'triangle',  
+								[5] = 'star', [6] = 'diamond', [7] = 'cross', [8] = 'circle'}, 8
 
 local enabled = false
 local maxUnits = 15
@@ -175,7 +176,7 @@ local 	enemyFrame = CreateFrame('Frame', 'enemyFrameDisplay', UIParent)
 		local rtMenuIconsize = 26
 		enemyFrame.raidTargetMenu = CreateFrame('Frame', nil, enemyFrame)
 		enemyFrame.raidTargetMenu:SetFrameLevel(7)
-		enemyFrame.raidTargetMenu:SetHeight(rtMenuIconsize+4)	enemyFrame.raidTargetMenu:SetWidth(rtMenuIconsize*raidIconsN+10)
+		enemyFrame.raidTargetMenu:SetHeight(rtMenuIconsize*2+4)	enemyFrame.raidTargetMenu:SetWidth(rtMenuIconsize*4+10)
 		enemyFrame.raidTargetMenu:SetBackdrop(BACKDROP)
 		enemyFrame.raidTargetMenu:SetBackdropColor(0, 0, 0, .6)
 		--enemyFrame.raidTargetMenu:SetPoint('CENTER', UIParent,'CENTER', 0, 160)
@@ -187,7 +188,13 @@ local 	enemyFrame = CreateFrame('Frame', 'enemyFrameDisplay', UIParent)
 		for j = 1, raidIconsN, 1 do
 			enemyFrame.raidTargetMenu.icons[j] = CreateFrame('Button', 'enemyFrame.raidTargetMenu.icons'..j, enemyFrame.raidTargetMenu)
 			enemyFrame.raidTargetMenu.icons[j]:SetHeight(rtMenuIconsize)	enemyFrame.raidTargetMenu.icons[j]:SetWidth(rtMenuIconsize)
-			enemyFrame.raidTargetMenu.icons[j]:SetPoint('LEFT', j == 1 and enemyFrame.raidTargetMenu or enemyFrame.raidTargetMenu.icons[j-1], j == 1 and 'LEFT' or 'RIGHT', 2, 0)
+			if j == 1 then
+				enemyFrame.raidTargetMenu.icons[j]:SetPoint('TOPLEFT', enemyFrame.raidTargetMenu, 'TOPLEFT', 1, -1)
+			elseif j < 5 then
+				enemyFrame.raidTargetMenu.icons[j]:SetPoint('LEFT', enemyFrame.raidTargetMenu.icons[j-1], 'RIGHT', 2, 0)
+			else
+				enemyFrame.raidTargetMenu.icons[j]:SetPoint('TOP', enemyFrame.raidTargetMenu.icons[j-4], 'BOTTOM', 0, -2)
+			end
 			enemyFrame.raidTargetMenu.icons[j].id = j
 			
 			enemyFrame.raidTargetMenu.icons[j].tex = enemyFrame.raidTargetMenu.icons[j]:CreateTexture(nil, 'OVERLAY')
@@ -305,9 +312,9 @@ local function arrangeUnits()
 	
 	-- adjust title
 	if playerFaction == 'Alliance' then 
-		enemyFrame.Title:SetText(layout == 'vertical' and 'H' or 'Horde')
+		enemyFrame.Title:SetText(layout == 'vertical' and 'H ' or 'Horde')
 	else 
-		enemyFrame.Title:SetText(layout == 'vertical' and 'A' or 'Alliance')
+		enemyFrame.Title:SetText(layout == 'vertical' and 'A ' or 'Alliance')
 	end
 	
 	for i = 1, unitLimit do	
@@ -490,7 +497,7 @@ local function drawUnits(list)
 		-- set for redrawn
 		
 		local colour = RAID_CLASS_COLORS[v['class']]
-		local powerColor = RGB_POWER_COLORS[v['powerType']]--GET_RGB_POWER_COLORS_BY_CLASS(v['class'])
+		local powerColor = RGB_POWER_COLORS[v['powerType']]
 		
 		-- hightlight nearby unit
 		if v['nearby'] then		

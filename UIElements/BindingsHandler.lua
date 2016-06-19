@@ -9,6 +9,9 @@
 	BINDING_NAME_SETSTAR 		= "Assign Star to Target"
 	BINDING_NAME_SETMOON		= "Assign Moon to Target"
 	BINDING_NAME_SETSQUARE		= "Assign Square to Target"
+	BINDING_NAME_SETDIAMOND		= "Assign Diamond to Target"
+	BINDING_NAME_SETCROSS		= "Assign Cross to Target"
+	BINDING_NAME_SETCIRCLE		= "Assign Circle to Target"
 	BINDING_NAME_SETTRIANGLE	= "Assign Triangle to Target"
 	
 	

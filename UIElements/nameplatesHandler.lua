@@ -29,7 +29,7 @@
 			plate.raidTarget:SetPoint('BOTTOM', name, 'TOP', 0, 5)
 		end
 		
-		if raidTargets[n] then 
+		if raidTargets[n] and ENEMYFRAMESPLAYERDATA['nameplatesRaidMarks'] then 
 			local tCoords = RAID_TARGET_TCOORDS[raidTargets[n]['icon']]
 			plate.raidTarget:SetTexCoord(tCoords[1], tCoords[2], tCoords[3], tCoords[4])
 			plate.raidTarget:Show() 

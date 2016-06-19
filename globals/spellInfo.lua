@@ -36,7 +36,6 @@
 		['rage']		= {1, 0, 0},
 		
 	}
-		
 	
 	RGB_BORDER_DEBUFFS_COLOR =
 	{
@@ -269,7 +268,7 @@
         ['Ghost Wolf']              = {['icon'] = [[Interface\Icons\Spell_nature_spiritwolf]], ['casttime'] = 3},
         ['Healing Wave']            = {['icon'] = [[Interface\Icons\Spell_nature_healingwavegreater]], ['casttime'] = 2.5},
         ['Lesser Healing Wave']     = {['icon'] = [[Interface\Icons\Spell_nature_healingwavelesser]], ['casttime'] = 1.5},
-        ['Lightning Bolt']          = {['icon'] = [[Interface\Icons\Spell_nature_lightning]], ['casttime'] = 3, ['type'] = 'dmg', ['school'] = 'nature', ['class'] = 'SHAMAN'},
+        ['Lightning Bolt']          = {['icon'] = [[Interface\Icons\Spell_nature_lightning]], ['casttime'] = 2.5, ['type'] = 'dmg', ['school'] = 'nature', ['class'] = 'SHAMAN'},
             -- WARLOCK
         ['Banish']                  = {['icon'] = [[Interface\Icons\Spell_shadow_cripple]], ['casttime'] = 1.5},
         ['Create Firestone']        = {['icon'] = [[Interface\Icons\Inv_misc_gem_bloodstone_02]], ['casttime'] = 3},
@@ -420,6 +419,7 @@
 		['Perception']        		= {['icon'] = [[Interface\Icons\Spell_nature_sleep]], 				['duration'] = 20,},
 		["Reckless Charge"] 		= {['icon'] = [[Interface\Icons\Spell_nature_astralrecal]], 		['duration'] = 12, 	['type'] = 'magic', 	['prio'] = 3},
 		["Sleep"] 					= {['icon'] = [[Interface\Icons\Spell_nature_sleep]], 				['duration'] = 12, 	['type'] = 'magic', 	['prio'] = 3},
+		['Stoneform'] 				= {['icon'] = [[Interface\Icons\Inv_gauntlets_03]], 				['duration'] = 8,},
 		['Tidal Charm'] 			= {['icon'] = [[Interface\Icons\Spell_frost_summonwaterelemental]], ['duration'] = 3, 	['type'] = 'magic', 	['prio'] = 2},
     	['Will of the Forsaken']   	= {['icon'] = [[Interface\Icons\Spell_shadow_raisedead]], 			['duration'] = 5,							['prio'] = 2},
     	
@@ -515,7 +515,7 @@
 		['Disarm'] 					= {['icon'] = [[Interface\Icons\Ability_warrior_disarm]], 			['duration'] = 8, 	['type'] = 'physical', 	['prio'] = 1},
 		['Hamstring'] 				= {['icon'] = [[Interface\Icons\Ability_shockwave]], 				['duration'] = 15, 	['type'] = 'physical', 	['prio'] = 1},		
 		['Improved Hamstring'] 		= {['icon'] = [[Interface\Icons\Ability_shockwave]], 				['duration'] = 5, 	['type'] = 'physical', 	['prio'] = 2},
-		['Intercept Stun'] 				= {['icon'] = [[Interface\Icons\Spell_frost_stun]], 				['duration'] = 3, 	['type'] = 'physical', 	['prio'] = 1},
+		['Intercept Stun'] 			= {['icon'] = [[Interface\Icons\Spell_frost_stun]], 				['duration'] = 3, 	['type'] = 'physical', 	['prio'] = 1},
 		['Intimidating Shout']		= {['icon'] = [[Interface\Icons\Ability_golemthunderclap]], 		['duration'] = 8, 	['type'] = 'physical', 	['prio'] = 2, 	['dr'] = 'Fear'},
 		['Mortal Strike'] 			= {['icon'] = [[Interface\Icons\Ability_warrior_savageblow]], 		['duration'] = 10, 	['type'] = 'physical'},
 		['Shield Bash - Silenced'] 	= {['icon'] = [[Interface\Icons\Ability_warrior_shieldbash]], 		['duration'] = 3, 	['type'] = 'magic', 	['prio'] = 3},
@@ -591,5 +591,9 @@
 		-- WARRRIOR	
 		['Hamstring'] = true, ['Improved Hamstring'] = true,
 	}
+	
+	SPELLINFO_UNIQUE_DEBUFFS = {
+		['Kidney Shot'] = {['icon'] = [[Interface\Icons\Ability_rogue_kidneyshot]], ['cp'] = {2, 3, 4, 5, 6}, ['type'] = 'physical', ['prio'] = 2},
+	}	
 	
 	--

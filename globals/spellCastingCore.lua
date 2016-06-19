@@ -4,10 +4,12 @@ local Heal 			= {} 		local heals			= {}
 local InstaBuff 	= {} 		local iBuffs 		= {}
 local buff 			= {} 		local buffList 		= {}
 local dreturns 		= {} 		local dreturnsList 	= {}
+local buffQueue		= {}		local buffQueueList = {}
 Cast.__index   		= spellCast
 Heal.__index   		= Heal
 InstaBuff.__index 	= InstaBuff
 buff.__index 		= buff
+buffQueue.__index	= buffQueue
 dreturns.__index	= dreturns
 
 local playerName = UnitName'player'
@@ -68,6 +70,20 @@ buff.create = function(tar, t, s, buffType, factor, time)
 	return acnt
 end
 
+buffQueue.create = function(tar, spell, buffType, d, time)
+	local acnt     = {}
+	setmetatable(acnt, buffQueue)
+	acnt.target    	= tar
+	acnt.buffName	= spell
+	acnt.buffData   = buffType
+	--acnt.duration	= 
+	buffType['duration'] = buffType['cp'][d]
+
+	acnt.timeStart 	= time
+	acnt.timeEnd   	= time + 1 
+	return acnt
+end
+
 dreturns.create = function(tar, t, tEnd)
 	local acnt = {}
 	setmetatable(acnt, dreturns)
@@ -120,6 +136,8 @@ local tableMaintenance = function(reset)
 		removeExpiredTableEntries(time, iBuffs)
 		-- BUFFS / DEBUFFS
 		removeExpiredTableEntries(time, buffList)
+		-- BUFFQUEUE
+		removeExpiredTableEntries(time, buffQueueList)
 		-- DRS
 		updateDRtimers(time, dreturnsList, buffList)
 		removeExpiredTableEntries(time, dreturnsList)
@@ -257,6 +275,24 @@ local function refreshBuff(tar, b, s)
 	end
 end
 
+local function queueBuff(tar, spell, b, d)
+	local time = GetTime()
+	local bq = buffQueue.create(tar, spell, b, d, time)
+	table.insert(buffQueueList, bq) 
+end
+
+local function processQueuedBuff(tar, b)
+	local time = GetTime()
+	for k, v in pairs(buffQueueList) do
+		if v.target == tar and v.buffName == b then
+			local n = buff.create(v.target, v.buffName, 1, v.buffData, 1, time)
+			table.insert(buffList, n)
+			
+			table.remove(buffQueueList, k)
+			return 
+		end
+	end
+end
 -----handleCast subfunctions-----------------------------------------------
 ---------------------------------------------------------------------------
 local forceHideTableItem = function(tab, caster, spell)
@@ -434,6 +470,9 @@ local GainAfflict = function()
 		if SPELLINFO_TIME_MODIFIER_BUFFS_TO_TRACK[s] then
 			newIBuff(c, s)
 		end
+		
+		-- process debuffs in queueBuff
+		processQueuedBuff(c, s)
 	end
 	
 	return fgain or fpgain or fafflict or fpafflict
@@ -657,10 +696,9 @@ end
 
 ----------------------------------------------------------------------------
 local singleEventdebug = function()
-	local m = '(.+)\'s Drain Mana drains (.+) Mana from (.+).'
 	local v = '(.+) performs Vanish'
 	
-	if string.find(arg1, m) or string.find(arg1, v) then
+	if string.find(arg1, v) then
 		print(event)
 		print(arg1)
 	end
@@ -682,7 +720,7 @@ local combatlogParser = function()
 	local death		= 'CHAT_MSG_COMBAT_(.+)_DEATH'			local fdeath 		= string.find(event, death)
 	local mEmote	= 'CHAT_MSG_MONSTER_EMOTE'				local fmEmote		= string.find(event, mEmote)
 	
-	--if arg1 then singleEventdebug() end -- testing
+	if arg1 then singleEventdebug() end -- testing
 	
 	-- periodic damage/buff spells
 	if fpSpell then	
@@ -767,6 +805,14 @@ SPELLCASTINGCORErefreshBuff = function(t, b, s)
 	if SPELLINFO_DEBUFF_REFRESHING_SPELLS[b] then
 		refreshBuff(t, b, s)
 	end
+end
+
+SPELLCASTINGCOREqueueBuff = function(t, b, d)
+	if SPELLINFO_UNIQUE_DEBUFFS[b] then	
+		queueBuff(t, b, SPELLINFO_UNIQUE_DEBUFFS[b], d)
+		return true
+	end
+	return false
 end
 ------------------------------------
 

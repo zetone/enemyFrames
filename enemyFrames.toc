@@ -14,7 +14,7 @@ globals\settings\general.lua
 globals\settings\features.lua
 globals\settings\nameplates.lua
 globals\settings\optionals.lua
-#globals\class\rogue.lua
+globals\class\rogue.lua
 
 UIElements\BindingsHandler.lua
 UIElements\nameplatesHandler.lua
