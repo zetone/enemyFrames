@@ -720,7 +720,7 @@ local combatlogParser = function()
 	local death		= 'CHAT_MSG_COMBAT_(.+)_DEATH'			local fdeath 		= string.find(event, death)
 	local mEmote	= 'CHAT_MSG_MONSTER_EMOTE'				local fmEmote		= string.find(event, mEmote)
 	
-	if arg1 then singleEventdebug() end -- testing
+	--if arg1 then singleEventdebug() end -- testing
 	
 	-- periodic damage/buff spells
 	if fpSpell then	
