@@ -3,10 +3,13 @@
 	if class ~= 'ROGUE' then return end
 	-------------------------------------------------------------------------------
 	local processDebuff = function(tar, spell, cp)
-		local b = SPELLCASTINGCOREqueueBuff(tar, spell, cp)
-		if b then 	
-			--b = UnitInBattleground('player') and true or false
-			sendMSG('BF', tar..'/'..spell, cp, IsInsideBG())	
+	
+		if cp > 0 and UnitExists(tar) then
+			local b = SPELLCASTINGCOREqueueBuff(UnitName(tar), spell, cp)
+			if b then 	
+				--b = UnitInBattleground('player') and true or false
+				sendMSG('BF', UnitName(tar)..'/'..spell, cp, IsInsideBG())	
+			end
 		end
 	end
 	-------------------------------------------------------------------------------
@@ -19,12 +22,17 @@
 		AHTooltip:SetAction(slot)
 		local spellName = RAHTooltipTextLeft1:GetText()
 		
-		local cp = GetComboPoints()
-		if cp > 0 and UnitExists'target' then
-			processDebuff(UnitName'target', spellName, cp)
-		end
+		processDebuff('target', spellName, GetComboPoints())
 
 		UseActionAH( slot, checkFlags, checkSelf )
+	end
+	-------------------------------------------------------------------------------
+	CastSpellByNameRAH = CastSpellByName;
+	function CastSpellByName(spellName, onself)
+		
+		processDebuff('target', spellName, GetComboPoints())
+		
+		CastSpellByNameRAH(spellName, onself)
 	end
 	-------------------------------------------------------------------------------
 	local eventHandler = function()

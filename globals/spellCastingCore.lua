@@ -95,6 +95,15 @@ dreturns.create = function(tar, t, tEnd)
 	return acnt
 end
 
+local getAvgLatency = function()	--/script down, up, lagHome, lagWorld = GetNetStats() print(lagHome)
+	local _, _, lat = GetNetStats()
+	return lat / 1000
+end
+
+local getTimeMinusPing = function()
+	return GetTime() - getAvgLatency()
+end
+
 local removeExpiredTableEntries = function(time, tab)
 	local i = 1
 	for k, v in pairs(tab) do
@@ -121,11 +130,11 @@ local tableMaintenance = function(reset)
 	if reset then
 		casts = {} heals = {} iBuffs = {} buffList = {} dreturnsList = {}
 	else
-		-- CASTS -- casts have different removal parameter
+		-- CASTS -- casts have a different removal parameter
 		local time = GetTime()
 		local i = 1
 		for k, v in pairs(casts) do
-			if time > v.timeEnd or time > v.nextTick then	-- channeling cast verification
+			if time > v.timeEnd or time > v.nextTick + getAvgLatency() then	-- channeling cast verification
 				table.remove(casts, i)
 			end
 			i = i + 1
@@ -155,8 +164,9 @@ end
 local checkForChannels = function(caster, spell)
 	local k = 1
 	for i, j in casts do
-		if j.caster == caster and j.spell == spell and (SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[spell] ~= nil or SPELLINFO_CHANNELED_HEALS_SPELLCASTS_TO_TRACK[spell] ~= nil) then 
-			j.nextTick = j.nextTick + j.tick
+		if j.caster == caster and j.spell == spell then--and (SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[spell] ~= nil or SPELLINFO_CHANNELED_HEALS_SPELLCASTS_TO_TRACK[spell] ~= nil) then 
+			j.nextTick = GetTime() + j.tick --GetTime() + j.tick + getAvgLatency()--j.nextTick + j.tick --+ getAvgLatency()
+			--print(j.nextTick - j.timeStart)
 			return true 
 		end
 		k = k + 1
@@ -189,13 +199,14 @@ local checkforCastTimeModBuffs = function(caster, spell)
 end
 
 local newCast = function(caster, spell, channel)
-	local time = GetTime()
+	local time = GetTime() --getTimeMinusPing()--GetTime() -- getAvgLatency()
 	local info = nil
 	
 	if channel then
 		if SPELLINFO_CHANNELED_HEALS_SPELLCASTS_TO_TRACK[spell] ~= nil then info = SPELLINFO_CHANNELED_HEALS_SPELLCASTS_TO_TRACK[spell]
 		elseif SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[spell] ~= nil then info = SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[spell] end
 	else
+		removeDoubleCast(caster)
 		if SPELLINFO_SPELLCASTS_TO_TRACK[spell] ~= nil then info = SPELLINFO_SPELLCASTS_TO_TRACK[spell] end
 	end
 	
@@ -221,7 +232,7 @@ local newHeal = function(n, no, crit)
 end
 
 local newIBuff = function(caster, buff)
-	local time = GetTime()
+	local time = getTimeMinusPing()--GetTime()
 	local b = InstaBuff.create(caster, buff, SPELLINFO_TIME_MODIFIER_BUFFS_TO_TRACK[buff], time)
 	table.insert(iBuffs, b)
 end
@@ -246,7 +257,7 @@ local function manageDR(time, tar, b, castOn)
 end
 
 local function newbuff(tar, b, s, castOn)
-	local time = GetTime()
+	local time = getTimeMinusPing()--GetTime()
 	
 	local drf = manageDR(time, tar, b, castOn)
 	
@@ -276,13 +287,13 @@ local function refreshBuff(tar, b, s)
 end
 
 local function queueBuff(tar, spell, b, d)
-	local time = GetTime()
+	local time = getTimeMinusPing()--GetTime()
 	local bq = buffQueue.create(tar, spell, b, d, time)
 	table.insert(buffQueueList, bq) 
 end
 
 local function processQueuedBuff(tar, b)
-	local time = GetTime()
+	local time = getTimeMinusPing()--GetTime()
 	for k, v in pairs(buffQueueList) do
 		if v.target == tar and v.buffName == b then
 			local n = buff.create(v.target, v.buffName, 1, v.buffData, 1, time)
@@ -431,7 +442,7 @@ local GainAfflict = function()
 			newbuff(c, s, 1, false)
 		end
 		-- self-cast buffs that interrupt cast (blink, ice block ...)
-		if SPELLINFO_INTERRUPTS_TO_TRACK[s] then
+		if SPELLINFO_INTERRUPT_BUFFS_TO_TRACK[s] then
 			forceHideTableItem(casts, c, nil)
 		end
 		-- specific channeled spells (evocation ...)
@@ -462,7 +473,7 @@ local GainAfflict = function()
 		s = auxS
 		
 		-- spell interrupting debuffs (stuns, incapacitates ...)
-		if SPELLINFO_INTERRUPTS_TO_TRACK[s] then
+		if SPELLINFO_INTERRUPT_BUFFS_TO_TRACK[s] then
 			forceHideTableItem(casts, c, nil)
 		end
 		

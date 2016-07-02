@@ -36,7 +36,7 @@
 	container.scale:SetText'scale'
 
 	container.scaleSlider = CreateFrame('Slider', 'enemyFramesScaleSlider', container, 'OptionsSliderTemplate')
-	container.scaleSlider:SetWidth(205) 	container.scaleSlider:SetHeight(14)
+	container.scaleSlider:SetWidth(215) 	container.scaleSlider:SetHeight(14)
 	container.scaleSlider:SetPoint('LEFT', container.scale, 'LEFT', 0, -30)
 	container.scaleSlider:SetMinMaxValues(0.8, 1.5)
 	container.scaleSlider:SetValueStep(.05)
@@ -56,7 +56,7 @@
 	container.layout:SetText'layout'
 
 	container.layoutSlider = CreateFrame('Slider', 'enemyFramesLayoutSlider', container, 'OptionsSliderTemplate')
-	container.layoutSlider:SetWidth(205) 	container.layoutSlider:SetHeight(14)
+	container.layoutSlider:SetWidth(215) 	container.layoutSlider:SetHeight(14)
 	container.layoutSlider:SetPoint('LEFT', container.layout, 'LEFT', 0, -30)
 	container.layoutSlider:SetMinMaxValues(0, 4)
 	container.layoutSlider:SetValueStep(1)
@@ -89,7 +89,7 @@
     
 	
 	container.newversion = container:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
-	container.newversion:SetPoint('TOP', container.forumlink, 'BOTTOM', -2, -10)
+	container.newversion:SetPoint('BOTTOMLEFT', container.version, 'TOP', -10, 5)
 	container.newversion:SetText('( !ver '..ENEMYFRAMESNEWVERSION..' available! )')
 	container.newversion:Hide()
 	

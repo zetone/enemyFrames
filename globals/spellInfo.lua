@@ -120,22 +120,25 @@
 	}
 
     SPELLINFO_SPELLCASTS_TO_TRACK = {
-			-- MISC
-		['Cultivate Packet of Seeds'] 	= {['icon'] = [[Interface\Icons\inv_misc_food_45]], 		['casttime'] = 10},
-		['Furbolg Form'] 				= {['icon'] = [[Interface\Icons\Inv_misc_monsterclaw_04]], 	['casttime'] = 2},
-		['Disenchant']					= {['icon'] = [[Interface\Icons\Inv_Enchant_Disenchant]], 	['casttime'] = 3},
-		['Drink Minor Potion']			= {['icon'] = [[Interface\Icons\Spell_holy_heal]], 			['casttime'] = 3},
-		['Holy Smite']					= {['icon'] = [[Interface\Icons\Spell_holy_holysmite]], 	['casttime'] = 2.5},
+			-- MISC & MOB SPELLS
+		['Cultivate Packet of Seeds'] 	= {['icon'] = [[Interface\Icons\inv_misc_food_45]], 			['casttime'] = 10},
+		['Furbolg Form'] 				= {['icon'] = [[Interface\Icons\Inv_misc_monsterclaw_04]], 		['casttime'] = 2},
+		['Diseased Slime']				= {['icon'] = [[Interface\Icons\spell_shadow_creepingplague]], ['casttime'] = 2},
+		['Disenchant']					= {['icon'] = [[Interface\Icons\Inv_Enchant_Disenchant]], 		['casttime'] = 3},
+		['Drink Minor Potion']			= {['icon'] = [[Interface\Icons\Spell_holy_heal]], 				['casttime'] = 3},
+		['Holy Smite']					= {['icon'] = [[Interface\Icons\Spell_holy_holysmite]], 		['casttime'] = 2.5},
+		['Plague Mind']					= {['icon'] = [[Interface\Icons\spell_shadow_callofbone]], 		['casttime'] = 4},
+		['Wandering Plague']			= {['icon'] = [[Interface\Icons\spell_shadow_callofbone]], 		['casttime'] = 2},
             -- AHN'QIRAJ
-        ['Explode']                 	= {['icon'] = [[Interface\Icons\Spell_fire_selfdestruct]], 	['casttime'] = 6},
+        ['Explode']                 	= {['icon'] = [[Interface\Icons\Spell_fire_selfdestruct]], 		['casttime'] = 6},
             -- BLACKWING LAIR
-        ['Shadow Flame']            	= {['icon'] = [[Interface\Icons\Spell_fire_incinerate]], 	['casttime'] = 2},
-        ['Wing Buffet']             	= {['icon'] = [[Interface\Icons\Inv_misc_monsterscales_14]],['casttime'] = 1},
-        ['Bellowing Roar']          	= {['icon'] = [[Interface\Icons\Spell_fire_fire]], 			['casttime'] = 1.75},
+        ['Shadow Flame']            	= {['icon'] = [[Interface\Icons\Spell_fire_incinerate]], 		['casttime'] = 2},
+        ['Wing Buffet']             	= {['icon'] = [[Interface\Icons\Inv_misc_monsterscales_14]],	['casttime'] = 1},
+        ['Bellowing Roar']          	= {['icon'] = [[Interface\Icons\Spell_fire_fire]], 				['casttime'] = 1.75},
 		    -- BLACKROCK SPIRE
-        ['Flame Buffet']              	= {['icon'] = [[Interface\Icons\Spell_fire_selfdestruct]], 	['casttime'] = 6},
+        ['Flame Buffet']              	= {['icon'] = [[Interface\Icons\Spell_fire_selfdestruct]], 		['casttime'] = 6},
             -- ONYXIA
-        ['Breath']                  	= {['icon'] = [[Interface\Icons\Spell_fire_fire]], 			['casttime'] = 8},
+        ['Breath']                  	= {['icon'] = [[Interface\Icons\Spell_fire_fire]], 				['casttime'] = 8},
 			-- MOLTEN CORE
         ['Dark Mending']              	= {['icon'] = [[Interface\Icons\Spell_shadow_chilltouch]], 			['casttime'] = 2},
         ['Dominate Mind']             	= {['icon'] = [[Interface\Icons\Spell_shadow_shadowworddominate]], 	['casttime'] = 2},
@@ -297,6 +300,22 @@
     }
 
     SPELLINFO_INTERRUPTS_TO_TRACK = {
+		-- MISC 
+		-- DRUID
+		-- HUNTER
+		-- MAGE
+		-- PALADIN
+		-- PRIEST
+		-- ROGUE
+		['Kick'] = true,
+		-- SHAMAN
+		['Earth Shock'] = true,
+		-- WARLOCK
+		-- WARRIOR 
+		['Pummel'] = true, ['Shield Bash'] = true,  
+    }
+	
+	SPELLINFO_INTERRUPT_BUFFS_TO_TRACK = {
 		-- MISC
 		['Inferno Effect'] = true, ['Iron Grenade'] = true,  ['Reckless Charge'] = true, ['Tidal Charm'] = true, ['Thorium Grenade'] = true, 
 		-- DRUID
@@ -311,27 +330,26 @@
 		['Ice Barrier'] = true, ['Ice Armor'] = true, 				['Ice Block'] = true, 	['Impact'] = true, 		['Mage Armor'] = true, 	
 		['Mana Shield'] = true, ['Polymorph'] = true, 				['Polymorph: Pig'] = true, 						['Polymorph: Turtle'] = true,
 		-- PALADIN
-		['Divine Intervention'] = true, 	['Divine Protection'] = true, ['Divine Shield'] = true, ['Hammer of Justice'] = true, 
-		['Seal of the Crusader'] = true, 	['Seal of Righteousness'] = true,
+		['Divine Intervention'] = true, 	['Divine Protection'] = true, 		['Divine Shield'] = true, ['Hammer of Justice'] = true, 
+		['Seal of the Crusader'] = true, 	['Seal of Righteousness'] = true, 	['Stun'] = true,
 		-- PRIEST
 		['Blackout'] = true, ['Inner Fire'] = true, ['Psychic Scream'] = true,   ['Silence'] = true,
 		-- ROGUE
-		['Blind'] = true, ['Cheap Shot'] = true, ['Gouge'] = true, ['Kidney Shot'] = true, ['Kick'] = true, ['Kick - Silenced'] = true,
+		['Blind'] = true, ['Cheap Shot'] = true, ['Gouge'] = true, ['Kidney Shot'] = true, ['Kick - Silenced'] = true,
 		-- SHAMAN
-		['Earth Shock'] = true, ['Elemental Mastery'] =  true, ['Ghost Wolf'] = true, ['Lightning Shield'] = true, ['Nature\'s Swiftness'] =  true,
+		['Elemental Mastery'] =  true, ['Ghost Wolf'] = true, ['Lightning Shield'] = true, ['Nature\'s Swiftness'] =  true,
 		-- WARLOCK
 		['Death Coil'] = true, ['Fear'] = true, ['Shadow Ward'] = true, ['Spell Lock'] = true, 
 		-- WARRIOR
 		['Charge Stun'] = true, ['Concussion Blow'] = true, ['Intercept Stun'] = true, 	['Intimidating Shout'] = true, ['Mace Stun Effect'] = true, 
-		['Pummel'] = true, 		['Revenge Stun'] = true,	['Shield Bash'] = true, 	['Shield Bash - Silenced'] = true,    
+		['Revenge Stun'] = true, 	['Shield Bash - Silenced'] = true,    
     }
-	
-	-- minus .5 seconds to channeling tracked after the 1st tick 
+		
 	SPELLINFO_CHANNELED_HEALS_SPELLCASTS_TO_TRACK = {
 		-- DRUID
 		['Tranquility']           	= {['icon'] = [[Interface\Icons\Spell_nature_tranquility]], ['casttime'] = 10,  ['tick'] = 2},
 		-- FIRST AID
-		['First Aid']           	= {['icon'] = [[Interface\Icons\Spell_holy_heal]], 			['casttime'] = 5,   ['tick'] = 1},
+		['First Aid']           	= {['icon'] = [[Interface\Icons\Spell_holy_heal]], 			['casttime'] = 7, 	['tick'] = 1},
 		-- WARLOCK
 		['Health Funnel']           = {['icon'] = [[Interface\Icons\Spell_shadow_lifedrain]], 	['casttime'] = 10, 	['tick'] = 1},		
 	}
@@ -410,7 +428,7 @@
 	
 	SPELLINFO_BUFFS_TO_TRACK = {
 	
-        -- MISC
+        -- MISC & MOBS
 		['Flee']					= {['icon'] = [[Interface\Icons\spell_magic_polymorphchicken]],		['duration'] = 10,},
     	['Free Action']     		= {['icon'] = [[Interface\Icons\Inv_potion_04]], 					['duration'] = 30, 	['type'] = 'magic', 	['prio'] = 4},
 		['Invulnerability']        	= {['icon'] = [[Interface\Icons\Spell_holy_divineintervention]], 	['duration'] = 6, 	['type'] = 'magic',		['prio'] = 5},
@@ -421,6 +439,7 @@
 		["Sleep"] 					= {['icon'] = [[Interface\Icons\Spell_nature_sleep]], 				['duration'] = 12, 	['type'] = 'magic', 	['prio'] = 3},
 		['Stoneform'] 				= {['icon'] = [[Interface\Icons\Inv_gauntlets_03]], 				['duration'] = 8,},
 		['Tidal Charm'] 			= {['icon'] = [[Interface\Icons\Spell_frost_summonwaterelemental]], ['duration'] = 3, 	['type'] = 'magic', 	['prio'] = 2},
+		['Ward of the Eye']			= {['icon'] = [[Interface\Icons\spell_totem_wardofdraining]],		['duration'] = 6,							['prio'] = 3},
     	['Will of the Forsaken']   	= {['icon'] = [[Interface\Icons\Spell_shadow_raisedead]], 			['duration'] = 5,							['prio'] = 2},
     	
             -- ENGINEERING
@@ -476,8 +495,11 @@
     	['Divine Protection']      	= {['icon'] = [[Interface\Icons\Spell_holy_restoration]], 			['duration'] = 8, 	['prio'] = 4},
 		['Divine Shield']			= {['icon'] = [[Interface\Icons\Spell_holy_divineintervention]], 	['duration'] = 10, 	['prio'] = 5},
 		["Hammer of Justice"] 		= {['icon'] = [[Interface\Icons\Spell_holy_sealofmight]], 			['duration'] = 5, 	['type'] = 'magic',		['prio'] = 1,	['dr'] = 'Controlled Stun'},
-		['Judgement of the Crusader'] = {['icon'] = [[Interface\Icons\Spell_holy_holysmite]], 			['duration'] = 10, 	['type'] = 'magic',		['display'] = false,},
+		['Judgement of the Crusader'] = {['icon'] = [[Interface\Icons\Spell_holy_holysmite]], 			['duration'] = 10, 	['type'] = 'magic',						['display'] = false,},
+		['Judgement of Justice'] 	= {['icon'] = [[Interface\Icons\Spell_holy_sealofwrath]], 			['duration'] = 10, 	['type'] = 'magic',						['display'] = false,},
+		['Judgement of Light'] 		= {['icon'] = [[Interface\Icons\spell_holy_healingaura]], 			['duration'] = 10, 	['type'] = 'magic',						['display'] = false,},
 		['Repentance'] 				= {['icon'] = [[Interface\Icons\Spell_holy_prayerofhealing]], 		['duration'] = 6, 	['type'] = 'magic', 	['prio'] = 3},
+		['Stun'] 					= {['icon'] = [[Interface\Icons\Spell_frost_stun]], 				['duration'] = 2, 	['type'] = 'physical', 				 	['display'] = false,},
 		
             -- PRIEST
 		['Blackout'] 				= {['icon'] = [[Interface\Icons\Spell_shadow_gathershadows]], 		['duration'] = 3, 	['type'] = 'magic', 	['prio'] = 2},
@@ -510,12 +532,12 @@
 		
 		--[[	WARRRIOR 	]]--
 		['Berserker Rage']			= {['icon'] = [[Interface\Icons\Spell_nature_ancestralguardian]],	['duration'] = 10,										},
-		['Charge'] 					= {['icon'] = [[Interface\Icons\Spell_frost_stun]], 				['duration'] = 1, 	['type'] = 'physical', 	['prio'] = 1},
+		['Charge'] 					= {['icon'] = [[Interface\Icons\Spell_frost_stun]], 				['duration'] = 1, 	['type'] = 'physical', 	['prio'] = 1,	['dr'] = 'Controlled Stun'},
 		['Concussion Blow'] 		= {['icon'] = [[Interface\Icons\Ability_thunderbolt]], 				['duration'] = 5, 	['type'] = 'physical', 	['prio'] = 1},
 		['Disarm'] 					= {['icon'] = [[Interface\Icons\Ability_warrior_disarm]], 			['duration'] = 8, 	['type'] = 'physical', 	['prio'] = 1},
 		['Hamstring'] 				= {['icon'] = [[Interface\Icons\Ability_shockwave]], 				['duration'] = 15, 	['type'] = 'physical', 	['prio'] = 1},		
 		['Improved Hamstring'] 		= {['icon'] = [[Interface\Icons\Ability_shockwave]], 				['duration'] = 5, 	['type'] = 'physical', 	['prio'] = 2},
-		['Intercept Stun'] 			= {['icon'] = [[Interface\Icons\Spell_frost_stun]], 				['duration'] = 3, 	['type'] = 'physical', 	['prio'] = 1},
+		['Intercept Stun'] 			= {['icon'] = [[Interface\Icons\Spell_frost_stun]], 				['duration'] = 3, 	['type'] = 'physical', 	['prio'] = 1,	['dr'] = 'Controlled Stun'},
 		['Intimidating Shout']		= {['icon'] = [[Interface\Icons\Ability_golemthunderclap]], 		['duration'] = 8, 	['type'] = 'physical', 	['prio'] = 2, 	['dr'] = 'Fear'},
 		['Mortal Strike'] 			= {['icon'] = [[Interface\Icons\Ability_warrior_savageblow]], 		['duration'] = 10, 	['type'] = 'physical'},
 		['Shield Bash - Silenced'] 	= {['icon'] = [[Interface\Icons\Ability_warrior_shieldbash]], 		['duration'] = 3, 	['type'] = 'magic', 	['prio'] = 3},
@@ -562,7 +584,7 @@
 		['Frost Nova'] 		= {'Winter\'s Chill',},
 		['Frostbolt'] 		= {'Frostbolt', 'Winter\'s Chill',},
 		-- PALADIN
-		['Judgement of the Crusader'] = {'Judgement of the Crusader',},
+		['Judgement of the Crusader'] = {'Judgement of the Crusader',}, ['Judgement of Justice'] = {'Judgement of Justice',}, ['Judgement of Light'] = {'Judgement of Light',},
 		-- SHAMAN
 		['Flame Shock']		= {'Flame Shock',},
 		['Frost Shock']		= {'Frost Shock',},
