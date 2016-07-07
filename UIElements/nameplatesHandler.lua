@@ -111,6 +111,10 @@
 					plate.castBar.timer:SetText(getTimerLeft(castInfo.timeEnd)..'s')
 					plate.castBar.icon:SetTexture(castInfo.icon)
 					plate.castBar:SetAlpha(plate:GetAlpha())
+					-- border colors
+					plate.castBar.iconborder.b:SetColor(castInfo.borderClr[1], castInfo.borderClr[2], castInfo.borderClr[3])
+					plate.castBar.border:SetColor(castInfo.borderClr[1], castInfo.borderClr[2], castInfo.borderClr[3])
+					--
 					plate.castBar:Show()
 				end
 			end

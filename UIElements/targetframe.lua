@@ -64,6 +64,34 @@
 	
 	TargetFrame.cast.icon.border = CreateBorder(nil, ic, 12.8)
 	TargetFrame.cast.icon.border:SetPadding(1)
+	
+	TargetFrame.IntegratedCastBar = CreateFrame('StatusBar', 'enemyFramesTargetFrameCastbar', TargetFrame)
+    TargetFrame.IntegratedCastBar:SetStatusBarTexture(TEXTURE)
+    TargetFrame.IntegratedCastBar:SetStatusBarColor(1, .4, 0)
+    --TargetFrame.IntegratedCastBar:SetBackdrop(BACKDROP)
+    TargetFrame.IntegratedCastBar:SetBackdropColor(0, 0, 0, .5)
+	TargetFrame.IntegratedCastBar:SetPoint('TOPLEFT', TargetFrameNameBackground, 'TOPLEFT')
+	TargetFrame.IntegratedCastBar:SetPoint('BOTTOMRIGHT', TargetFrameNameBackground, 'BOTTOMRIGHT')
+	TargetFrame.IntegratedCastBar:SetFrameLevel(1)
+	
+	TargetFrame.IntegratedCastBar.bg = TargetFrame.IntegratedCastBar:CreateTexture(nil, 'ARTWORK')
+	TargetFrame.IntegratedCastBar.bg:SetTexture(0, 0, 0, .7)
+	TargetFrame.IntegratedCastBar.bg:SetAllPoints()	
+	
+	TargetFrame.IntegratedCastBar.spellText = TargetFrame.IntegratedCastBar:CreateFontString(nil, 'OVERLAY')
+    TargetFrame.IntegratedCastBar.spellText:SetTextColor(1, 1, 1)
+    TargetFrame.IntegratedCastBar.spellText:SetFont(STANDARD_TEXT_FONT, 10, 'OUTLINE')
+    TargetFrame.IntegratedCastBar.spellText:SetShadowColor(0, 0, 0)
+    TargetFrame.IntegratedCastBar.spellText:SetPoint('LEFT', TargetFrame.IntegratedCastBar, 2, .5)
+    TargetFrame.IntegratedCastBar.spellText:SetText('Polymorph') 
+	
+	TargetFrame.IntegratedCastBar.timer = TargetFrame.IntegratedCastBar:CreateFontString(nil, 'OVERLAY')
+    TargetFrame.IntegratedCastBar.timer:SetTextColor(1, 1, 1)
+    TargetFrame.IntegratedCastBar.timer:SetFont(STANDARD_TEXT_FONT, 8, 'OUTLINE')
+    TargetFrame.IntegratedCastBar.timer:SetShadowColor(0, 0, 0)
+    TargetFrame.IntegratedCastBar.timer:SetPoint('RIGHT', TargetFrame.IntegratedCastBar, -2, .5)
+    TargetFrame.IntegratedCastBar.timer:SetText'3.5s'
+	
 	-------------------------------------------------------------------------------
 	local function round(num, idp)
 		local mult = 10^(idp or 0)
@@ -76,26 +104,53 @@
 	-------------------------------------------------------------------------------
 	local showCast = function()
 		if castbarmoveable then
-			TargetFrame.cast:Show()
+			if ENEMYFRAMESPLAYERDATA['targetFrameCastbar'] then
+				TargetFrame.cast:Show()
+			else
+				TargetFrame.cast:Hide()
+			end
+			if ENEMYFRAMESPLAYERDATA['integratedTargetFrameCastbar'] then
+				TargetFrame.IntegratedCastBar:Show()
+				TargetName:Hide()	
+			else
+				TargetFrame.IntegratedCastBar:Hide()
+				TargetName:Show()
+			end		
 		else
 			TargetFrame.cast:Hide()
+			TargetFrame.IntegratedCastBar:Hide()
+			TargetName:Show()
 		end
 		if UnitExists'target' then
 			local v = SPELLCASTINGCOREgetCast(UnitName'target')
 			if v ~= nil then
 				if GetTime() < v.timeEnd then
 					TargetFrame.cast:SetMinMaxValues(0, v.timeEnd - v.timeStart)
+					TargetFrame.IntegratedCastBar:SetMinMaxValues(0, v.timeEnd - v.timeStart)
 					if v.inverse then
 						TargetFrame.cast:SetValue(mod((v.timeEnd - GetTime()), v.timeEnd - v.timeStart))
+						TargetFrame.IntegratedCastBar:SetValue(mod((v.timeEnd - GetTime()), v.timeEnd - v.timeStart))
 					else
-						TargetFrame.cast:SetValue(mod((GetTime() - v.timeStart), v.timeEnd - v.timeStart))					
+						TargetFrame.cast:SetValue(mod((GetTime() - v.timeStart), v.timeEnd - v.timeStart))
+						TargetFrame.IntegratedCastBar:SetValue(mod((GetTime() - v.timeStart), v.timeEnd - v.timeStart))				
 					end
 					
 					TargetFrame.cast.text:SetText(string.sub(v.spell, 1, 17))
+					TargetFrame.IntegratedCastBar.spellText:SetText(string.sub(v.spell, 1, 14))
 					TargetFrame.cast.timer:SetText(getTimerLeft(v.timeEnd)..'s')
+					TargetFrame.IntegratedCastBar.timer:SetText(getTimerLeft(v.timeEnd)..'s')
 					TargetFrame.cast.icon:SetTexture(v.icon)
-					TargetFrame.cast:Show()
-					
+					-- border colors
+					TargetFrame.cast.icon.border:SetColor(v.borderClr[1], v.borderClr[2], v.borderClr[3])
+					TargetFrame.cast.border:SetColor(v.borderClr[1], v.borderClr[2], v.borderClr[3])
+					--
+					if ENEMYFRAMESPLAYERDATA['targetFrameCastbar'] then
+						TargetFrame.cast:Show()
+					end
+					if ENEMYFRAMESPLAYERDATA['integratedTargetFrameCastbar'] then
+						TargetFrame.IntegratedCastBar:Show()
+						TargetName:Hide()							
+					end	
 				end
 			end
 		end
@@ -180,10 +235,12 @@
 	castbarFrame:SetScript('OnUpdate', function()
 		nextRefresh = nextRefresh - arg1
 		if nextRefresh < 0 then
-			if ENEMYFRAMESPLAYERDATA['targetFrameCastbar'] then
+			if ENEMYFRAMESPLAYERDATA['targetFrameCastbar'] or ENEMYFRAMESPLAYERDATA['integratedTargetFrameCastbar'] then
 				showCast()				
 			else
 				TargetFrame.cast:Hide()
+				TargetFrame.IntegratedCastBar:Hide()	
+				TargetName:Show()				
 			end
 			if ENEMYFRAMESPLAYERDATA['targetPortraitDebuff'] then
 				showPortraitDebuff()				

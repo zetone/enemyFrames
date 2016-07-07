@@ -75,60 +75,75 @@
 	}
 	SPELLINFO_TRADECASTS_TO_TRACK = {
 		-- MISC
-		['Fishing']									= {['icon'] = [[Interface\Icons\Trade_Fishing]], 	['casttime'] = 30},
+		['Fishing']									= {['icon'] = [[Interface\Icons\Trade_Fishing]], 			['casttime'] = 30},
 		-- ALCHEMY
-		['Greater Healing Potion']					= {['icon'] = [[Interface\Icons\Inv_potion_52]], ['casttime'] = 3},
-		['Greater Fire Protection Potion']			= {['icon'] = [[Interface\Icons\Inv_potion_24]], ['casttime'] = 3},
-		['Major Healing Potion']					= {['icon'] = [[Interface\Icons\Inv_potion_54]], ['casttime'] = 3},
-		['Major Mana Potion']						= {['icon'] = [[Interface\Icons\Inv_potion_76]], ['casttime'] = 3},
-		['Mana Potion']								= {['icon'] = [[Interface\Icons\Inv_potion_72]], ['casttime'] = 3},
-		['Swiftness Potion']						= {['icon'] = [[Interface\Icons\Inv_potion_95]], ['casttime'] = 3},
-		['Transmute: Arcanite']						= {['icon'] = [[Interface\Icons\Inv_misc_stonetablet_05]], ['casttime'] = 25},
+		['Greater Healing Potion']					= {['icon'] = [[Interface\Icons\Inv_potion_52]], 			['casttime'] = 3},
+		['Greater Fire Protection Potion']			= {['icon'] = [[Interface\Icons\Inv_potion_24]], 			['casttime'] = 3},
+		['Major Healing Potion']					= {['icon'] = [[Interface\Icons\Inv_potion_54]], 			['casttime'] = 3},
+		['Major Mana Potion']						= {['icon'] = [[Interface\Icons\Inv_potion_76]], 			['casttime'] = 3},
+		['Mana Potion']								= {['icon'] = [[Interface\Icons\Inv_potion_72]], 			['casttime'] = 3},
+		['Swiftness Potion']						= {['icon'] = [[Interface\Icons\Inv_potion_95]], 			['casttime'] = 3},
+		['Transmute: Arcanite']						= {['icon'] = [[Interface\Icons\Inv_misc_stonetablet_05]], 	['casttime'] = 25},
 		-- BLACKSMITH
+		['Dense Weightstone']						= {['icon'] = [[Interface\Icons\inv_stone_weightstone_05]], 	['casttime'] = 8},
+		['Solid Grinding Stone']					= {['icon'] = [[Interface\Icons\inv_stone_grindingstone_04]], 	['casttime'] = 1.5},
 		-- COOKING
-		['Smoked Sagefish']							= {['icon'] = [[Interface\Icons\Inv_misc_fish_20]], ['casttime'] = 3},
-		['Savory Deviate Delight']					= {['icon'] = [[Interface\Icons\Inv_misc_monsterhead_04]], ['casttime'] = 3},
+		['Smoked Sagefish']							= {['icon'] = [[Interface\Icons\Inv_misc_fish_20]], 		['casttime'] = 3},
+		['Savory Deviate Delight']					= {['icon'] = [[Interface\Icons\Inv_misc_monsterhead_04]], 	['casttime'] = 3},
 		-- ENCHANTING
-		['Enchant Chest - Minor Mana']				= {['icon'] = [[Interface\Icons\Ability_warstomp]], ['casttime'] = 5},
+		['Enchant Chest - Minor Mana']				= {['icon'] = [[Interface\Icons\Ability_warstomp]], 		['casttime'] = 5},
 		-- ENGINEERING
+		['Arclight Spanner']						= {['icon'] = [[Interface\Icons\inv_misc_wrench_01]], 		['casttime'] = 8},
+		['Copper Modulator']						= {['icon'] = [[Interface\Icons\inv_gizmo_03]], 			['casttime'] = 5.125},
+		['Handful of Copper Bolts']					= {['icon'] = [[Interface\Icons\inv_misc_gear_06]], 		['casttime'] = 1.5},		
 		-- FIRST AID
-    	['Linen Bandage']           				= {['icon'] = [[Interface\Icons\Inv_misc_bandage_15]], ['casttime'] = 3},
-    	['Heavy Linen Bandage']     				= {['icon'] = [[Interface\Icons\Inv_misc_bandage_18]], ['casttime'] = 3},
-    	['Wool Bandage']           					= {['icon'] = [[Interface\Icons\Inv_misc_bandage_14]], ['casttime'] = 3},
-    	['Heavy Wool Bandage']     					= {['icon'] = [[Interface\Icons\Inv_misc_bandage_17]], ['casttime'] = 3},
-    	['Silk Bandage']            				= {['icon'] = [[Interface\Icons\Inv_misc_bandage_01]], ['casttime'] = 3},
-    	['Heavy Silk Bandage']      				= {['icon'] = [[Interface\Icons\Inv_misc_bandage_02]], ['casttime'] = 3},
-    	['Mageweave Bandage']       				= {['icon'] = [[Interface\Icons\Inv_misc_bandage_19]], ['casttime'] = 3},
-    	['Heavy Mageweave Bandage'] 				= {['icon'] = [[Interface\Icons\Inv_misc_bandage_20]], ['casttime'] = 3},
-    	['Runecloth Bandage']       				= {['icon'] = [[Interface\Icons\Inv_misc_bandage_11]], ['casttime'] = 3},
-    	['Heavy Runecloth Bandage']					= {['icon'] = [[Interface\Icons\Inv_misc_bandage_12]], ['casttime'] = 3},
+    	['Linen Bandage']           				= {['icon'] = [[Interface\Icons\Inv_misc_bandage_15]], 		['casttime'] = 3},
+    	['Heavy Linen Bandage']     				= {['icon'] = [[Interface\Icons\Inv_misc_bandage_18]], 		['casttime'] = 3},
+    	['Wool Bandage']           					= {['icon'] = [[Interface\Icons\Inv_misc_bandage_14]], 		['casttime'] = 3},
+    	['Heavy Wool Bandage']     					= {['icon'] = [[Interface\Icons\Inv_misc_bandage_17]], 		['casttime'] = 3},
+    	['Silk Bandage']            				= {['icon'] = [[Interface\Icons\Inv_misc_bandage_01]], 		['casttime'] = 3},
+    	['Heavy Silk Bandage']      				= {['icon'] = [[Interface\Icons\Inv_misc_bandage_02]], 		['casttime'] = 3},
+    	['Mageweave Bandage']       				= {['icon'] = [[Interface\Icons\Inv_misc_bandage_19]], 		['casttime'] = 3},
+    	['Heavy Mageweave Bandage'] 				= {['icon'] = [[Interface\Icons\Inv_misc_bandage_20]], 		['casttime'] = 3},
+    	['Runecloth Bandage']       				= {['icon'] = [[Interface\Icons\Inv_misc_bandage_11]], 		['casttime'] = 3},
+    	['Heavy Runecloth Bandage']					= {['icon'] = [[Interface\Icons\Inv_misc_bandage_12]], 		['casttime'] = 3},
 		-- LEATHERWORKING
 		-- MINING
-		['Smelt Copper']							= {['icon'] = [[Interface\Icons\Inv_ingot_02]], ['casttime'] = 3},
-		['Copper Bar']								= {['icon'] = [[Interface\Icons\Inv_ingot_02]], ['casttime'] = 3},
-		['Smelt Tin']								= {['icon'] = [[Interface\Icons\Inv_ingot_05]], ['casttime'] = 3},
-		['Smelt Bronze']							= {['icon'] = [[Interface\Icons\Inv_ingot_02]], ['casttime'] = 3},		
-		['Smelt Silver']							= {['icon'] = [[Interface\Icons\Inv_ingot_01]], ['casttime'] = 3},	
-		['Smelt Gold']								= {['icon'] = [[Interface\Icons\Inv_ingot_03]], ['casttime'] = 3},
-		['Smelt Iron']								= {['icon'] = [[Interface\Icons\Inv_ingot_04]], ['casttime'] = 3},
-		['Smelt Mithril']							= {['icon'] = [[Interface\Icons\Inv_ingot_06]], ['casttime'] = 3},
-		['Smelt Truesilver']						= {['icon'] = [[Interface\Icons\Inv_ingot_08]], ['casttime'] = 3},
-		['Smelt Thorium']							= {['icon'] = [[Interface\Icons\Inv_ingot_07]], ['casttime'] = 3},	
-		['Thorium Bar']								= {['icon'] = [[Interface\Icons\Inv_ingot_07]], ['casttime'] = 3},		
+		['Smelt Copper']							= {['icon'] = [[Interface\Icons\Inv_ingot_02]], 			['casttime'] = 3},
+		['Copper Bar']								= {['icon'] = [[Interface\Icons\Inv_ingot_02]], 			['casttime'] = 3},
+		['Smelt Tin']								= {['icon'] = [[Interface\Icons\Inv_ingot_05]], 			['casttime'] = 3},
+		['Smelt Bronze']							= {['icon'] = [[Interface\Icons\Inv_ingot_02]], 			['casttime'] = 3},		
+		['Smelt Silver']							= {['icon'] = [[Interface\Icons\Inv_ingot_01]], 			['casttime'] = 3},	
+		['Smelt Gold']								= {['icon'] = [[Interface\Icons\Inv_ingot_03]], 			['casttime'] = 3},
+		['Smelt Iron']								= {['icon'] = [[Interface\Icons\Inv_ingot_04]], 			['casttime'] = 3},
+		['Smelt Mithril']							= {['icon'] = [[Interface\Icons\Inv_ingot_06]], 			['casttime'] = 3},
+		['Smelt Truesilver']						= {['icon'] = [[Interface\Icons\Inv_ingot_08]], 			['casttime'] = 3},
+		['Smelt Thorium']							= {['icon'] = [[Interface\Icons\Inv_ingot_07]], 			['casttime'] = 3},	
+		['Thorium Bar']								= {['icon'] = [[Interface\Icons\Inv_ingot_07]], 			['casttime'] = 3},		
 		-- TAILORING
 			
 	}
 
     SPELLINFO_SPELLCASTS_TO_TRACK = {
 			-- MISC & MOB SPELLS
+		['Chains of Ice'] 				= {['icon'] = [[Interface\Icons\spell_frost_chainsofice]], 		['casttime'] = 1.5},
 		['Cultivate Packet of Seeds'] 	= {['icon'] = [[Interface\Icons\inv_misc_food_45]], 			['casttime'] = 10},
-		['Furbolg Form'] 				= {['icon'] = [[Interface\Icons\Inv_misc_monsterclaw_04]], 		['casttime'] = 2},
-		['Diseased Slime']				= {['icon'] = [[Interface\Icons\spell_shadow_creepingplague]], ['casttime'] = 2},
+		['Crystal Gaze'] 				= {['icon'] = [[Interface\Icons\ability_golemthunderclap]], 	['casttime'] = 2,	['immune'] = true,},
+		['Crystalline Slumber'] 		= {['icon'] = [[Interface\Icons\spell_nature_sleep]], 			['casttime'] = 2,	['immune'] = true,},
+		['Fire Shield II'] 				= {['icon'] = [[Interface\Icons\spell_fire_immolation]], 		['casttime'] = 1,},
+		['Furbolg Form'] 				= {['icon'] = [[Interface\Icons\Inv_misc_monsterclaw_04]], 		['casttime'] = 2,	['immune'] = true,},
+		['Diseased Slime']				= {['icon'] = [[Interface\Icons\spell_shadow_creepingplague]],  ['casttime'] = 2,	['immune'] = true,},
 		['Disenchant']					= {['icon'] = [[Interface\Icons\Inv_Enchant_Disenchant]], 		['casttime'] = 3},
 		['Drink Minor Potion']			= {['icon'] = [[Interface\Icons\Spell_holy_heal]], 				['casttime'] = 3},
+		['Healing Ward']				= {['icon'] = [[Interface\Icons\spell_holy_layonhands]], 		['casttime'] = 2},
 		['Holy Smite']					= {['icon'] = [[Interface\Icons\Spell_holy_holysmite]], 		['casttime'] = 2.5},
+		['Lizard Bolt']					= {['icon'] = [[Interface\Icons\spell_nature_lightning]], 		['casttime'] = 2},
 		['Plague Mind']					= {['icon'] = [[Interface\Icons\spell_shadow_callofbone]], 		['casttime'] = 4},
+		['Quick Flame Ward'] 			= {['icon'] = [[Interface\Icons\spell_fire_sealoffire]], 		['casttime'] = 1.5,},
+		['Shrink'] 						= {['icon'] = [[Interface\Icons\spell_shadow_antishadow]], 		['casttime'] = 3,},
+		['Trelane\'s Freezing Touch'] 	= {['icon'] = [[Interface\Icons\spell_shadow_unsummonbuilding]], ['casttime'] = 3,},
 		['Wandering Plague']			= {['icon'] = [[Interface\Icons\spell_shadow_callofbone]], 		['casttime'] = 2},
+		['Wither Touch']				= {['icon'] = [[Interface\Icons\spell_nature_drowsy]], 			['casttime'] = 2},
             -- AHN'QIRAJ
         ['Explode']                 	= {['icon'] = [[Interface\Icons\Spell_fire_selfdestruct]], 		['casttime'] = 6},
             -- BLACKWING LAIR
@@ -183,9 +198,10 @@
         ['Teleport: Moonglade']     = {['icon'] = [[Interface\Icons\Spell_arcane_teleportmoonglade]], 	['casttime'] = 10, 												['class'] = 'DRUID'},
         ['Wrath']                   = {['icon'] = [[Interface\Icons\Spell_nature_abolishmagic]], 		['casttime'] = 1.5, ['type'] = 'dmg', ['school'] = 'nature', 	['class'] = 'DRUID'},
             -- HUNTER
-        ['Aimed Shot']              = {['icon'] = [[Interface\Icons\Inv_spear_07]], 				['casttime'] = 2.5, ['type'] = 'dmg', ['school'] = 'physical', ['class'] = 'HUNTER'},
+        ['Aimed Shot']              = {['icon'] = [[Interface\Icons\Inv_spear_07]], 				['casttime'] = 2.5, ['type'] = 'dmg', ['school'] = 'physical', ['class'] = 'HUNTER',	['immune'] = true,},
         ['Dismiss Pet']             = {['icon'] = [[Interface\Icons\Spell_nature_spiritwolf]], 		['casttime'] = 5},
         ['Eyes of the Beast']       = {['icon'] = [[Interface\Icons\Ability_eyeoftheowl]], 			['casttime'] = 2},
+		['Multi-Shot']              = {['icon'] = [[Interface\Icons\ability_upgrademoonglaive]], 	['casttime'] = 0.5, ['type'] = 'dmg', ['school'] = 'physical', ['class'] = 'HUNTER',	['immune'] = true,},
         ['Revive Pet']              = {['icon'] = [[Interface\Icons\Ability_hunter_beastsoothe]], 	['casttime'] = 10},
         ['Scare Beast']             = {['icon'] = [[Interface\Icons\Ability_druid_cower]], 			['casttime'] = 1.5, ['type'] = 'dmg', ['school'] = 'physical', ['class'] = 'HUNTER'},
             -- MAGE
@@ -273,11 +289,11 @@
         ['Lesser Healing Wave']     = {['icon'] = [[Interface\Icons\Spell_nature_healingwavelesser]], ['casttime'] = 1.5},
         ['Lightning Bolt']          = {['icon'] = [[Interface\Icons\Spell_nature_lightning]], ['casttime'] = 2.5, ['type'] = 'dmg', ['school'] = 'nature', ['class'] = 'SHAMAN'},
             -- WARLOCK
-        ['Banish']                  = {['icon'] = [[Interface\Icons\Spell_shadow_cripple]], ['casttime'] = 1.5},
-        ['Create Firestone']        = {['icon'] = [[Interface\Icons\Inv_misc_gem_bloodstone_02]], ['casttime'] = 3},
-        ['Create Healthstone']      = {['icon'] = [[Interface\Icons\Inv_stone_04]], ['casttime'] = 3},
-        ['Create Spellstone']       = {['icon'] = [[Interface\Icons\Inv_misc_gem_sapphire_01]], ['casttime'] = 5},
-        ['Create Soulstone']        = {['icon'] = [[Interface\Icons\Spell_shadow_soulgem]], ['casttime'] = 3},
+        ['Banish']                  = {['icon'] = [[Interface\Icons\Spell_shadow_cripple]], 		['casttime'] = 1.5},
+        ['Create Firestone']        = {['icon'] = [[Interface\Icons\Inv_misc_gem_bloodstone_02]], 	['casttime'] = 3},
+        ['Create Healthstone']      = {['icon'] = [[Interface\Icons\Inv_stone_04]], 				['casttime'] = 3},
+        ['Create Spellstone']       = {['icon'] = [[Interface\Icons\Inv_misc_gem_sapphire_01]], 	['casttime'] = 5},
+        ['Create Soulstone']        = {['icon'] = [[Interface\Icons\Spell_shadow_soulgem]], 		['casttime'] = 3},
 --        ['Drain Life']              = {[[Interface\Icons\Spell_shadow_lifedrain02]], 5},
  --       ['Drain Mana']              = {[[Interface\Icons\Spell_shadow_siphonmana]], 5},
         ['Enslave Demon']           = {['icon'] = [[Interface\Icons\Spell_shadow_enslavedemon]], 	['casttime'] = 3},
@@ -297,6 +313,9 @@
         ['Summon Imp']              = {['icon'] = [[Interface\Icons\Spell_shadow_summonimp]], 		['casttime'] = 10},
         ['Summon Succubus']         = {['icon'] = [[Interface\Icons\Spell_shadow_summonsuccubus]], 	['casttime'] = 10},
         ['Summon Voidwalker']       = {['icon'] = [[Interface\Icons\Spell_shadow_summonvoidwalker]],['casttime'] = 10},
+		   -- WARRIOR
+		['Slam']               		= {['icon'] = [[Interface\Icons\ability_warrior_decisivestrike]], ['casttime'] = 1.5, ['type'] = 'dmg', ['school'] = 'physical', ['class'] = 'WARRRIOR',	['immune'] = true,},
+		  
     }
 
     SPELLINFO_INTERRUPTS_TO_TRACK = {
@@ -516,6 +535,7 @@
 		['Riposte']					= {['icon'] = [[Interface\Icons\Ability_warrior_challange]],		['duration'] = 6,	['type'] = 'physical',	['prio'] = 1},
 		["Sap"] 					= {['icon'] = [[Interface\Icons\Ability_sap]], 						['duration'] = 11, 	['type'] = 'physical', 	['prio'] = 3, 	['dr'] = 'Disorient'},
 		['Sprint']					= {['icon'] = [[Interface\Icons\Ability_rogue_sprint]],				['duration'] = 15,							['prio'] = 1},
+		['Kidney Shot'] 			= {['icon'] = [[Interface\Icons\Ability_rogue_kidneyshot]], 		['duration'] = 6, 	['type'] = 'physical', 	['prio'] = 2,	['dr'] = 'Controlled Stun'},
 		
 		
 			-- SHAMAN
@@ -540,7 +560,9 @@
 		['Intercept Stun'] 			= {['icon'] = [[Interface\Icons\Spell_frost_stun]], 				['duration'] = 3, 	['type'] = 'physical', 	['prio'] = 1,	['dr'] = 'Controlled Stun'},
 		['Intimidating Shout']		= {['icon'] = [[Interface\Icons\Ability_golemthunderclap]], 		['duration'] = 8, 	['type'] = 'physical', 	['prio'] = 2, 	['dr'] = 'Fear'},
 		['Mortal Strike'] 			= {['icon'] = [[Interface\Icons\Ability_warrior_savageblow]], 		['duration'] = 10, 	['type'] = 'physical'},
-		['Shield Bash - Silenced'] 	= {['icon'] = [[Interface\Icons\Ability_warrior_shieldbash]], 		['duration'] = 3, 	['type'] = 'magic', 	['prio'] = 3},
+		['Shield Bash - Silenced'] 	= {['icon'] = [[Interface\Icons\Ability_warrior_shieldbash]], 		['duration'] = 3, 	['type'] = 'magic',		['prio'] = 2},
+		['Shield Wall'] 			= {['icon'] = [[Interface\Icons\Ability_warrior_shieldwall]], 		['duration'] = 10, 	 						['prio'] = 2},
+		['Retaliation']				= {['icon'] = [[Interface\Icons\Ability_warrior_challange]],		['duration'] = 15,							['prio'] = 2,},
 
     }
 	
@@ -615,7 +637,8 @@
 	}
 	
 	SPELLINFO_UNIQUE_DEBUFFS = {
-		['Kidney Shot'] = {['icon'] = [[Interface\Icons\Ability_rogue_kidneyshot]], ['cp'] = {2, 3, 4, 5, 6}, ['type'] = 'physical', ['prio'] = 2},
+		['Kidney Shot'] = {['icon'] = [[Interface\Icons\Ability_rogue_kidneyshot]], ['cp'] = {2, 3, 4, 5, 6}, 		['type'] = 'physical', ['prio'] = 2,	['dr'] = 'Controlled Stun'},
+		--['Rupture'] 	= {['icon'] = [[Interface\Icons\Ability_rogue_rupture]], 	['cp'] = {8, 10, 12, 14, 16}, 	['type'] = 'physical', },
 	}	
 	
 	--

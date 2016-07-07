@@ -27,6 +27,7 @@ Cast.create = function(caster, spell, info, timeMod, time, inv)
 	acnt.inverse    = inv	
 	acnt.class		= info['class']
 	acnt.school		= info['school'] and RGB_SPELL_SCHOOL_COLORS[info['school']]
+	acnt.borderClr	= info['immune'] and {.3, .3, .3} or {.1, .1, .1}
 	return acnt
 end
 
@@ -101,7 +102,7 @@ local getAvgLatency = function()	--/script down, up, lagHome, lagWorld = GetNetS
 end
 
 local getTimeMinusPing = function()
-	return GetTime() - getAvgLatency()
+	return GetTime() -- getAvgLatency() --- standby for now
 end
 
 local removeExpiredTableEntries = function(time, tab)
@@ -199,7 +200,7 @@ local checkforCastTimeModBuffs = function(caster, spell)
 end
 
 local newCast = function(caster, spell, channel)
-	local time = GetTime() --getTimeMinusPing()--GetTime() -- getAvgLatency()
+	local time = getTimeMinusPing()--GetTime() -- getAvgLatency()
 	local info = nil
 	
 	if channel then
@@ -221,6 +222,8 @@ local newCast = function(caster, spell, channel)
 				table.insert(casts, n)
 			end
 		end
+	--else
+	--	print(arg1)
 	end
 
 end
@@ -256,8 +259,20 @@ local function manageDR(time, tar, b, castOn)
 	return 1
 end
 
+local function checkQueueBuff(tar, b)
+	for k, v in pairs(buffQueueList) do
+		if v.target == tar and v.buffName == b then
+			return true
+		end
+	end
+	return false
+end
+
 local function newbuff(tar, b, s, castOn)
 	local time = getTimeMinusPing()--GetTime()
+	
+	-- check buff queue
+	if checkQueueBuff(tar, b) then return end
 	
 	local drf = manageDR(time, tar, b, castOn)
 	
