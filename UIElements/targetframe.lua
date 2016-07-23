@@ -8,7 +8,9 @@
 	raidTargetFrame.icon:SetTexture([[Interface\TargetingFrame\UI-RaidTargetingIcons]])
 	raidTargetFrame.icon:SetAllPoints()
 	-------------------------------------------------------------------------------
+	local refreshInterval, nextRefresh = 1/60, 0
 	local flagCarriers = {}
+	local showText = true
 	-------------------------------------------------------------------------------
 	local refreshInterval, nextRefresh = 1/60, 0
 	local TEXTURE = [[Interface\AddOns\enemyFrames\globals\resources\barTexture.tga]]
@@ -36,6 +38,12 @@
 	
 	TargetFrame.cast.border = CreateBorder(nil, TargetFrame.cast, 6.5, 1/8.5)
 	TargetFrame.cast.border:SetPadding(2.5, 1.7)
+	
+	TargetFrame.cast.spark = TargetFrame.cast:CreateTexture(nil, 'OVERLAY')
+	TargetFrame.cast.spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
+	TargetFrame.cast.spark:SetHeight(26)	
+	TargetFrame.cast.spark:SetWidth(26)
+	TargetFrame.cast.spark:SetBlendMode('ADD')
 
     TargetFrame.cast.text = TargetFrame.cast:CreateFontString(nil, 'OVERLAY')
     TargetFrame.cast.text:SetTextColor(1, 1, 1)
@@ -78,6 +86,12 @@
 	TargetFrame.IntegratedCastBar.bg:SetTexture(0, 0, 0, .7)
 	TargetFrame.IntegratedCastBar.bg:SetAllPoints()	
 	
+	TargetFrame.IntegratedCastBar.spark = TargetFrame.IntegratedCastBar:CreateTexture(nil, 'OVERLAY')
+	TargetFrame.IntegratedCastBar.spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
+	TargetFrame.IntegratedCastBar.spark:SetHeight(34)--TargetFrameNameBackground:GetHeight())	
+	TargetFrame.IntegratedCastBar.spark:SetWidth(32)
+	TargetFrame.IntegratedCastBar.spark:SetBlendMode('ADD')
+	
 	TargetFrame.IntegratedCastBar.spellText = TargetFrame.IntegratedCastBar:CreateFontString(nil, 'OVERLAY')
     TargetFrame.IntegratedCastBar.spellText:SetTextColor(1, 1, 1)
     TargetFrame.IntegratedCastBar.spellText:SetFont(STANDARD_TEXT_FONT, 10, 'OUTLINE')
@@ -91,15 +105,15 @@
     TargetFrame.IntegratedCastBar.timer:SetShadowColor(0, 0, 0)
     TargetFrame.IntegratedCastBar.timer:SetPoint('RIGHT', TargetFrame.IntegratedCastBar, -2, .5)
     TargetFrame.IntegratedCastBar.timer:SetText'3.5s'
-	
 	-------------------------------------------------------------------------------
 	local function round(num, idp)
 		local mult = 10^(idp or 0)
 		return math.floor(num * mult + 0.5) / mult
 	end
-	local getTimerLeft = function(tEnd)
+	local getTimerLeft = function(tEnd, l)
 		local t = tEnd - GetTime()
-		if t > 3 then return round(t, 0) else return round(t, 1) end
+		if not l then l = 3 end
+		if t > l then return round(t, 0) else return round(t, 1) end
 	end
 	-------------------------------------------------------------------------------
 	local showCast = function()
@@ -127,22 +141,34 @@
 				if GetTime() < v.timeEnd then
 					TargetFrame.cast:SetMinMaxValues(0, v.timeEnd - v.timeStart)
 					TargetFrame.IntegratedCastBar:SetMinMaxValues(0, v.timeEnd - v.timeStart)
+					local sparkPosition
 					if v.inverse then
 						TargetFrame.cast:SetValue(mod((v.timeEnd - GetTime()), v.timeEnd - v.timeStart))
 						TargetFrame.IntegratedCastBar:SetValue(mod((v.timeEnd - GetTime()), v.timeEnd - v.timeStart))
+						
+						sparkPosition = (v.timeEnd - GetTime()) / (v.timeEnd - v.timeStart)
 					else
 						TargetFrame.cast:SetValue(mod((GetTime() - v.timeStart), v.timeEnd - v.timeStart))
-						TargetFrame.IntegratedCastBar:SetValue(mod((GetTime() - v.timeStart), v.timeEnd - v.timeStart))				
+						TargetFrame.IntegratedCastBar:SetValue(mod((GetTime() - v.timeStart), v.timeEnd - v.timeStart))	
+
+						sparkPosition = (GetTime() - v.timeStart) / (v.timeEnd - v.timeStart)
 					end
 					
 					TargetFrame.cast.text:SetText(string.sub(v.spell, 1, 17))
-					TargetFrame.IntegratedCastBar.spellText:SetText(string.sub(v.spell, 1, 14))
+					TargetFrame.IntegratedCastBar.spellText:SetText(string.sub(v.spell, 1, 15))
 					TargetFrame.cast.timer:SetText(getTimerLeft(v.timeEnd)..'s')
 					TargetFrame.IntegratedCastBar.timer:SetText(getTimerLeft(v.timeEnd)..'s')
 					TargetFrame.cast.icon:SetTexture(v.icon)
 					-- border colors
 					TargetFrame.cast.icon.border:SetColor(v.borderClr[1], v.borderClr[2], v.borderClr[3])
 					TargetFrame.cast.border:SetColor(v.borderClr[1], v.borderClr[2], v.borderClr[3])
+					--
+					-- spark
+					if ( sparkPosition < 0 ) then
+						sparkPosition = 0
+					end
+					TargetFrame.IntegratedCastBar.spark:SetPoint('CENTER', TargetFrame.IntegratedCastBar, 'LEFT', sparkPosition * TargetFrameNameBackground:GetWidth(), -1)
+					TargetFrame.cast.spark:SetPoint('CENTER', TargetFrame.cast, 'LEFT', sparkPosition * TargetFrame.cast:GetWidth(), 0)
 					--
 					if ENEMYFRAMESPLAYERDATA['targetFrameCastbar'] then
 						TargetFrame.cast:Show()
@@ -182,7 +208,7 @@
 	portraitDurationFrame:SetFrameLevel(2)
 	
 	portraitDebuff.duration = portraitDurationFrame:CreateFontString(nil, 'OVERLAY')--, 'GameFontNormalSmall')
-	portraitDebuff.duration:SetFont(STANDARD_TEXT_FONT, 13, 'OUTLINE')
+	portraitDebuff.duration:SetFont(STANDARD_TEXT_FONT, 14, 'OUTLINE')
 	portraitDebuff.duration:SetTextColor(.9, .9, .2, 1)
 	portraitDebuff.duration:SetShadowOffset(1, -1)
 	portraitDebuff.duration:SetShadowColor(0, 0, 0)
@@ -231,8 +257,75 @@
 		end
 	end
 	-------------------------------------------------------------------------------
-	local castbarFrame = CreateFrame'Frame'
-	castbarFrame:SetScript('OnUpdate', function()
+	local function addExtras(button)
+		button.ft = CreateFrame('Frame', button:GetName()..'TextFrame', button)
+		button.ft:SetFrameLevel(4)
+		button.ft:SetAllPoints()
+		
+		button.text = button.ft:CreateFontString(nil, 'OVERLAY')
+		button.text:SetFont(STANDARD_TEXT_FONT, 10, 'OUTLINE')
+		button.text:SetTextColor(.9, .9, .2)
+		button.text:SetShadowColor(0, 0, 0)
+		button.text:SetPoint('CENTER', button, 'BOTTOM', 0, 1)	
+
+		
+		button.f = CreateFrame('Frame', button:GetName()..'CooldownFrame', button)
+		button.f:SetAllPoints()
+		
+		button.cd = CreateCooldown(button.f, .4, true)
+		
+	end
+	-------------------------------------------------------------------------------
+	for i=1, MAX_TARGET_BUFFS do
+		addExtras(getglobal('TargetFrameBuff'..i))
+		getglobal('TargetFrameBuff'..i..'Icon'):SetTexCoord(.05, .95, .05, .95)
+	end
+	for i=1, MAX_TARGET_DEBUFFS do
+		addExtras(getglobal('TargetFrameDebuff'..i))	
+		--getglobal('TargetFrameDebuff'..i):SetHeight(5)--getglobal('TargetFrameDebuff'..i..'Icon'):GetHeight()-15)		
+		getglobal('TargetFrameDebuff'..i..'Icon'):SetTexCoord(.05, .95, .05, .95)		
+	end
+	-------------------------------------------------------------------------------
+	local checkAddTimer = function(button, debuff, debuffList)
+		for k, v in pairs(debuffList) do
+			if string.upper(v.icon) == string.upper(debuff) then
+				button.text:SetText(getTimerLeft(v.timeEnd, 0))					
+				if showText then button.text:Show()	end
+				button.cd:SetTimers(v.timeStart, v.timeEnd)
+				button.cd:Show()
+				
+			end
+		end
+	end
+	-------------------------------------------------------------------------------
+	local limits = {MAX_TARGET_BUFFS, MAX_TARGET_DEBUFFS}
+	local debuff, button
+	local function displayTimers(debuffList)
+		if debuffList == nil then return end		
+		
+		for i=1, 2 do
+			for j=1, limits[i] do
+				if i == 1 then
+					debuff = UnitBuff('target', j)
+					button = getglobal('TargetFrameBuff'..j)
+				else
+					debuff, debuffStack, debuffType = UnitDebuff('target', j)
+					button = getglobal('TargetFrameDebuff'..j)
+				end
+				if not debuff then break end
+				
+				button.text:Hide()
+				button.cd:Hide()
+				
+				if ENEMYFRAMESPLAYERDATA['targetDebuffTimers'] then
+					checkAddTimer(button, debuff, debuffList)
+				end
+			end
+		end
+	end
+	-------------------------------------------------------------------------------	
+	local dummyFrame = CreateFrame'Frame'
+	dummyFrame:SetScript('OnUpdate', function()
 		nextRefresh = nextRefresh - arg1
 		if nextRefresh < 0 then
 			if ENEMYFRAMESPLAYERDATA['targetFrameCastbar'] or ENEMYFRAMESPLAYERDATA['integratedTargetFrameCastbar'] then
@@ -249,6 +342,11 @@
 				portraitDebuff.debuffText:SetTexture()
 				portraitDebuff.duration:SetText('')
 				portraitDebuff.bgText:Hide()
+			end
+			
+			-- debuff timers
+			if UnitExists('target') then
+				displayTimers(SPELLCASTINGCOREgetBuffs(UnitName'target'))
 			end
 			
 			nextRefresh = refreshInterval			
@@ -273,7 +371,14 @@
 	-------------------------------------------------------------------------------
 	local f = CreateFrame'Frame'	
 	function targetframeInit()
-		f:SetScript('OnUpdate', raidTargetOnUpdate)
+		f:SetScript('OnUpdate', function() 
+			nextRefresh = nextRefresh - arg1
+			if nextRefresh < 0 then
+				raidTargetOnUpdate()
+				nextRefresh = refreshInterval
+			end
+		end)
+			
 		raidTargetFrame:Show()
 	end
 	-------------------------------------------------------------------------------
