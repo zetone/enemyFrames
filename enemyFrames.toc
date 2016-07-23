@@ -5,7 +5,9 @@
 
 globals\actionHandler.lua
 globals\spellCastingCore.lua
-globals\spellInfo.lua
+globals\resources\globals.lua
+globals\resources\spells.lua
+globals\resources\buffs.lua
 globals\wsgHandler.lua
 globals\commHandler.lua
 globals\smoothBar.lua

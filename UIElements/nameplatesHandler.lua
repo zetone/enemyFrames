@@ -70,6 +70,12 @@
 			
 			plate.castBar.border = CreateBorder(nil, plate.castBar, 12)
 			plate.castBar.border:SetPadding(1.2)
+			
+			plate.castBar.spark = plate.castBar:CreateTexture(nil, 'OVERLAY')
+			plate.castBar.spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
+			plate.castBar.spark:SetHeight(26)	
+			plate.castBar.spark:SetWidth(26)
+			plate.castBar.spark:SetBlendMode('ADD')
 
 			plate.castBar.text = plate.castBar:CreateFontString(nil, 'OVERLAY')
 			plate.castBar.text:SetTextColor(1, 1, 1)
@@ -102,10 +108,15 @@
 			if castInfo then
 				if GetTime() < castInfo.timeEnd then
 					plate.castBar:SetMinMaxValues(0, castInfo.timeEnd - castInfo.timeStart)
+					local sparkPosition
 					if castInfo.inverse then
 						plate.castBar:SetValue(mod((castInfo.timeEnd - GetTime()), castInfo.timeEnd - castInfo.timeStart))
+						
+						sparkPosition = (castInfo.timeEnd - GetTime()) / (castInfo.timeEnd - castInfo.timeStart)
 					else
-						plate.castBar:SetValue(mod((GetTime() - castInfo.timeStart), castInfo.timeEnd - castInfo.timeStart))					
+						plate.castBar:SetValue(mod((GetTime() - castInfo.timeStart), castInfo.timeEnd - castInfo.timeStart))
+
+						sparkPosition = (GetTime() - castInfo.timeStart) / (castInfo.timeEnd - castInfo.timeStart)
 					end
 					plate.castBar.text:SetText(castInfo.spell)
 					plate.castBar.timer:SetText(getTimerLeft(castInfo.timeEnd)..'s')
@@ -114,6 +125,11 @@
 					-- border colors
 					plate.castBar.iconborder.b:SetColor(castInfo.borderClr[1], castInfo.borderClr[2], castInfo.borderClr[3])
 					plate.castBar.border:SetColor(castInfo.borderClr[1], castInfo.borderClr[2], castInfo.borderClr[3])
+					-- spark
+					if ( sparkPosition < 0 ) then
+						sparkPosition = 0
+					end
+					plate.castBar.spark:SetPoint('CENTER', plate.castBar, 'LEFT', sparkPosition * plate.castBar:GetWidth(), 0)
 					--
 					plate.castBar:Show()
 				end

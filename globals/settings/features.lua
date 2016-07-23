@@ -8,12 +8,13 @@
 	container:EnableMouseWheel(true)
 	container:Hide()
 	-------------------------------------------------------------------------------
-	local checkBoxFeaturesN, checkBoxFeatures  = 6, { 	[1] = {['id'] = 'enableOutdoors', 		['label'] = 'Enable outside of BattleGrounds'},
+	local checkBoxFeaturesN, checkBoxFeatures  = 7, { 	[1] = {['id'] = 'enableOutdoors', 		['label'] = 'Enable outside of BattleGrounds'},
 														[2] = {['id'] = 'mouseOver', 			['label'] = 'Mouseover cast on frames'},	
 														[3] = {['id'] = 'targetFrameCastbar', 	['label'] = 'Moveable Target Cast Bar'},														
 														[4] = {['id'] = 'integratedTargetFrameCastbar', 	['label'] = 'Integrated Target Cast Bar'},
 														[5] = {['id'] = 'targetPortraitDebuff', ['label'] = 'Prio debuff on Target Portrait'},
 														[6] = {['id'] = 'playerPortraitDebuff', ['label'] = 'Prio debuff on Player Portrait'},
+														[7] = {['id'] = 'targetDebuffTimers', 	['label'] = 'Debuff timers on target'},
 													}
 	local checkBoxFeaturesBGN, checkBoxFeaturesBG  = 3, {	[1] = {['id'] = 'incomingSpells', 		['label'] = 'Incoming Spells (BGs only)'},
 															[2] = {['id'] = 'pvpmapblips', 			['label'] = 'Class colored map blips'},

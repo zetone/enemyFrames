@@ -361,9 +361,12 @@ local CastCraftPerform = function()
 	elseif fcast then
 		local m = cast
 		local c = gsub(arg1, m, '%1')
-		--local s = gsub(arg1, m, '%2')
-		
-		forceHideTableItem(casts, c, nil)
+		local s = gsub(arg1, m, '%2')
+		if SPELLINFO_SPELLCASTS_TO_TRACK[s] then
+			newCast(c, s, false)
+		else
+			forceHideTableItem(casts, c, nil)
+		end
 		--on standby
 		--[[ finished casts CC(?)	
 	elseif fpcastFin or fcastFin then
@@ -697,7 +700,8 @@ local playerDeath = function()
 	local pslain 	= 'You have slain (.+).'		local fpslain 	= string.find(arg1, pslain)
 	
 	if fpdie or fdies or fslain or fpslain then
-		local c = fpdie and playerName or  gsub(arg1, dies, '%1') 
+		local m = fdies and dies or fslain and slain or fpslain and pslain
+		local c = fpdie and playerName or gsub(arg1, m, '%1')
 		
 		forceHideTableItem(casts, c, nil)
 		forceHideTableItem(buffList, c, nil)

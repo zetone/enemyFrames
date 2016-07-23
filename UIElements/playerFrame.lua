@@ -37,7 +37,7 @@
 	PlayerPortraitDurationFrame:SetFrameLevel(2)
 	
 	playerDebuffFrame.duration = PlayerPortraitDurationFrame:CreateFontString(nil, 'OVERLAY')--, 'GameFontNormalSmall')
-	playerDebuffFrame.duration:SetFont(STANDARD_TEXT_FONT, 13, 'OUTLINE')
+	playerDebuffFrame.duration:SetFont(STANDARD_TEXT_FONT, 14, 'OUTLINE')
 	playerDebuffFrame.duration:SetTextColor(.9, .9, .2, 1)
 	playerDebuffFrame.duration:SetShadowOffset(1, -1)
 	playerDebuffFrame.duration:SetShadowColor(0, 0, 0)
