@@ -340,6 +340,7 @@ local CastCraftPerform = function()
 	local craft 	= '(.+) -> (.+).' 							local fcraft = string.find(arg1, craft)
 	local perform 	= '(.+) performs (.+).' 					local fperform = string.find(arg1, perform)
 	local bperform 	= '(.+) begins to perform (.+).' 			local fbperform = string.find(arg1, bperform)
+	local performOn = '(.+) performs (.+) on (.+).' 			local fperformOn = string.find(arg1, performOn)
 	
 	local pcastFin 	= 'You cast (.+) on (.+).'					local fpcastFin = string.find(arg1, pcastFin)
 	local castFin 	= '(.+) casts (.+) on (.+).'				local fcastFin = string.find(arg1, castFin)
@@ -351,11 +352,11 @@ local CastCraftPerform = function()
 		newCast(c, s, false)
 		--print(arg1)
 		
-	elseif fperform or fbperform then
-		local m = fperform and perform or fbperform and bperform
+	elseif fperform or fbperform or fperformOn then
+		local m = fperform and perform or fbperform and bperform or fperformOn and performOn
 		local c = gsub(arg1, m, '%1')
 		local s = gsub(arg1, m, '%2')
-		newCast(c, s, fperform and true or bperform and false)
+		newCast(c, s, fperform and true or false)
 		
 	-- object spawn casts (totems, traps, etc)
 	elseif fcast then
@@ -379,7 +380,7 @@ local CastCraftPerform = function()
 		end]]--
 	end
 	
-	return fcast or fbcast or fpcast or fcraftor or fperform or fbperform or fpcastFin or fcastFin
+	return fcast or fbcast or fpcast or fcraftor or fperform or fbperform or fpcastFin or fcastFin or fperformOn
 end
 
 local handleHeal = function()
@@ -478,14 +479,22 @@ local GainAfflict = function()
 		local c = fafflict and gsub(arg1, m, '%1') or fpafflict and playerName
 		local s = fafflict and gsub(arg1, m, '%2') or fpafflict and gsub(arg1, m, '%1')
 		
+		-- rank & stacks
 		local auxS, st = s, 1
 		if not SPELLINFO_BUFFS_TO_TRACK[s] then
-			local spellstacks = '(.+) ((.+))'	
-			if string.find(s, spellstacks) then s = gsub(s, spellstacks, '%1')	st = gsub(s, spellstacks, '%2')	end
+			--local buffRank = '(.+) (.+)'
+			--if string.find(s, buffRank) then print(gsub(s, buffRank, '%1'))	print(gsub(s, buffRank, '%2'))	end
+			local spellstacks = '(.+) %((.+)%)'	
+			if string.find(s, spellstacks) then s = gsub(s, spellstacks, '%1')	st = tonumber(gsub(auxS, spellstacks, '%2'), 10)	--print(s) print(st)	
+			end
 		end
 		-- debuffs to be displayed
 		if SPELLINFO_BUFFS_TO_TRACK[s] then
-			newbuff(c, s, st, false)
+			--if st > 1 then
+			--	refreshBuff(c, s, st)
+			--else
+				newbuff(c, s, st, false)
+			--end		
 		end
 		
 		s = auxS

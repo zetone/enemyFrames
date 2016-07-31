@@ -17,6 +17,7 @@ globals\settings\features.lua
 globals\settings\nameplates.lua
 globals\settings\optionals.lua
 globals\class\rogue.lua
+globals\class\paladin.lua
 
 UIElements\BindingsHandler.lua
 UIElements\nameplatesHandler.lua

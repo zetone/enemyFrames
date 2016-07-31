@@ -96,7 +96,7 @@
     TargetFrame.IntegratedCastBar.spellText:SetTextColor(1, 1, 1)
     TargetFrame.IntegratedCastBar.spellText:SetFont(STANDARD_TEXT_FONT, 10, 'OUTLINE')
     TargetFrame.IntegratedCastBar.spellText:SetShadowColor(0, 0, 0)
-    TargetFrame.IntegratedCastBar.spellText:SetPoint('LEFT', TargetFrame.IntegratedCastBar, 2, .5)
+    TargetFrame.IntegratedCastBar.spellText:SetPoint('LEFT', TargetFrame.IntegratedCastBar, 1, .5)
     TargetFrame.IntegratedCastBar.spellText:SetText('Polymorph') 
 	
 	TargetFrame.IntegratedCastBar.timer = TargetFrame.IntegratedCastBar:CreateFontString(nil, 'OVERLAY')
@@ -274,16 +274,18 @@
 		
 		button.cd = CreateCooldown(button.f, .4, true)
 		
+		getglobal(button:GetName()..'Icon'):SetTexCoord(.05, .95, .05, .95)
+		if getglobal(button:GetName()..'Count') then
+			getglobal(button:GetName()..'Count'):SetPoint('TOP', button, 'TOP', 0, -1)
+		end
 	end
 	-------------------------------------------------------------------------------
 	for i=1, MAX_TARGET_BUFFS do
 		addExtras(getglobal('TargetFrameBuff'..i))
-		getglobal('TargetFrameBuff'..i..'Icon'):SetTexCoord(.05, .95, .05, .95)
 	end
 	for i=1, MAX_TARGET_DEBUFFS do
 		addExtras(getglobal('TargetFrameDebuff'..i))	
-		--getglobal('TargetFrameDebuff'..i):SetHeight(5)--getglobal('TargetFrameDebuff'..i..'Icon'):GetHeight()-15)		
-		getglobal('TargetFrameDebuff'..i..'Icon'):SetTexCoord(.05, .95, .05, .95)		
+		--getglobal('TargetFrameDebuff'..i):SetHeight(5)--getglobal('TargetFrameDebuff'..i..'Icon'):GetHeight()-15)				
 	end
 	-------------------------------------------------------------------------------
 	local checkAddTimer = function(button, debuff, debuffList)
