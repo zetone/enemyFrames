@@ -33,7 +33,7 @@
 			local c = gsub(arg1, cJudge, '%1')			
 			local b = gsub(arg1, cJudge, '%2')			b = b == 'cast' or 'casts' and true or false
 			
-			if b then
+			if b  and paladins[c] then
 				targetSeals[c] = 'Judgement of '..paladins[c]
 			end
 		end
@@ -78,7 +78,7 @@
 	end
 	-------------------------------------------------------------------------------
 	local dummyFrame = CreateFrame'Frame'
-	dummyFrame:RegisterEvent'PLAYER_ENTERING_WORLD'
+	dummyFrame:RegisterEvent'PLAYER_LOGIN'
 
 	dummyFrame:RegisterEvent'PLAYER_AURAS_CHANGED'
 	dummyFrame:RegisterEvent'CHAT_MSG_COMBAT_SELF_HITS'
@@ -101,7 +101,7 @@
 	dummyFrame:RegisterEvent'CHAT_MSG_SPELL_AURA_GONE_OTHER'
 
 	dummyFrame:SetScript('OnEvent', function() 
-		if event == 'PLAYER_ENTERING_WORLD' then
+		if event == 'PLAYER_LOGIN' then
 			paladins 		= {}
 			targetSeals 	= {}
 		else

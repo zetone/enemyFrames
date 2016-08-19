@@ -273,7 +273,7 @@
 	
 	SPELLINFO_UNIQUE_DEBUFFS = {
 		['Kidney Shot'] = {['icon'] = [[Interface\Icons\Ability_rogue_kidneyshot]], ['cp'] = {2, 3, 4, 5, 6}, 		['type'] = 'physical', ['prio'] = 2,	['dr'] = 'Controlled Stun'},
-		['Rupture'] 	= {['icon'] = [[Interface\Icons\Ability_rogue_rupture]], 	['cp'] = {8, 10, 12, 14, 16}, 	['type'] = 'physical', 					['display'] = false,},
+		['Rupture'] 	= {['icon'] = [[Interface\Icons\Ability_rogue_rupture]], 	['cp'] = {8, 10, 12, 14, 16}, 	['type'] = 'physical', ['display'] = false,},
 	}	
 	
 	-- used to check if mouseover cast should be aimed at mouseover target

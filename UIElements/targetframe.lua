@@ -12,66 +12,65 @@
 	local flagCarriers = {}
 	local showText = true
 	-------------------------------------------------------------------------------
-	local refreshInterval, nextRefresh = 1/60, 0
 	local TEXTURE = [[Interface\AddOns\enemyFrames\globals\resources\barTexture.tga]]
     local BACKDROP = {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]],}
 	
-	TargetFrame.cast = CreateFrame('StatusBar', 'enemyFramesTargetFrameCastbar', TargetFrame)
-    TargetFrame.cast:SetStatusBarTexture(TEXTURE)
-    TargetFrame.cast:SetStatusBarColor(1, .4, 0)
-    TargetFrame.cast:SetBackdrop(BACKDROP)
-    TargetFrame.cast:SetBackdropColor(0, 0, 0)
-    TargetFrame.cast:SetHeight(10)
-	TargetFrame.cast:SetWidth(160)
-	--TargetFrame.cast:ClearAllPoints()
-	TargetFrame.cast:SetPoint('LEFT', TargetFrame, 'LEFT', 26, -45)
+	TargetFrame.EFcast = CreateFrame('StatusBar', 'enemyFramesTargetFrameCastbar', TargetFrame)
+    TargetFrame.EFcast:SetStatusBarTexture(TEXTURE)
+    TargetFrame.EFcast:SetStatusBarColor(1, .4, 0)
+    TargetFrame.EFcast:SetBackdrop(BACKDROP)
+    TargetFrame.EFcast:SetBackdropColor(0, 0, 0)
+    TargetFrame.EFcast:SetHeight(10)
+	TargetFrame.EFcast:SetWidth(160)
+	--TargetFrame.EFcast:ClearAllPoints()
+	TargetFrame.EFcast:SetPoint('LEFT', TargetFrame, 'LEFT', 26, -45)
 	
-    TargetFrame.cast:SetValue(0)
-    TargetFrame.cast:Hide()
+    TargetFrame.EFcast:SetValue(0)
+    TargetFrame.EFcast:Hide()
 	
-	TargetFrame.cast:SetMovable(true) TargetFrame.cast:SetUserPlaced(true)
-	TargetFrame.cast:SetClampedToScreen(true)
-	TargetFrame.cast:RegisterForDrag'LeftButton' TargetFrame.cast:EnableMouse(true)
+	TargetFrame.EFcast:SetMovable(true) TargetFrame.EFcast:SetUserPlaced(true)
+	TargetFrame.EFcast:SetClampedToScreen(true)
+	TargetFrame.EFcast:RegisterForDrag'LeftButton' TargetFrame.EFcast:EnableMouse(true)
 	local castbarmoveable = false
-	TargetFrame.cast:SetScript('OnDragStart', function() if castbarmoveable then this:StartMoving() end end)
-	TargetFrame.cast:SetScript('OnDragStop', function() if castbarmoveable then this:StopMovingOrSizing() end end)
+	TargetFrame.EFcast:SetScript('OnDragStart', function() if castbarmoveable then this:StartMoving() end end)
+	TargetFrame.EFcast:SetScript('OnDragStop', function() if castbarmoveable then this:StopMovingOrSizing() end end)
 	
-	TargetFrame.cast.border = CreateBorder(nil, TargetFrame.cast, 6.5, 1/8.5)
-	TargetFrame.cast.border:SetPadding(2.5, 1.7)
+	TargetFrame.EFcast.border = CreateBorder(nil, TargetFrame.EFcast, 6.5, 1/8.5)
+	TargetFrame.EFcast.border:SetPadding(2.5, 1.7)
 	
-	TargetFrame.cast.spark = TargetFrame.cast:CreateTexture(nil, 'OVERLAY')
-	TargetFrame.cast.spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
-	TargetFrame.cast.spark:SetHeight(26)	
-	TargetFrame.cast.spark:SetWidth(26)
-	TargetFrame.cast.spark:SetBlendMode('ADD')
+	TargetFrame.EFcast.spark = TargetFrame.EFcast:CreateTexture(nil, 'OVERLAY')
+	TargetFrame.EFcast.spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
+	TargetFrame.EFcast.spark:SetHeight(26)	
+	TargetFrame.EFcast.spark:SetWidth(26)
+	TargetFrame.EFcast.spark:SetBlendMode('ADD')
 
-    TargetFrame.cast.text = TargetFrame.cast:CreateFontString(nil, 'OVERLAY')
-    TargetFrame.cast.text:SetTextColor(1, 1, 1)
-    TargetFrame.cast.text:SetFont(STANDARD_TEXT_FONT, 11, 'OUTLINE')
-    --TargetFrame.cast.text:SetShadowOffset(1, -1)
-    TargetFrame.cast.text:SetShadowColor(0, 0, 0)
-    TargetFrame.cast.text:SetPoint('LEFT', TargetFrame.cast, 2, .5)
-    TargetFrame.cast.text:SetText('drag-me')
+    TargetFrame.EFcast.text = TargetFrame.EFcast:CreateFontString(nil, 'OVERLAY')
+    TargetFrame.EFcast.text:SetTextColor(1, 1, 1)
+    TargetFrame.EFcast.text:SetFont(STANDARD_TEXT_FONT, 11, 'OUTLINE')
+    --TargetFrame.EFcast.text:SetShadowOffset(1, -1)
+    TargetFrame.EFcast.text:SetShadowColor(0, 0, 0)
+    TargetFrame.EFcast.text:SetPoint('LEFT', TargetFrame.EFcast, 2, .5)
+    TargetFrame.EFcast.text:SetText('drag-me')
 
-    TargetFrame.cast.timer = TargetFrame.cast:CreateFontString(nil, 'OVERLAY')
-    TargetFrame.cast.timer:SetTextColor(1, 1, 1)
-    TargetFrame.cast.timer:SetFont(STANDARD_TEXT_FONT, 9, 'OUTLINE')
-    --TargetFrame.cast.timer:SetShadowOffset(1, -1)
-    TargetFrame.cast.timer:SetShadowColor(0, 0, 0)
-    TargetFrame.cast.timer:SetPoint('RIGHT', TargetFrame.cast, -1, .5)
-    TargetFrame.cast.timer:SetText'3.5s'
+    TargetFrame.EFcast.timer = TargetFrame.EFcast:CreateFontString(nil, 'OVERLAY')
+    TargetFrame.EFcast.timer:SetTextColor(1, 1, 1)
+    TargetFrame.EFcast.timer:SetFont(STANDARD_TEXT_FONT, 9, 'OUTLINE')
+    --TargetFrame.EFcast.timer:SetShadowOffset(1, -1)
+    TargetFrame.EFcast.timer:SetShadowColor(0, 0, 0)
+    TargetFrame.EFcast.timer:SetPoint('RIGHT', TargetFrame.EFcast, -1, .5)
+    TargetFrame.EFcast.timer:SetText'3.5s'
 
-    TargetFrame.cast.icon = TargetFrame.cast:CreateTexture(nil, 'OVERLAY', nil, 7)
-    TargetFrame.cast.icon:SetWidth(18) TargetFrame.cast.icon:SetHeight(16)
-    TargetFrame.cast.icon:SetPoint('RIGHT', TargetFrame.cast, 'LEFT', -8, 0)
-    TargetFrame.cast.icon:SetTexCoord(.1, .9, .15, .85)
-	TargetFrame.cast.icon:SetTexture([[Interface\Icons\Inv_misc_gem_sapphire_01]])
+    TargetFrame.EFcast.icon = TargetFrame.EFcast:CreateTexture(nil, 'OVERLAY', nil, 7)
+    TargetFrame.EFcast.icon:SetWidth(18) TargetFrame.EFcast.icon:SetHeight(16)
+    TargetFrame.EFcast.icon:SetPoint('RIGHT', TargetFrame.EFcast, 'LEFT', -8, 0)
+    TargetFrame.EFcast.icon:SetTexCoord(.1, .9, .15, .85)
+	TargetFrame.EFcast.icon:SetTexture([[Interface\Icons\Inv_misc_gem_sapphire_01]])
 	
-	local ic = CreateFrame('Frame', nil, TargetFrame.cast)
-    ic:SetAllPoints(TargetFrame.cast.icon)
+	local ic = CreateFrame('Frame', nil, TargetFrame.EFcast)
+    ic:SetAllPoints(TargetFrame.EFcast.icon)
 	
-	TargetFrame.cast.icon.border = CreateBorder(nil, ic, 12.8)
-	TargetFrame.cast.icon.border:SetPadding(1)
+	TargetFrame.EFcast.icon.border = CreateBorder(nil, ic, 12.8)
+	TargetFrame.EFcast.icon.border:SetPadding(1)
 	
 	TargetFrame.IntegratedCastBar = CreateFrame('StatusBar', 'enemyFramesTargetFrameCastbar', TargetFrame)
     TargetFrame.IntegratedCastBar:SetStatusBarTexture(TEXTURE)
@@ -119,9 +118,9 @@
 	local showCast = function()
 		if castbarmoveable then
 			if ENEMYFRAMESPLAYERDATA['targetFrameCastbar'] then
-				TargetFrame.cast:Show()
+				TargetFrame.EFcast:Show()
 			else
-				TargetFrame.cast:Hide()
+				TargetFrame.EFcast:Hide()
 			end
 			if ENEMYFRAMESPLAYERDATA['integratedTargetFrameCastbar'] then
 				TargetFrame.IntegratedCastBar:Show()
@@ -131,7 +130,7 @@
 				TargetName:Show()
 			end		
 		else
-			TargetFrame.cast:Hide()
+			TargetFrame.EFcast:Hide()
 			TargetFrame.IntegratedCastBar:Hide()
 			TargetName:Show()
 		end
@@ -139,39 +138,39 @@
 			local v = SPELLCASTINGCOREgetCast(UnitName'target')
 			if v ~= nil then
 				if GetTime() < v.timeEnd then
-					TargetFrame.cast:SetMinMaxValues(0, v.timeEnd - v.timeStart)
+					TargetFrame.EFcast:SetMinMaxValues(0, v.timeEnd - v.timeStart)
 					TargetFrame.IntegratedCastBar:SetMinMaxValues(0, v.timeEnd - v.timeStart)
 					local sparkPosition
 					if v.inverse then
-						TargetFrame.cast:SetValue(mod((v.timeEnd - GetTime()), v.timeEnd - v.timeStart))
+						TargetFrame.EFcast:SetValue(mod((v.timeEnd - GetTime()), v.timeEnd - v.timeStart))
 						TargetFrame.IntegratedCastBar:SetValue(mod((v.timeEnd - GetTime()), v.timeEnd - v.timeStart))
 						
 						sparkPosition = (v.timeEnd - GetTime()) / (v.timeEnd - v.timeStart)
 					else
-						TargetFrame.cast:SetValue(mod((GetTime() - v.timeStart), v.timeEnd - v.timeStart))
+						TargetFrame.EFcast:SetValue(mod((GetTime() - v.timeStart), v.timeEnd - v.timeStart))
 						TargetFrame.IntegratedCastBar:SetValue(mod((GetTime() - v.timeStart), v.timeEnd - v.timeStart))	
 
 						sparkPosition = (GetTime() - v.timeStart) / (v.timeEnd - v.timeStart)
 					end
 					
-					TargetFrame.cast.text:SetText(string.sub(v.spell, 1, 17))
+					TargetFrame.EFcast.text:SetText(string.sub(v.spell, 1, 17))
 					TargetFrame.IntegratedCastBar.spellText:SetText(string.sub(v.spell, 1, 15))
-					TargetFrame.cast.timer:SetText(getTimerLeft(v.timeEnd)..'s')
+					TargetFrame.EFcast.timer:SetText(getTimerLeft(v.timeEnd)..'s')
 					TargetFrame.IntegratedCastBar.timer:SetText(getTimerLeft(v.timeEnd)..'s')
-					TargetFrame.cast.icon:SetTexture(v.icon)
+					TargetFrame.EFcast.icon:SetTexture(v.icon)
 					-- border colors
-					TargetFrame.cast.icon.border:SetColor(v.borderClr[1], v.borderClr[2], v.borderClr[3])
-					TargetFrame.cast.border:SetColor(v.borderClr[1], v.borderClr[2], v.borderClr[3])
+					TargetFrame.EFcast.icon.border:SetColor(v.borderClr[1], v.borderClr[2], v.borderClr[3])
+					TargetFrame.EFcast.border:SetColor(v.borderClr[1], v.borderClr[2], v.borderClr[3])
 					--
 					-- spark
 					if ( sparkPosition < 0 ) then
 						sparkPosition = 0
 					end
 					TargetFrame.IntegratedCastBar.spark:SetPoint('CENTER', TargetFrame.IntegratedCastBar, 'LEFT', sparkPosition * TargetFrameNameBackground:GetWidth(), -1)
-					TargetFrame.cast.spark:SetPoint('CENTER', TargetFrame.cast, 'LEFT', sparkPosition * TargetFrame.cast:GetWidth(), 0)
+					TargetFrame.EFcast.spark:SetPoint('CENTER', TargetFrame.EFcast, 'LEFT', sparkPosition * TargetFrame.EFcast:GetWidth(), 0)
 					--
 					if ENEMYFRAMESPLAYERDATA['targetFrameCastbar'] then
-						TargetFrame.cast:Show()
+						TargetFrame.EFcast:Show()
 					end
 					if ENEMYFRAMESPLAYERDATA['integratedTargetFrameCastbar'] then
 						TargetFrame.IntegratedCastBar:Show()
@@ -333,7 +332,7 @@
 			if ENEMYFRAMESPLAYERDATA['targetFrameCastbar'] or ENEMYFRAMESPLAYERDATA['integratedTargetFrameCastbar'] then
 				showCast()				
 			else
-				TargetFrame.cast:Hide()
+				TargetFrame.EFcast:Hide()
 				TargetFrame.IntegratedCastBar:Hide()	
 				TargetName:Show()				
 			end
