@@ -94,7 +94,7 @@
 	container.newversion:Hide()
 	
 	container.forumlink:SetScript('OnShow', function()
-        this:SetText'https://forum.twinstar.cz/showthread.php/105235-AddOn-enemyFrames'
+        this:SetText'https://forum.elysium-project.org/index.php?showtopic=25538'
 		
 		if ENEMYFRAMESVERSIONFOUND then
 			container.newversion:Show()
