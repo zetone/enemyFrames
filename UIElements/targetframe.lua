@@ -324,6 +324,18 @@
 			end
 		end
 	end
+	-------------------------------------------------------------------------------
+	local function raidTargetOnUpdate()
+		local rt = ENEMYFRAMECOREGetRaidTarget()
+
+		if UnitExists'target' and rt[UnitName'target'] then
+			local tCoords = RAID_TARGET_TCOORDS[rt[UnitName'target']['icon']]
+			raidTargetFrame.icon:SetTexCoord(tCoords[1], tCoords[2], tCoords[3], tCoords[4])
+			raidTargetFrame:Show()
+		else
+			raidTargetFrame:Hide()
+		end
+	end
 	-------------------------------------------------------------------------------	
 	local dummyFrame = CreateFrame'Frame'
 	dummyFrame:SetScript('OnUpdate', function()
@@ -350,46 +362,22 @@
 				displayTimers(SPELLCASTINGCOREgetBuffs(UnitName'target'))
 			end
 			
+			-- raidtarget
+			raidTargetOnUpdate()
+			
 			nextRefresh = refreshInterval			
 		end
 	end)
 	
 	function TARGETFRAMECASTBARsettings(b)
 		castbarmoveable = b
-	end
-	-------------------------------------------------------------------------------
-	local function raidTargetOnUpdate()
-		local rt = ENEMYFRAMECOREGetRaidTarget()
-
-		if UnitExists'target' and rt[UnitName'target'] then
-			local tCoords = RAID_TARGET_TCOORDS[rt[UnitName'target']['icon']]
-			raidTargetFrame.icon:SetTexCoord(tCoords[1], tCoords[2], tCoords[3], tCoords[4])
-			raidTargetFrame:Show()
-		else
-			raidTargetFrame:Hide()
-		end
-	end
-	-------------------------------------------------------------------------------
-	local f = CreateFrame'Frame'	
-	function targetframeInit()
-		f:SetScript('OnUpdate', function() 
-			nextRefresh = nextRefresh - arg1
-			if nextRefresh < 0 then
-				raidTargetOnUpdate()
-				nextRefresh = refreshInterval
-			end
-		end)
-			
-		raidTargetFrame:Show()
-	end
+	end	
 	-------------------------------------------------------------------------------
 	local function eventHandler()
 		flagCarriers = {}
-		f:SetScript('OnUpdate', nil)
-		raidTargetFrame:Hide()
 	end
 	-------------------------------------------------------------------------------
-	f:RegisterEvent'PLAYER_ENTERING_WORLD'
-	f:RegisterEvent'ZONE_CHANGED_NEW_AREA'
-	f:SetScript('OnEvent', eventHandler)
+	dummyFrame:RegisterEvent'PLAYER_ENTERING_WORLD'
+	dummyFrame:RegisterEvent'ZONE_CHANGED_NEW_AREA'
+	dummyFrame:SetScript('OnEvent', eventHandler)
 	

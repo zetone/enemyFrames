@@ -400,7 +400,6 @@ local function initializeValues()
 		f:SetScript('OnUpdate', enemyFramesCoreOnUpdate)
 		-- enable ui elements
 		ENEMYFRAMESInitialize(maxUnits, insideBG)
-		targetframeInit()
 		bindingsInit()
 		INCOMINGSPELLSinit(insideBG)
 		WSGUIinit(insideBG)

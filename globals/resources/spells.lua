@@ -120,6 +120,7 @@
 		['Toxic Spit'] 					= {['icon'] = [[Interface\Icons\spell_nature_corrosivebreath]], 	['casttime'] = 2.5,},
 		['Trelane\'s Freezing Touch'] 	= {['icon'] = [[Interface\Icons\spell_shadow_unsummonbuilding]], 	['casttime'] = 3,},
 		['Wandering Plague']			= {['icon'] = [[Interface\Icons\spell_shadow_callofbone]], 			['casttime'] = 2},
+		['Weak Frostbolt']				= {['icon'] = [[Interface\Icons\spell_frost_frostbolt02]], 			['casttime'] = 2.2},
 		['Wither Touch']				= {['icon'] = [[Interface\Icons\spell_nature_drowsy]], 				['casttime'] = 2},
             -- AHN'QIRAJ
         ['Explode']                 	= {['icon'] = [[Interface\Icons\Spell_fire_selfdestruct]], 			['casttime'] = 6},
