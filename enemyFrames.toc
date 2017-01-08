@@ -1,7 +1,11 @@
 ## Interface: 11200
 ## Title: BG Enemy Frames
 ## Notes: by kuurtzen
+## Notes-ruRU: мод для полей боя
 ## SavedVariablesPerCharacter: ENEMYFRAMESPLAYERDATA
+
+localization_en.lua
+localization_ru.lua
 
 globals\actionHandler.lua
 globals\spellCastingCore.lua
@@ -33,5 +37,3 @@ UIElements\wsgUI.lua
 
 enemyFrames.lua
 enemyFramesCore.lua
-
-
