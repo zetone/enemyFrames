@@ -3,6 +3,7 @@
 	local f = CreateFrame'Frame'
 	-------------------------------------------------------------------------------
 	local isPlate = function(frame)     
+		if frame and frame.nameplate then return true end
 		local overlayRegion = frame:GetRegions()
 		if not overlayRegion or overlayRegion:GetObjectType() ~= 'Texture'
 		or overlayRegion:GetTexture() ~= [[Interface\Tooltips\Nameplate-Border]] then
@@ -21,6 +22,7 @@
 	-------------------------------------------------------------------------------
 	local addRaidTarget = function(plate, n, raidTargets)
 		local _, _, name = plate:GetRegions()
+		name = plate.name or name
 		if not plate.raidTarget then
 			-- create killtarget icon
 			plate.raidTarget = plate:CreateTexture(nil, 'OVERLAY')
@@ -219,6 +221,7 @@
 			if isPlate(plate) and plate:IsVisible() then
 				local health = plate:GetChildren()
 				local _, _, name = plate:GetRegions()
+				name = plate.name or name
 				local n, h = name:GetText(), health:GetValue()
 				-- fills a list to help display accurate health values of enemies with visible plates
 				-- redudant to include target and mouseover units
