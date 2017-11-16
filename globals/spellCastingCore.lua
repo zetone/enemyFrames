@@ -64,7 +64,7 @@ buff.create = function(tar, t, s, buffType, factor, time)
 	acnt.stacks		= s
 	acnt.icon      	= buffType['icon']
 	acnt.timeStart 	= time
-	acnt.timeEnd   	= time + buffType['duration'] * factor
+	acnt.timeEnd   	= time + buffType['duration'] * factor-- and buffType['duration'] * factor or 0
 	acnt.prio		= buffType['prio'] and buffType['prio'] or 0
 	acnt.border		= buffType['type'] and RGB_BORDER_DEBUFFS_COLOR[buffType['type']] or {.1, .1, .1}	-- border rgb values depending on type of buff/debuff
 	acnt.display 	= buffType['display'] == nil and true or buffType['display']
@@ -76,10 +76,11 @@ buffQueue.create = function(tar, spell, buffType, d, time)
 	setmetatable(acnt, buffQueue)
 	acnt.target    	= tar
 	acnt.buffName	= spell
+	
+	buffType['duration'] = buffType['cp'][d]
 	acnt.buffData   = buffType
 	--acnt.duration	= 
-	buffType['duration'] = buffType['cp'][d]
-
+	
 	acnt.timeStart 	= time
 	acnt.timeEnd   	= time + 1 
 	return acnt
@@ -109,7 +110,7 @@ local removeExpiredTableEntries = function(time, tab)
 	local i = 1
 	for k, v in pairs(tab) do
 		if time > v.timeEnd then
-			table.remove(tab, i)
+			table.remove(tab, i) 
 		end
 		i = i + 1
 	end
@@ -118,7 +119,7 @@ end
 local updateDRtimers = function(time, drtab, bufftab)
 	for k, v in pairs(drtab) do
 		for i, j in pairs(bufftab) do
-			if j.target == v.target and SPELLINFO_BUFFS_TO_TRACK[j.spell]['dr'] then
+			if j.target == v.target and SPELLINFO_BUFFS_TO_TRACK[j.spell] and SPELLINFO_BUFFS_TO_TRACK[j.spell]['dr'] then
 				if SPELLINFO_BUFFS_TO_TRACK[j.spell]['dr'] == v.type then
 					v.timeEnd = time + v.k
 				end
@@ -269,8 +270,7 @@ local function checkQueueBuff(tar, b)
 end
 
 local function newbuff(tar, b, s, castOn)
-	local time = getTimeMinusPing()--GetTime()
-	
+	local time = getTimeMinusPing()--GetTime() 
 	-- check buff queue
 	if checkQueueBuff(tar, b) then return end
 	
@@ -735,7 +735,7 @@ end
 
 ----------------------------------------------------------------------------
 local singleEventdebug = function()
-	local v = '(.+) performs Vanish'
+	local v = 'You gain (.+)'--'(.+) performs Vanish'
 	
 	if string.find(arg1, v) then
 		print(event)
@@ -919,5 +919,8 @@ end)
 	
 SLASH_PROCESSCAST1 = '/pct'
 SlashCmdList["PROCESSCAST"] = function(msg)
-
+	for k, v in pairs(buffList) do
+		print(v.caster .. ' ' .. v.spell)
+	end
+	print(' test')
 end
