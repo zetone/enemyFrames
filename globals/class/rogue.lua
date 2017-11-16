@@ -2,6 +2,8 @@
 	local _, class = UnitClass'player'
 	if class ~= 'ROGUE' then return end
 	-------------------------------------------------------------------------------
+	SPELLINFO_UNIQUE_DEBUFFS['Rupture']['display'] = true
+	-------------------------------------------------------------------------------
 	local processDebuff = function(tar, spell, cp)
 	
 		if cp > 0 and UnitExists(tar) then
