@@ -77,6 +77,7 @@
 			-- MISC & MOB SPELLS
 		['Acid Spit']					= {['icon'] = [[Interface\Icons\spell_nature_acid_01]], 			['casttime'] = 3},
 		['Bomb']						= {['icon'] = [[Interface\Icons\spell_fire_selfdestruct]], 			['casttime'] = 2},
+		['Banshee Curse']				= {['icon'] = [[Interface\Icons\spell_nature_drowsy]], 				['casttime'] = 2},
 		['Black Sludge']				= {['icon'] = [[Interface\Icons\spell_shadow_callofbone]], 			['casttime'] = 3},
 		['Boulder']						= {['icon'] = [[Interface\Icons\inv_stone_10]], 					['casttime'] = 2},
 		['Chained Bolt']				= {['icon'] = [[Interface\Icons\spell_nature_chainlightning]], 		['casttime'] = 1.8},
@@ -92,6 +93,7 @@
 		['Curse of the Deadwood']		= {['icon'] = [[Interface\Icons\spell_shadow_gathershadows]], 		['casttime'] = 2},
 		['Curse of the Fallen Magram'] 	= {['icon'] = [[Interface\Icons\spell_shadow_unholyfrenzy]], 		['casttime'] = 2},
 		['Dark Sludge']					= {['icon'] = [[Interface\Icons\spell_shadow_creepingplague]], 		['casttime'] = 5},
+		['Decayed Strength']			= {['icon'] = [[Interface\Icons\spell_holy_harmundeadaura]], 		['casttime'] = 2},
 		['Dire Growl'] 					= {['icon'] = [[Interface\Icons\ability_racial_cannibalize]], 		['casttime'] = 1,	['immune'] = true,},
 		['Fevered Fatigue'] 			= {['icon'] = [[Interface\Icons\spell_nature_nullifydisease]], 		['casttime'] = 3,},
 		['Fire Shield II'] 				= {['icon'] = [[Interface\Icons\spell_fire_immolation]], 			['casttime'] = 1,},

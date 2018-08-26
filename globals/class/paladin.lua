@@ -44,14 +44,14 @@
 		local pc = '(.+) crit (.+) for (.+).'			local fpc = string.find(arg1, pc)
 		local oh = '(.+) hits (.+) for (.+).'			local foh = string.find(arg1, oh)
 		local oc = '(.+) crits (.+) for (.+).'			local foc = string.find(arg1, oc)
-		
+
 		if fph or fpc or foh or foc then
 			local m = fph and ph or fpc and pc or foh and oh or foc and oc
 			local c = gsub(arg1, m, '%1')		
 			local t = gsub(arg1, m, '%2')
 
 			if targetSeals[c] then
-				SPELLCASTINGCORErefreshBuff(t, targetSeals[c], 1)
+				SPELLCASTINGCORErefreshBuff(t, targetSeals[c], 1) print(c)
 			end
 		end
 	end

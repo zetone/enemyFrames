@@ -89,14 +89,14 @@
     
 	
 	container.newversion = container:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
-	container.newversion:SetPoint('BOTTOMLEFT', container.version, 'TOP', -10, 5)
-	container.newversion:SetText('( !ver '..ENEMYFRAMESNEWVERSION..' available! )')
+	container.newversion:SetPoint('BOTTOMLEFT', container.version, 'TOP', -10, 5)	
 	container.newversion:Hide()
 	
 	container.forumlink:SetScript('OnShow', function()
-        this:SetText'https://forum.elysium-project.org/index.php?showtopic=25538'
+        this:SetText'https://github.com/zetone/enemyFrames'
 		
 		if ENEMYFRAMESVERSIONFOUND then
+			container.newversion:SetText('|cffffff00( !ver '..ENEMYFRAMESNEWVERSION..' available! )')
 			container.newversion:Show()
 		end
     end)
@@ -116,6 +116,6 @@
 		container.scaleSlider:SetValue(ENEMYFRAMESPLAYERDATA['scale'])
 		container.layoutSlider:SetValue(ENEMYFRAMESPLAYERDATA['layout'] == 'horizontal' and 0 or ENEMYFRAMESPLAYERDATA['layout'] == 'hblock' and 1 or ENEMYFRAMESPLAYERDATA['layout'] == 'block' and 2 or ENEMYFRAMESPLAYERDATA['layout'] == 'vblock' and 3 or 4)
 		
-		container.newversion:SetTextColor(color['r'], color['g'], color['b'], .9)
+		--container.newversion:SetTextColor(color['r'], color['g'], color['b'], .9)
 	end
 	-------------------------------------------------------------------------------

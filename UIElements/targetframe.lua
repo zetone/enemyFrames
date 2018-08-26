@@ -75,15 +75,17 @@
 	TargetFrame.IntegratedCastBar = CreateFrame('StatusBar', 'enemyFramesTargetFrameCastbar', TargetFrame)
     TargetFrame.IntegratedCastBar:SetStatusBarTexture(TEXTURE)
     TargetFrame.IntegratedCastBar:SetStatusBarColor(1, .4, 0)
-    --TargetFrame.IntegratedCastBar:SetBackdrop(BACKDROP)
-    TargetFrame.IntegratedCastBar:SetBackdropColor(0, 0, 0, .5)
+    TargetFrame.IntegratedCastBar:SetBackdrop(BACKDROP)
+    TargetFrame.IntegratedCastBar:SetBackdropColor(0, 0, 0, .9)
 	TargetFrame.IntegratedCastBar:SetPoint('TOPLEFT', TargetFrameNameBackground, 'TOPLEFT')
 	TargetFrame.IntegratedCastBar:SetPoint('BOTTOMRIGHT', TargetFrameNameBackground, 'BOTTOMRIGHT')
 	TargetFrame.IntegratedCastBar:SetFrameLevel(1)
-	
+	TargetFrame.IntegratedCastBar:SetMinMaxValues(0, 10)
+	TargetFrame.IntegratedCastBar:SetValue(6)
+	--[[
 	TargetFrame.IntegratedCastBar.bg = TargetFrame.IntegratedCastBar:CreateTexture(nil, 'ARTWORK')
 	TargetFrame.IntegratedCastBar.bg:SetTexture(0, 0, 0, .7)
-	TargetFrame.IntegratedCastBar.bg:SetAllPoints()	
+	TargetFrame.IntegratedCastBar.bg:SetAllPoints()	]]--
 	
 	TargetFrame.IntegratedCastBar.spark = TargetFrame.IntegratedCastBar:CreateTexture(nil, 'OVERLAY')
 	TargetFrame.IntegratedCastBar.spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
@@ -124,14 +126,20 @@
 			end
 			if ENEMYFRAMESPLAYERDATA['integratedTargetFrameCastbar'] then
 				TargetFrame.IntegratedCastBar:Show()
+				--TargetFrameNameBackground:SetDrawLayer'BACKGROUND'
+				TargetFrameNameBackground:SetAlpha(.3)
 				TargetName:Hide()	
 			else
 				TargetFrame.IntegratedCastBar:Hide()
+				--TargetFrameNameBackground:SetDrawLayer'BORDER'
+				TargetFrameNameBackground:SetAlpha(1)
 				TargetName:Show()
 			end		
 		else
 			TargetFrame.EFcast:Hide()
 			TargetFrame.IntegratedCastBar:Hide()
+			--TargetFrameNameBackground:SetDrawLayer'BORDER'
+			TargetFrameNameBackground:SetAlpha(1)
 			TargetName:Show()
 		end
 		if UnitExists'target' then
@@ -174,6 +182,8 @@
 					end
 					if ENEMYFRAMESPLAYERDATA['integratedTargetFrameCastbar'] then
 						TargetFrame.IntegratedCastBar:Show()
+						--TargetFrameNameBackground:SetDrawLayer'BACKGROUND'
+						TargetFrameNameBackground:SetAlpha(.3)
 						TargetName:Hide()							
 					end	
 				end
@@ -207,11 +217,11 @@
 	portraitDurationFrame:SetFrameLevel(2)
 	
 	portraitDebuff.duration = portraitDurationFrame:CreateFontString(nil, 'OVERLAY')--, 'GameFontNormalSmall')
-	portraitDebuff.duration:SetFont(STANDARD_TEXT_FONT, 14, 'OUTLINE')
+	portraitDebuff.duration:SetFont(STANDARD_TEXT_FONT, 16, 'OUTLINE')
 	portraitDebuff.duration:SetTextColor(.9, .9, .2, 1)
 	portraitDebuff.duration:SetShadowOffset(1, -1)
 	portraitDebuff.duration:SetShadowColor(0, 0, 0)
-	portraitDebuff.duration:SetPoint('CENTER', TargetPortrait, 'CENTER', 0, -7)
+	portraitDebuff.duration:SetPoint('CENTER', TargetPortrait, 'CENTER', 0, -5)
 	-- cooldown spiral
 	portraitDebuff.cd = CreateCooldown(portraitDebuff, 1.054, true)
 	portraitDebuff.cd:SetAlpha(1)
@@ -346,6 +356,8 @@
 			else
 				TargetFrame.EFcast:Hide()
 				TargetFrame.IntegratedCastBar:Hide()	
+				--TargetFrameNameBackground:SetDrawLayer'BORDER'
+				TargetFrameNameBackground:SetAlpha(1)
 				TargetName:Show()				
 			end
 			if ENEMYFRAMESPLAYERDATA['targetPortraitDebuff'] then

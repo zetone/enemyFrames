@@ -64,7 +64,9 @@ buff.create = function(tar, t, s, buffType, factor, time)
 	acnt.stacks		= s
 	acnt.icon      	= buffType['icon']
 	acnt.timeStart 	= time
-	acnt.timeEnd   	= time + buffType['duration'] * factor-- and buffType['duration'] * factor or 0
+	if not buffType['duration'] then print('buff with nil duration: ' .. t) end
+	buffType['duration'] = buffType['duration'] and buffType['duration'] or 0 
+	acnt.timeEnd   	= time + buffType['duration'] * factor
 	acnt.prio		= buffType['prio'] and buffType['prio'] or 0
 	acnt.border		= buffType['type'] and RGB_BORDER_DEBUFFS_COLOR[buffType['type']] or {.1, .1, .1}	-- border rgb values depending on type of buff/debuff
 	acnt.display 	= buffType['display'] == nil and true or buffType['display']
@@ -77,10 +79,9 @@ buffQueue.create = function(tar, spell, buffType, d, time)
 	acnt.target    	= tar
 	acnt.buffName	= spell
 	
-	buffType['duration'] = buffType['cp'][d]
+	buffType['duration'] = d
 	acnt.buffData   = buffType
 	--acnt.duration	= 
-	
 	acnt.timeStart 	= time
 	acnt.timeEnd   	= time + 1 
 	return acnt
@@ -303,7 +304,7 @@ end
 
 local function queueBuff(tar, spell, b, d)
 	local time = getTimeMinusPing()--GetTime()
-	local bq = buffQueue.create(tar, spell, b, d, time)
+	local bq = buffQueue.create(tar, spell, b, d, time) 
 	table.insert(buffQueueList, bq) 
 end
 
@@ -315,6 +316,7 @@ local function processQueuedBuff(tar, b)
 			table.insert(buffList, n)
 			
 			table.remove(buffQueueList, k)
+			sendMSG('BF', v.target..'/'..v.buffName, v.buffData['duration'], IsInsideBG())
 			return 
 		end
 	end
@@ -735,7 +737,7 @@ end
 
 ----------------------------------------------------------------------------
 local singleEventdebug = function()
-	local v = 'You gain (.+)'--'(.+) performs Vanish'
+	local v = '(.+) Curse of Mending'
 	
 	if string.find(arg1, v) then
 		print(event)
@@ -846,12 +848,23 @@ SPELLCASTINGCORErefreshBuff = function(t, b, s)
 	end
 end
 
-SPELLCASTINGCOREqueueBuff = function(t, b, d)
-	if SPELLINFO_UNIQUE_DEBUFFS[b] then	
-		queueBuff(t, b, SPELLINFO_UNIQUE_DEBUFFS[b], d)
+SPELLCASTINGCOREqueueBuff = function(t, s, d)
+	if SPELLINFO_UNIQUE_DEBUFFS[s] then	
+		queueBuff(t, s, SPELLINFO_UNIQUE_DEBUFFS[s], SPELLINFO_UNIQUE_DEBUFFS[s]['cp'][d]) 		
 		return true
 	end
 	return false
+end
+
+SPELLCASTINGCOREaddBuff = function(t, s, d)
+	if SPELLINFO_UNIQUE_DEBUFFS[s] then	
+		local time = getTimeMinusPing()
+		local spell = SPELLINFO_UNIQUE_DEBUFFS[s]
+		spell['duration'] = d
+		local n = buff.create(t, s, 1, spell, 1, time)
+		table.insert(buffList, n)	
+		--print(t .. '/' .. s .. '/' .. spell['duration'])
+	end
 end
 ------------------------------------
 

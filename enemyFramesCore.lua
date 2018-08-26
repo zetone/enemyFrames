@@ -92,6 +92,10 @@ local function addNearbyPlayers(players)
 			
 			playerList[v['name']]['nextCheck'] 	= nextCheck
 			playerList[v['name']]['nearby'] 	= true
+			
+			--if GetTime() > enemyNearbyRefresh then
+			--	playerList[v['name']]['targetcount'] = playerList[v['name']]['targetcount'] and  playerList[v['name']]['targetcount'] + 1 or 1
+			--end
 		end
 	end
 end
@@ -391,7 +395,7 @@ local function initializeValues()
 	nearbyList = {}
 	playerListRefresh = 0
 		
-	local maxUnits = bgs[GetZoneText()] and bgs[GetZoneText()] or ENEMYFRAMESPLAYERDATA['enableOutdoors'] and maxUnitsDisplayed or nil
+	local maxUnits = bgs[GetZoneText()] and bgs[GetZoneText()] or maxUnitsDisplayed --ENEMYFRAMESPLAYERDATA['enableOutdoors'] and maxUnitsDisplayed or nil
 	if maxUnits then
 		--
 		insideBG = bgs[GetZoneText()] and true or false
