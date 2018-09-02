@@ -5,7 +5,7 @@ print = function(m) DEFAULT_CHAT_FRAME:AddMessage(m) end
 
 tlength = function(t)	local i = 0 for k, j in ipairs(t) do i = i + 1 end return i end
 
-ENEMYFRAMESVERSION = 1.3
+ENEMYFRAMESVERSION = 1.31
 ENEMYFRAMESNEWVERSION = ENEMYFRAMESVERSION
 ENEMYFRAMESVERSIONFOUND = false
 
@@ -197,7 +197,7 @@ local function eventHandler()
 	if event == 'PLAYER_LOGIN' then
 		playerFaction = UnitFactionGroup'player'
 		local tc = playerFaction == 'Alliance' and 'FF1A1A' or '00ADF0'
-		print('|cff' ..tc.. '[enemyFrames] loaded. |cffffffff/efs|cff' ..tc.. ' for menu settings.')
+		print('|cff' ..tc.. '[enemyFrames] v'.. ENEMYFRAMESVERSION .. ' loaded. |cffffffff/efs|cff' ..tc.. ' for menu settings.')
 		_G['enemyFrameDisplay']:SetScale(ENEMYFRAMESPLAYERDATA['scale'])
 		_G['enemyFrameDisplay']:SetPoint('CENTER', UIParent, ENEMYFRAMESPLAYERDATA['offX'], ENEMYFRAMESPLAYERDATA['offY'])
 	elseif event == 'PLAYER_LOGOUT' then

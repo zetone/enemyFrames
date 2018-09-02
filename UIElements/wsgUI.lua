@@ -91,7 +91,7 @@
 		end
 	end
 	-------------------------------------------------------------------------------
-	local w = 100
+	local w, timeInterval = 100, 3
 	local efcLowHealth = function()
 		local f = UnitFactionGroup'player'
 		local x = UnitFactionGroup'player' == 'Alliance' and 'Horde' or 'Alliance'
@@ -101,7 +101,7 @@
 			for i = 1, tlength(healthWarnings) do
 				if fcHealth[f] < healthWarnings[i]  then
 					if (not sentAnnoucement or healthWarnings[i] < w) and now > nextAnnouncement then
-						nextAnnouncement = now + 2
+						nextAnnouncement = now + timeInterval
 						w = healthWarnings[i]
 						--print('EFC has less than '..healthWarnings[i]..'%! Get ready to cap!')
 						local msgb = flagCarriers[x] and ' Get ready to cap!' or ''

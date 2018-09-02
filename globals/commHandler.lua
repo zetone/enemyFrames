@@ -24,6 +24,22 @@
 	end
 	-------------------------------------------------------------------------------
 	local efc = function()
+		local m = '(.+)/(.+)/(.+)'	local fm = string.find(arg2, m)
+				
+		if fm then
+			local flagCarriers = {}
+			
+			local sender 			 = gsub(arg2, m, '%1')	
+			if sender ~= UnitName'player' then
+				flagCarriers['Alliance'] = gsub(arg2, m, '%2')
+				flagCarriers['Horde'] 	 = gsub(arg2, m, '%3')
+				
+				if flagCarriers['Alliance'] == ' ' then flagCarriers['Alliance'] = nil end
+				if flagCarriers['Horde'] 	== ' ' then flagCarriers['Horde'] = nil end
+				
+				ENEMYFRAMECOREUpdateFlagCarriers(flagCarriers)
+			end
+		end
 	end
 	-------------------------------------------------------------------------------
 	local newVersion = function()
@@ -31,11 +47,10 @@
 				
 		if fm then
 			local nv = tonumber((gsub(arg2, m, '%2')))
-			if nv > ENEMYFRAMESNEWVERSION then-- ENEMYFRAMESVERSION then				
+			if nv > ENEMYFRAMESNEWVERSION then				
 				ENEMYFRAMESNEWVERSION = nv				
-				
-				--if not ENEMYFRAMESVERSIONFOUND then		
-				print('|cff' ..tc.. '[enemyFrames] New version detected. |cffffff00(' .. nv .. ')')		--end
+					
+				print('|cff' ..tc.. '[enemyFrames] New version detected. |cffffff00(' .. nv .. ')')
 				ENEMYFRAMESVERSIONFOUND = true	
 			end
 			--print(arg1 .. ' ' .. arg2)
@@ -52,7 +67,6 @@
 			local dur		= gsub(arg2, m, '%4')
 			
 			if caster ~= UnitName'player' then
-				--SPELLCASTINGCOREqueueBuff(tar, spell, dur)
 				SPELLCASTINGCOREaddBuff(tar, spell, dur)
 			end
 		end
@@ -65,7 +79,7 @@
 			-- raid targets
 			if  arg1 == msgPrefix['RT'] then
 				raidTarget()
-			-- seen EFC -- WIP
+			-- seen EFC
 			elseif  arg1 == msgPrefix['EFC']  then
 				efc()			
 			-- announce version
