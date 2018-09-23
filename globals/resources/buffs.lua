@@ -38,7 +38,7 @@
 		-- SHAMAN
 		['Elemental Mastery'] =  true, ['Ghost Wolf'] = true, ['Lightning Shield'] = true, ['Nature\'s Swiftness'] =  true,
 		-- WARLOCK
-		['Death Coil'] = true, ['Fear'] = true, ['Shadow Ward'] = true, ['Spell Lock'] = true, 
+		['Death Coil'] = true, ['Fear'] = true, ['Seduction'] = true, ['Shadow Ward'] = true, ['Spell Lock'] = true, 
 		-- WARRIOR
 		['Charge Stun'] = true, ['Concussion Blow'] = true, ['Intercept Stun'] = true, 	['Intimidating Shout'] = true, ['Mace Stun Effect'] = true, 
 		['Revenge Stun'] = true, 	['Shield Bash - Silenced'] = true,    
@@ -68,6 +68,7 @@
 	SPELLINFO_BUFFS_TO_TRACK = {
 	
         -- MISC & MOBS
+		['Cannibalize']				= {['icon'] = [[Interface\Icons\Ability_racial_cannibalize]],		['duration'] = 10,	['display'] = false,},
 		['First Aid']				= {['icon'] = [[Interface\Icons\Spell_holy_heal]],					['duration'] = 8,	['display'] = false,},
 		['Flee']					= {['icon'] = [[Interface\Icons\spell_magic_polymorphchicken]],		['duration'] = 10,},
     	['Free Action']     		= {['icon'] = [[Interface\Icons\Inv_potion_04]], 					['duration'] = 30, 	['type'] = 'magic', 	['prio'] = 4},
@@ -119,6 +120,7 @@
 		['Concussive Shot']			= {['icon'] = [[Interface\Icons\Spell_frost_stun]],					['duration'] = 4, 	['type'] = 'magic',		['prio'] = 1},
 		['Counterattack']			= {['icon'] = [[Interface\Icons\Ability_warrior_challange]],		['duration'] = 5,	['type'] = 'physical',	['prio'] = 1},
 		['Deterrence']				= {['icon'] = [[Interface\Icons\ability_whirlwind]],				['duration'] = 10, 							['prio'] = 1},
+		['Eagle Eye']      			= {['icon'] = [[Interface\Icons\Ability_hunter_eagleeye]], 			['duration'] = 60,	['display'] = false,},
 		['Eyes of the Beast']		= {['icon'] = [[Interface\Icons\Ability_eyeoftheowl]],				['duration'] = 60,	['display'] = false,},
 		['Immolation Trap Effect']	= {['icon'] = [[Interface\Icons\Spell_fire_flameshock]],			['duration'] = 15,	['display'] = false,},
 		['Improved Concussive Shot'] = {['icon'] = [[Interface\Icons\Spell_frost_stun]], 				['duration'] = 3, 	['type'] = 'physical', 	['prio'] = 2},
@@ -238,7 +240,8 @@
 		['Death Coil']				= {['icon'] = [[Interface\Icons\Spell_shadow_deathcoil]],			['duration'] = 3,	['type'] = 'magic',		['prio'] = 1},
 		['Drain Life']				= {['icon'] = [[Interface\Icons\Spell_shadow_lifedrain02]],			['duration'] = 5,	['display'] = false,},
 		['Drain Mana']				= {['icon'] = [[Interface\Icons\Spell_shadow_siphonmana]],			['duration'] = 5,	['display'] = false,},
-		['Drain Soul']				= {['icon'] = [[Interface\Icons\Spell_shadow_haunting]],			['duration'] = 15,											['display'] = false,},
+		['Drain Soul']				= {['icon'] = [[Interface\Icons\Spell_shadow_haunting]],			['duration'] = 15,	['display'] = false,},
+		['Eye of Kilrogg']       	= {['icon'] = [[Interface\Icons\Spell_shadow_evileye]], 			['duration'] = 45,	['display'] = false,},
 		["Fear"] 					= {['icon'] = [[Interface\Icons\Spell_shadow_possession]], 			['duration'] = 15, 	['type'] = 'magic', 	['prio'] = 2, 	['dr'] = 'Fear'},
 		['Health Funnel']			= {['icon'] = [[Interface\Icons\Spell_shadow_lifedrain]],			['duration'] = 10,	['display'] = false,},
 		['Immolate']				= {['icon'] = [[Interface\Icons\Spell_fire_immolation]],			['duration'] = 15, 	['type'] = 'magic',						['display'] = false,},

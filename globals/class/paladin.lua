@@ -51,7 +51,7 @@
 			local t = gsub(arg1, m, '%2')
 
 			if targetSeals[c] then
-				SPELLCASTINGCORErefreshBuff(t, targetSeals[c], 1)
+				SPELLCASTINGCORErefreshBuff(t, targetSeals[c], 1) --print(c)
 			end
 		end
 	end

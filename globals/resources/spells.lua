@@ -148,7 +148,7 @@
 		
             -- GLOBAL
         ['Dark Mending']            = {['icon'] = [[Interface\Icons\Spell_shadow_chilltouch]], 				['casttime'] = 2},
-		['Escape Artist']				= {['icon'] = [[Interface\Icons\ability_rogue_trip]], 				['casttime'] = .5},
+		['Escape Artist']			= {['icon'] = [[Interface\Icons\ability_rogue_trip]], 					['casttime'] = .5},
         ['Hearthstone']             = {['icon'] = [[Interface\Icons\INV_Misc_Rune_01]], 					['casttime'] = 10},
         ['Magic Dust']              = {['icon'] = [[Interface\Icons\Inv_misc_dust_02]], 					['casttime'] = 1.5},
         ['Reckless Charge']         = {['icon'] = [[Interface\Icons\Spell_nature_astralrecal]], 			['casttime'] = .1},
@@ -286,6 +286,7 @@
         ['Soul Fire']               	= {['icon'] = [[Interface\Icons\Spell_fire_fireball02]], 		['casttime'] = 4, 	['type'] = 'dmg', ['school'] = 'fire', 	 ['class'] = 'WARLOCK'},
 		['Soulstone Resurrection']    	= {['icon'] = [[Interface\Icons\Spell_shadow_soulgem]], 		['casttime'] = 3},
         ['Summon Dreadsteed']       	= {['icon'] = [[Interface\Icons\Ability_mount_dreadsteed]], 	['casttime'] = 3},
+		['Eye of Kilrogg']       		= {['icon'] = [[Interface\Icons\Spell_shadow_evileye]], 		['casttime'] = 5},
         ['Summon Felhunter']        	= {['icon'] = [[Interface\Icons\Spell_shadow_summonfelhunter]], ['casttime'] = 10},
         ['Summon Felsteed']         	= {['icon'] = [[Interface\Icons\Spell_nature_swiftness]], 		['casttime'] = 3},
         ['Summon Imp']              	= {['icon'] = [[Interface\Icons\Spell_shadow_summonimp]], 		['casttime'] = 10},
@@ -307,6 +308,7 @@
 
 	SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK = {
 		-- MISC
+		['Cannibalize']				= {['icon'] = [[Interface\Icons\Ability_racial_cannibalize]],['casttime'] = 10},
 		['Gnomish Death Ray']		= {['icon'] = [[Interface\Icons\inv_gizmo_08]], 			['casttime'] = 4},
 		-- DRUID
 		['Hurricane']				= {['icon'] = [[Interface\Icons\Spell_nature_cyclone]], 	['casttime'] = 9.5, 	['tick'] = 1},
