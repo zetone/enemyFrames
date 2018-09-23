@@ -2,11 +2,8 @@
 	local blipTexture = [[Interface\addons\enemyFrames\globals\resources\blips\blip]]
 	local minimapTableBlips 	= {{'BattlefieldMinimapParty', 16, MAX_PARTY_MEMBERS}, {'BattlefieldMinimapRaid', 16, MAX_RAID_MEMBERS}}
 	local worldMapTableBlips 	= {{'WorldMapRaid', 19, MAX_RAID_MEMBERS}, {'WorldMapParty', 19, MAX_PARTY_MEMBERS}}
-	local of = UnitFactionGroup('player') == 'Alliance' and 'Horde' or 'Alliance'
-	local flagTex = 'Interface\\WorldStateFrame\\'..of..'Flag'
-	local flagCarrier
 	-------------------------------------------------------------------------------
-	local icon, name, color
+	local icon, name, color, flagCarrier, flagTex
 	local skinBlip = function(blip, size)
 		if ENEMYFRAMESPLAYERDATA['pvpmapblips'] then
 			icon = _G[blip:GetName()..'Icon']
@@ -60,9 +57,11 @@
 	addOnShow(worldMapTableBlips)
 	-------------------------------------------------------------------------------
 	PVPMAPUpdateFlagCarrier = function(fc)
-		flagCarrier = fc[of]
-		flagCarrier = flagCarrier and flagCarrier or ''
-		--print(flagCarrier)
+		local of = UnitFactionGroup('player') == 'Alliance' and 'Horde' or 'Alliance'
+		flagTex = 'Interface\\WorldStateFrame\\'..of..'Flag'
+		
+		flagCarrier = fc[of] and fc[of] or ''
+		--print('fc: ' .. flagCarrier)
 		
 		updateBlips(worldMapTableBlips)
 		if IsAddOnLoaded'Blizzard_BattlefieldMinimap' then 
