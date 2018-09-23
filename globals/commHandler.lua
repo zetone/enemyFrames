@@ -37,7 +37,7 @@
 				if flagCarriers['Alliance'] == ' ' then flagCarriers['Alliance'] = nil end
 				if flagCarriers['Horde'] 	== ' ' then flagCarriers['Horde'] = nil end
 				
-				ENEMYFRAMECOREUpdateFlagCarriers(flagCarriers)
+				ENEMYFRAMECOREUpdateFlagCarriers(flagCarriers)				
 			end
 		end
 	end

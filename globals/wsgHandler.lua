@@ -31,7 +31,9 @@
 			fcTemp['Alliance'] = flagCarriers['Alliance'] 	and flagCarriers['Alliance'] 	or ' '
 			fcTemp['Horde']    = flagCarriers['Horde'] 		and flagCarriers['Horde'] 		or ' '
 			
-			sendMSG('EFC', fcTemp['Alliance'], fcTemp['Horde'], true)
+			if flagCarriers['Alliance'] or  flagCarriers['Horde'] then
+				sendMSG('EFC', fcTemp['Alliance'], fcTemp['Horde'], true)
+			end
 		end
 	end
 	-------------------------------------------------------------------------------

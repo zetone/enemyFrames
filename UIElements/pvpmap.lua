@@ -20,6 +20,7 @@
 			else
 				icon:SetTexture(blipTexture)
 			end
+			blip:SetFrameLevel(3)
 
 			local _, class  = UnitClass(blip.unit)
 			color = RAID_CLASS_COLORS[class]
@@ -30,6 +31,9 @@
 			if  name == flagCarrier then
 				icon:SetTexture(flagTex)
 				icon:SetVertexColor(1, 1, 1)
+				
+				blip:SetHeight(size+1)	blip:SetWidth(size+1)	
+				blip:SetFrameLevel(4)
 			end
 		end
 	end
@@ -58,6 +62,7 @@
 	PVPMAPUpdateFlagCarrier = function(fc)
 		flagCarrier = fc[of]
 		flagCarrier = flagCarrier and flagCarrier or ''
+		--print(flagCarrier)
 		
 		updateBlips(worldMapTableBlips)
 		if IsAddOnLoaded'Blizzard_BattlefieldMinimap' then 
