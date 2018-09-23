@@ -67,6 +67,25 @@ local 	enemyFrame = CreateFrame('Frame', 'enemyFrameDisplay', UIParent)
 			GameTooltip:Hide()
 		end)
 		
+		
+		-- efc low announcement button
+		enemyFrame.efcButton = CreateFrame('Button', nil, enemyFrame)
+		enemyFrame.efcButton:SetHeight(15)	enemyFrame.efcButton:SetWidth(15)
+		enemyFrame.efcButton:SetPoint('LEFT', enemyFrame.Title, 'RIGHT', 2, 0)
+		enemyFrame.efcButton:SetScript('OnEnter', function()
+			GameTooltip:SetOwner(this, 'ANCHOR_TOPRIGHT', -30, -30)
+			GameTooltip:SetText('toggle EFC low health announcement')
+			GameTooltip:Show()
+		end)
+		enemyFrame.efcButton:SetScript('OnLeave', function()
+			GameTooltip:Hide()
+		end)	
+
+		enemyFrame.efcButton.flagTexture = enemyFrame.efcButton:CreateTexture(nil, 'ARTWORK')
+		enemyFrame.efcButton.flagTexture:SetAllPoints()
+
+		--enemyFrame.efcButton:Hide()
+		
 			
 		-- top frame
 		
@@ -389,6 +408,25 @@ local function SetupFrames(maxU)
 			GameTooltip:SetText(this.tt)
 			GameTooltip:Show()
 		end)
+		
+		
+	enemyFrame.efcButton.flagTexture:SetTexture('Interface\\WorldStateFrame\\'..playerFaction..'Flag')
+--	enemyFrame.efcButton.flagTexture:SetVertexColor(.3, .3, .3)
+	enemyFrame.efcButton:SetScript('OnClick', function()
+		if ENEMYFRAMESPLAYERDATA['efcBGannouncement'] == true then
+			ENEMYFRAMESPLAYERDATA['efcBGannouncement'] = false
+			this.flagTexture:SetVertexColor(.3, .3, .3)
+			
+		else 
+			ENEMYFRAMESPLAYERDATA['efcBGannouncement'] = true
+			this.flagTexture:SetVertexColor(1, 1, 1)
+				end
+	end)
+		
+	if ENEMYFRAMESPLAYERDATA['efcBGannouncement'] then
+		enemyFrame.efcButton.flagTexture:SetVertexColor( 1, 1, 1)
+	else enemyFrame.efcButton.flagTexture:SetVertexColor(.3, .3, .3)	end
+		
 		
 	showHideBars()
 	
@@ -724,6 +762,12 @@ function ENEMYFRAMESInitialize(maxUnits, isBG)
 		arrangeUnits()
 		optionals()
 		enabled = true
+		
+		if insideBG and GetZoneText() == 'Warsong Gulch' then
+			enemyFrame.efcButton:Show()
+		else
+			enemyFrame.efcButton:Hide()
+		end
 		
 		if ENEMYFRAMESPLAYERDATA['enableFrames'] then
 			enemyFrame:Show()
