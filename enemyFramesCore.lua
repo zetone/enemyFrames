@@ -281,6 +281,7 @@ function ENEMYFRAMECOREUpdateFlagCarriers(fc)
 		-- refresh if player's fc status changed
 		v['refresh'] = f ~= v['fc'] and true or false
 	end
+	PVPMAPUpdateFlagCarrier(fc)
 	refreshUnits = true
 	TARGETFRAMEsetFC(fc)
 	WSGUIupdateFC(fc)
