@@ -1,6 +1,10 @@
 	-------------------------------------------------------------------------------
 	local flagCarriers, fcTemp = {}, {}
 	-------------------------------------------------------------------------------
+	function WSGHANDLERsetFlagCarriers(fc)
+		flagCarriers = fc
+	end
+	-------------------------------------------------------------------------------
 	local eventHandler = function()
 
 		if event ~= 'RAID_ROSTER_UPDATE' then

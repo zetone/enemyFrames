@@ -281,10 +281,12 @@ function ENEMYFRAMECOREUpdateFlagCarriers(fc)
 		-- refresh if player's fc status changed
 		v['refresh'] = f ~= v['fc'] and true or false
 	end
-	PVPMAPUpdateFlagCarrier(fc)
+	
 	refreshUnits = true
+	PVPMAPUpdateFlagCarrier(fc)
 	TARGETFRAMEsetFC(fc)
 	WSGUIupdateFC(fc)
+	WSGHANDLERsetFlagCarriers(fc)
 end
 
 function ENEMYFRAMECORESetPlayersData(list)
@@ -445,5 +447,17 @@ f:SetScript('OnEvent', eventHandler)
 
 SLASH_ENEMYFRAMECORE1 = '/efc'
 SlashCmdList["ENEMYFRAMECORE"] = function(msg)
+	if msg == 'bg' then
+		print('bg info:')
+		for i=1, GetNumBattlefieldScores() do
+			local name, killingBlows, honorableKills, deaths, honorGained, faction, rank, race, class = GetBattlefieldScore(i)
+			print(name)
+		end	
+	else
+		print('playerlist:')
+		for k, v in pairs(playerList) do
+			print(v['name'])
+		end
+	end
 end
 

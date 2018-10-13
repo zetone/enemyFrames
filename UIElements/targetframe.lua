@@ -161,7 +161,7 @@
 						sparkPosition = (GetTime() - v.timeStart) / (v.timeEnd - v.timeStart)
 					end
 					
-					TargetFrame.EFcast.text:SetText(string.sub(v.spell, 1, 17))
+					TargetFrame.EFcast.text:SetText(string.sub(v.spell, 1, 20))
 					TargetFrame.IntegratedCastBar.spellText:SetText(string.sub(v.spell, 1, 15))
 					TargetFrame.EFcast.timer:SetText(getTimerLeft(v.timeEnd)..'s')
 					TargetFrame.IntegratedCastBar.timer:SetText(getTimerLeft(v.timeEnd)..'s')
