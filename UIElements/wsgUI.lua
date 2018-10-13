@@ -60,6 +60,11 @@
         local text = this == hb and h or a
         local t = text:GetText()
         TargetByName(t, true)
+		--	bandaid to avoid targeting hunter pets with the same name as its owner
+		if UnitExists'target' and UnitPowerType'target' == 2 then	
+			TargetByName(t, false)
+		end
+		--
     end
 	
 	
@@ -91,7 +96,7 @@
 		end
 	end
 	-------------------------------------------------------------------------------
-	local w, timeInterval = 100, 3
+	local w, timeInterval = 100, 4
 	local efcLowHealth = function()
 		local f = UnitFactionGroup'player'
 		local x = UnitFactionGroup'player' == 'Alliance' and 'Horde' or 'Alliance'
@@ -125,6 +130,7 @@
 	-------------------------------------------------------------------------------
 	WSGUIupdateFChealth = function(unit)
 		if unit then
+			if UnitPowerType(unit) == 2 then return end	--simple way to know its a hunter pet with the same name as its owner(powertype = 2(focus))
 			if UnitName(unit) == flagCarriers['Alliance'] then
 				fcHealth['Alliance'] = getPerc(unit)
 				ah:SetText(fcHealth['Alliance']..'%')

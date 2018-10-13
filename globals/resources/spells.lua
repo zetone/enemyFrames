@@ -167,6 +167,8 @@
     	['Thorium Grenade']         = {['icon'] = [[Interface\Icons\Inv_misc_bomb_08]], 					['casttime'] = 1},
     	['Dark Iron Bomb']          = {['icon'] = [[Interface\Icons\Inv_misc_bomb_05]], 					['casttime'] = 1},
     	['Arcane Bomb']             = {['icon'] = [[Interface\Icons\Spell_shadow_mindbomb]],				['casttime'] = 1},
+		['Ultrasafe Transporter: Gadgetzan']  	= {['icon'] = [[Interface\Icons\Inv_misc_enggizmos_12]],	['casttime'] = 10},
+		['Dimensional Ripper - Everlook']  		= {['icon'] = [[Interface\Icons\Inv_misc_enggizmos_15]],	['casttime'] = 10},
  
             -- DRUID
         ['Entangling Roots']        = {['icon'] = [[Interface\Icons\Spell_nature_stranglevines]], 		['casttime'] = 1.5, ['type'] = 'dmg', ['school'] = 'nature', 	['class'] = 'DRUID'},
@@ -302,6 +304,8 @@
 		['Tranquility']           	= {['icon'] = [[Interface\Icons\Spell_nature_tranquility]], ['casttime'] = 10,  ['tick'] = 2},
 		-- FIRST AID
 		['First Aid']           	= {['icon'] = [[Interface\Icons\Spell_holy_heal]], 			['casttime'] = 7, 	['tick'] = 1},
+		-- HUNTER
+		['Mend Pet']           		= {['icon'] = [[Interface\Icons\Ability_hunter_mendpet]], 	['casttime'] = 5, 	['tick'] = 1},
 		-- WARLOCK
 		['Health Funnel']           = {['icon'] = [[Interface\Icons\Spell_shadow_lifedrain]], 	['casttime'] = 10, 	['tick'] = 1},		
 	}

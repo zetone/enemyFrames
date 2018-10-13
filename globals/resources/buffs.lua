@@ -192,9 +192,11 @@
 		['Holy Fire']				= {['icon'] = [[Interface\Icons\Spell_holy_searinglight]],			['duration'] = 10,	['display'] = false,},
 		['Lightwell Renew']			= {['icon'] = [[Interface\Icons\spell_holy_summonlightwell]],		['duration'] = 10,	['display'] = false,},
 		['Mind Flay'] 				= {['icon'] = [[Interface\Icons\Spell_shadow_siphonmana]], 			['duration'] = 3, 	['type'] = 'magic', 	['display'] = false,},
+		['Mind Soothe']				= {['icon'] = [[Interface\Icons\Spell_holy_mindsooth]],				['duration'] = 15,	['display'] = false,},
+		['Mind Vision']				= {['icon'] = [[Interface\Icons\Spell_holy_mindvision]],			['duration'] = 60,	['display'] = false,},
     	['Power Word: Shield']    	= {['icon'] = [[Interface\Icons\Spell_holy_powerwordshield]], 		['duration'] = 30, 	['type'] = 'magic'},
 		['Power Infusion']			= {['icon'] = [[Interface\Icons\spell_holy_powerinfusion]], 		['duration'] = 15, 	['type'] = 'magic'},
-		['Psychic Scream'] 			= {['icon'] = [[Interface\Icons\Spell_shadow_psychicscream]], 		['duration'] = 8, 	['type'] = 'magic', 	['prio'] = 1, 	['dr'] = 'Fear'},
+		['Psychic Scream'] 			= {['icon'] = [[Interface\Icons\Spell_shadow_psychicscream]], 		['duration'] = 8, 	['type'] = 'physical', 	['prio'] = 1, 	['dr'] = 'Fear'},
 		['Shadow Vulnerability']	= {['icon'] = [[Interface\Icons\Spell_shadow_blackplague]],			['duration'] = 15,	['display'] = false},
 		['Shadow Word: Pain']		= {['icon'] = [[Interface\Icons\spell_shadow_shadowwordpain]],		['duration'] = 24,	['display'] = false,},
 		['Silence']					= {['icon'] = [[Interface\Icons\Spell_shadow_impphaseshift]], 		['duration'] = 5, 	['type'] = 'magic', 	['prio'] = 2},
@@ -208,7 +210,7 @@
 		["Cheap Shot"] 				= {['icon'] = [[Interface\Icons\Ability_cheapshot]], 				['duration'] = 4, 	['type'] = 'physical', 	['prio'] = 1},
 		['Crippling Poison']		= {['icon'] = [[Interface\Icons\Ability_poisonsting]],				['duration'] = 12,	['type'] = 'poison',	['display'] = false,},
 		['Deadly Poison V']			= {['icon'] = [[Interface\Icons\ability_rogue_dualweild]],			['duration'] = 12,	['display'] = false,},
-		['Evasion']					= {['icon'] = [[Interface\Icons\spell_shadow_shadowward]],			['duration'] = 15,	['display'] = false,},
+		['Evasion']					= {['icon'] = [[Interface\Icons\spell_shadow_shadowward]],			['duration'] = 15,},
 		['Expose Armor']			= {['icon'] = [[Interface\Icons\Ability_warrior_riposte]],			['duration'] = 30,	['display'] = false,},
 		['Garrote']					= {['icon'] = [[Interface\Icons\ability_rogue_garrote]],			['duration'] = 18,	['display'] = false,},
 		['Ghostly Strike']			= {['icon'] = [[Interface\Icons\Spell_shadow_curse]],				['duration'] = 7,	['display'] = false,},
@@ -314,6 +316,7 @@
 		-- DRUID
 		['Moonfire']		= {'Moonfire'},
 		['Rake']			= {'Rake'},
+		--['Regrowth']		= {},
 		-- HUNTER
 		['Wing Clip']		= {'Wing Clip',},
 		-- MAGE
@@ -331,6 +334,7 @@
 		['Mind Flay'] 				= {'Shadow Vulnerability',},
 		['Mind Blast'] 				= {'Shadow Vulnerability',},
 		['Shadow Vulnerability'] 	= {'Shadow Vulnerability',},
+		['Weakened Soul'] 			= {'Power Word: Shield',},
 		-- ROGUE
 		['Hemorrhage']			= {'Hemorrhage',},
 		['Wound Poison IV'] 	= {'Wound Poison IV',},

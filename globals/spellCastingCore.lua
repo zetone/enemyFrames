@@ -391,16 +391,16 @@ local handleHeal = function()
 	local hot 	 = '(.+) gains (.+) health from your (.+).'			local fhot 	  = string.find(arg1, hot)
 	local oheal  = '(.+)\'s (.+) heals (.+) for (.+).'				local foheal  = string.find(arg1, oheal)
 	local ocheal = '(.+)\'s (.+) critically heals (.+) for (.+).'	local focheal = string.find(arg1, ocheal)
-	
+		
 	if fh or fc then
 		local n  = gsub(arg1, h, '%2')
 		local no = gsub(arg1, h, '%3')
 		newHeal(n, no, fc and 1 or 0)
 	elseif fhot then--or string.find(arg1, totemHot)  then
-		local m = fhot and hot --or  string.find(arg1, totemHot) and totemHot			
+		local m = hot--fhot and hot --or  string.find(arg1, totemHot) and totemHot			
 		local n  = gsub(arg1, m, '%1')
 		local no = gsub(arg1, m, '%2')
-		newHeal(n, no, 0)
+		newHeal(n, no, 0)	
 		
 		-- other's heals (insta heals)
 	elseif foheal or focheal then
@@ -509,6 +509,11 @@ local GainAfflict = function()
 		-- debuffs that slow spellcasting speed (tongues ...)
 		if SPELLINFO_TIME_MODIFIER_BUFFS_TO_TRACK[s] then
 			newIBuff(c, s)
+		end
+		
+		-- debuffs that refresh buffs(weakened soul to pw:shield)
+		if SPELLINFO_DEBUFF_REFRESHING_SPELLS[s] then
+			refreshBuff(c, s)
 		end
 		
 		-- process debuffs in queueBuff
@@ -682,6 +687,7 @@ local channelHeal = function()
 	local phot = 'You gain (.+) health from (.+)\'s (.+).'			local fphot = string.find(arg1, phot)
 	local shot = 'You gain (.+) health from (.+).'					local fshot = string.find(arg1, shot)	
 	
+	
 	if fhot or fphot then
 		local m = fhot and hot or fphot and phot
 		local c = fhot and gsub(arg1, m, '%3') or fphot and gsub(arg1, m, '%2')
@@ -737,7 +743,7 @@ end
 
 ----------------------------------------------------------------------------
 local singleEventdebug = function()
-	local v = '(.+) Curse of Mending'
+	local v = '(.+) gains (.+) health from your (.+).'
 	
 	if string.find(arg1, v) then
 		print(event)
@@ -765,7 +771,7 @@ local combatlogParser = function()
 	
 	-- periodic damage/buff spells
 	if fpSpell then	
-		parsingCheck(channelDot() or channelHeal() or GainAfflict() or handleHeal(), false)
+		parsingCheck(handleHeal() or channelDot() or channelHeal() or GainAfflict(), false)
 	-- fade/remove buffs
 	elseif fbreakAura or fauraGone then
 		parsingCheck(FadeRem(), false)
