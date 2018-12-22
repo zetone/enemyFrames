@@ -1,8 +1,9 @@
+local L = enemyFrames.L
 
 local playerFaction
-local bgs = {['Warsong Gulch'] = 10, 
-			 ['Arathi Basin'] = 15, 
-			 --['Alterac Valley'] = 40
+local bgs = {[L['Warsong Gulch']] = 10, 
+			 [L['Arathi Basin']] = 15, 
+			 --[L['Alterac Valley']] = 40
 			 }
 -- TIMERS
 local playerListInterval, playerListRefresh, enemyNearbyInterval, enemyNearbyRefresh = 30, 0, .3, 0
@@ -31,8 +32,7 @@ local function fillPlayerList()
 	for i=1, GetNumBattlefieldScores() do
 		local name, killingBlows, honorableKills, deaths, honorGained, faction, rank, race, class = GetBattlefieldScore(i)
 		if faction == f then
-			race = race == 'Undead' and 'SCOURGE' or race == 'Night Elf' and 'nightelf' or race
-			l[name] = {['name'] = name, ['class'] = string.upper(class), ['rank'] = rank-4, ['race'] = string.upper(race), ['sex'] = 'MALE'} -- rank starts at -4 apparently
+			l[name] = {['name'] = name, ['class'] = enemyFrames:GetEnglishClass(class), ['rank'] = rank-4, ['race'] = enemyFrames:GetEnglishRace(race), ['sex'] = 'MALE'} -- rank starts at -4 apparently
 			l[name]['powerType']  =  l[name]['class'] == 'ROGUE' and 'energy' or l[name]['class'] == 'WARRIOR' and 'rage' or 'mana'
 			gotData = true
 		end
@@ -108,10 +108,8 @@ local function verifyUnitInfo(unit)
 			local _, c = UnitClass(unit)
 			u['class']		= c
 			u['rank']		= UnitPVPRank(unit) - 4
-			local r = UnitRace(unit)
-			if r then
-				u['race']		= r == 'Undead' and 'SCOURGE' or r == 'Night Elf' and 'NIGHTELF' or string.upper(r)
-			end
+			local _, r = UnitRace(unit)
+			u['race'] = r		
 		end
 		u['health'] 	= UnitHealth(unit)
 		u['maxhealth'] 	= UnitHealthMax(unit)
@@ -225,7 +223,7 @@ local function orderUnitsforOutput()
 	local list, listb = {}, {}
 	-- order nearby units first -- this loop avoid units jumping from hopping around in the unit matrix
 	local i = 1
-	local nSize = tlength(nearbyList)
+	local nSize = getn(nearbyList)
 	
 	for k, v in pairs(playerList) do
 		if v['nearby'] then
@@ -377,7 +375,7 @@ local function enemyFramesCoreOnUpdate()
 		-- hide if no enemies while outdoors
 		if not _G['enemyFramesSettings']:IsShown() then		
 			if not insideBG then
-				if tlength(playerList) == 0 then				
+				if getn(playerList) == 0 then				
 					_G['enemyFrameDisplay']:Hide()
 				else
 					_G['enemyFrameDisplay']:Show()
@@ -460,4 +458,3 @@ SlashCmdList["ENEMYFRAMECORE"] = function(msg)
 		end
 	end
 end
-

@@ -1,4 +1,5 @@
 	-------------------------------------------------------------------------------
+	local L = enemyFrames.L
 	local settings = _G['enemyFramesSettings']
 	
 	local container = CreateFrame('Frame', 'enemyFramesSettingsnameplatesContainer', settings)
@@ -8,16 +9,16 @@
 	container:EnableMouseWheel(true)
 	container:Hide()
 	-------------------------------------------------------------------------------
-	local checkBoxPlatesOptN, checkBoxPlatesOpt  = 4, { [1] = {['id'] = 'nameplatesClassColor', ['label'] = 'Class color on enemy nameplates'},														
-														[2] = {['id'] = 'nameplatesCastbar', 	['label'] = 'Enable nameplate cast bar'},
-														[3] = {['id'] = 'nameplatesRaidMarks', 	['label'] = 'Show Raid Marks'},
-														[4] = {['id'] = 'nameplatesdebuffs', 	['label'] = 'Enable nameplate debuffs'},														
+	local checkBoxPlatesOptN, checkBoxPlatesOpt  = 4, { [1] = {['id'] = 'nameplatesClassColor', ['label'] = L['Class color on enemy nameplates']},														
+														[2] = {['id'] = 'nameplatesCastbar', 	['label'] = L['Enable nameplate cast bar']},
+														[3] = {['id'] = 'nameplatesRaidMarks', 	['label'] = L['Show Raid Marks']},
+														[4] = {['id'] = 'nameplatesdebuffs', 	['label'] = L['Enable nameplate debuffs']},														
 													}
 	-------------------------------------------------------------------------------
 	-- nameplates optionals
 	container.platesLabel = container:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
 	container.platesLabel:SetPoint('LEFT', container, 'TOPLEFT', 45, -30)
-	container.platesLabel:SetText'nameplates'
+	container.platesLabel:SetText(L['nameplates'])
 
 	container.platesList = {}
 	for i = 1, checkBoxPlatesOptN, 1 do

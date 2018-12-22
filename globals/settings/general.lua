@@ -1,4 +1,5 @@
 	-------------------------------------------------------------------------------
+	local L = enemyFrames.L
 	local settings = _G['enemyFramesSettings']
 	
 	local container = CreateFrame('Frame', 'enemyFramesSettingsgeneralContainer', settings)
@@ -8,7 +9,7 @@
 	container:EnableMouseWheel(true)
 	container:Hide()
 	-------------------------------------------------------------------------------
-	local checkBoxGeneralN, checkBoxGeneral  = 1, { 	[1] = {['id'] = 'enableFrames', 		['label'] = 'Show enemyFrames'},
+	local checkBoxGeneralN, checkBoxGeneral  = 1, { 	[1] = {['id'] = 'enableFrames', 		['label'] = L['Show enemyFrames']},
 													}
 	-------------------------------------------------------------------------------
 	-- general checkbox
@@ -33,7 +34,7 @@
 	-- scale
 	container.scale = container:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
 	container.scale:SetPoint('LEFT', container.generalList[checkBoxGeneralN], 'LEFT', 0, -30)
-	container.scale:SetText'scale'
+	container.scale:SetText(L['scale'])
 
 	container.scaleSlider = CreateFrame('Slider', 'enemyFramesScaleSlider', container, 'OptionsSliderTemplate')
 	container.scaleSlider:SetWidth(215) 	container.scaleSlider:SetHeight(14)
@@ -53,15 +54,15 @@
 
 	container.layout = container:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
 	container.layout:SetPoint('LEFT', container.scaleSlider, 'LEFT', 0, -50)
-	container.layout:SetText'layout'
+	container.layout:SetText(L['layout'])
 
 	container.layoutSlider = CreateFrame('Slider', 'enemyFramesLayoutSlider', container, 'OptionsSliderTemplate')
 	container.layoutSlider:SetWidth(215) 	container.layoutSlider:SetHeight(14)
 	container.layoutSlider:SetPoint('LEFT', container.layout, 'LEFT', 0, -30)
 	container.layoutSlider:SetMinMaxValues(0, 4)
 	container.layoutSlider:SetValueStep(1)
-	_G[container.layoutSlider:GetName()..'Low']:SetText'horizontal'
-	_G[container.layoutSlider:GetName()..'High']:SetText'vertical'
+	_G[container.layoutSlider:GetName()..'Low']:SetText'1x15'
+	_G[container.layoutSlider:GetName()..'High']:SetText'15x1'
 
 
 	container.layoutSlider:SetScript('OnValueChanged', function() 
@@ -96,7 +97,7 @@
         this:SetText'https://github.com/zetone/enemyFrames'
 		
 		if ENEMYFRAMESVERSIONFOUND then
-			container.newversion:SetText('|cffffff00( !ver '..ENEMYFRAMESNEWVERSION..' available! )')
+			container.newversion:SetText('|cffffff00( '..format(L['!ver %s available!'], ENEMYFRAMESNEWVERSION)..' )')
 			container.newversion:Show()
 		end
     end)

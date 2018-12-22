@@ -1,4 +1,5 @@
 	-------------------------------------------------------------------------------
+	local L = enemyFrames.L
 	local flagCarriers = {}
 	local fcHealth = {}
 	local sentAnnoucement, healthWarnings = false, {10, 20, 40}
@@ -8,7 +9,7 @@
     h:SetFontObject(GameFontNormalSmall)
     h:SetTextColor(RGB_FACTION_COLORS['Alliance']['r'], RGB_FACTION_COLORS['Alliance']['g'], RGB_FACTION_COLORS['Alliance']['b'])
     h:SetJustifyH'LEFT'
-	h:SetText('horde')
+	h:SetText(L['Horde'])
 	
 	local hb = CreateFrame('Button', nil, WorldStateAlwaysUpFrame)
     hb:SetFrameLevel(2)
@@ -27,7 +28,7 @@
     a:SetFontObject(GameFontNormalSmall)
 	a:SetTextColor(RGB_FACTION_COLORS['Horde']['r'], RGB_FACTION_COLORS['Horde']['g'], RGB_FACTION_COLORS['Horde']['b'])
     a:SetJustifyH'LEFT'
-	a:SetText('alliance')
+	a:SetText(L['Alliance'])
 	
 	local ab = CreateFrame('Button', nil, WorldStateAlwaysUpFrame)
     ab:SetFrameLevel(2)
@@ -46,7 +47,7 @@
 		label:SetTextColor(.9, .9, .4)
 		if label:GetText() ~= '' then
 			GameTooltip:SetOwner(this, 'ANCHOR_TOPRIGHT', -40, 10)
-			GameTooltip:SetText('Click to target '..label:GetText())
+			GameTooltip:SetText(L['Click to target']..' '..label:GetText())
 			GameTooltip:Show()
 		end
 	end
@@ -103,14 +104,14 @@
 
 		local now = GetTime()
 		if flagCarriers[f] and fcHealth[f]  then
-			for i = 1, tlength(healthWarnings) do
+			for i = 1, getn(healthWarnings) do
 				if fcHealth[f] < healthWarnings[i]  then
 					if (not sentAnnoucement or healthWarnings[i] < w) and now > nextAnnouncement then
 						nextAnnouncement = now + timeInterval
 						w = healthWarnings[i]
 						--print('EFC has less than '..healthWarnings[i]..'%! Get ready to cap!')
-						local msgb = flagCarriers[x] and ' Get ready to cap!' or ''
-						SendChatMessage('EFC has less than '..healthWarnings[i]..'% Health!'.. msgb, 'BATTLEGROUND')
+						local msgb = flagCarriers[x] and ' '..L['Get ready to cap!'] or ''
+						SendChatMessage(format(L['EFC has less than %d%% Health!'], healthWarnings[i]) .. msgb, 'BATTLEGROUND')
 						sentAnnoucement = true
 					end
 					return

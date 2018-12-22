@@ -1,7 +1,10 @@
 ## Interface: 11200
 ## Title: BG Enemy Frames
 ## Notes: by kuurtzen
+## Notes-ruRU: Удобные рамки противников на полях боя.
 ## SavedVariablesPerCharacter: ENEMYFRAMESPLAYERDATA
+
+locale\locale.xml
 
 globals\actionHandler.lua
 globals\spellCastingCore.lua
@@ -33,5 +36,3 @@ UIElements\wsgUI.lua
 
 enemyFrames.lua
 enemyFramesCore.lua
-
-

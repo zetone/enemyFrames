@@ -3,8 +3,6 @@ _G = getfenv(0)
 
 print = function(m) DEFAULT_CHAT_FRAME:AddMessage(m) end
 
-tlength = function(t)	local i = 0 for k, j in ipairs(t) do i = i + 1 end return i end
-
 ENEMYFRAMESVERSION = 1.33
 ENEMYFRAMESNEWVERSION = ENEMYFRAMESVERSION
 ENEMYFRAMESVERSIONFOUND = false
@@ -51,6 +49,7 @@ ENEMYFRAMESPLAYERDATA =
 }
 
 
+local L = enemyFrames.L
 local playerFaction, insideBG = false
 ------------ UI ELEMENTS ------------------
 local enemyFactionColor
@@ -85,7 +84,7 @@ settings.header:SetVertexColor(.2, .2, .2)
 
 settings.header.t = settings:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
 settings.header.t:SetPoint('TOP', settings.header, 0, -14)
-settings.header.t:SetText'enemyFrames Settings'
+settings.header.t:SetText(L['enemyFrames Settings'])
 
 -- container scrollframe
 
@@ -104,14 +103,14 @@ local tabElements = {'Left', 'LeftDisabled', 'Middle', 'MiddleDisabled', 'Right'
 settings.tabs = {}
 for i = 1, settings.numTabs do
 	settings.tabs[i] = CreateFrame('Button', settings:GetName()..'Tab'..i, settings, 'WorldStateScoreFrameTabButtonTemplate')
-	settings.tabs[i]:SetText(tabNames[i])
+	settings.tabs[i]:SetText(L[tabNames[i]])
 	if i == 1 then
 		settings.tabs[i]:SetPoint('TOPLEFT', settings, 'BOTTOMLEFT',0, 3)
 	else
 		settings.tabs[i]:SetPoint('LEFT', settings.tabs[i-1], 'RIGHT', -12, 0)
 	end
 	settings.tabs[i].id = i
-	for j  = 1, tlength(tabElements) do
+	for j  = 1, getn(tabElements) do
 		_G[settings.tabs[i]:GetName()..tabElements[j]]:SetVertexColor(.2, .2, .2)
 	end
 	
@@ -197,7 +196,7 @@ local function eventHandler()
 	if event == 'PLAYER_LOGIN' then
 		playerFaction = UnitFactionGroup'player'
 		local tc = playerFaction == 'Alliance' and 'FF1A1A' or '00ADF0'
-		print('|cff' ..tc.. '[enemyFrames] v'.. ENEMYFRAMESVERSION .. ' loaded. |cffffffff/efs|cff' ..tc.. ' for menu settings.')
+		print('|cff' ..tc.. format(L['[enemyFrames] v%s loaded. |cffffffff/efs|cff%s for menu settings.'], ENEMYFRAMESVERSION, tc))
 		_G['enemyFrameDisplay']:SetScale(ENEMYFRAMESPLAYERDATA['scale'])
 		_G['enemyFrameDisplay']:SetPoint('CENTER', UIParent, ENEMYFRAMESPLAYERDATA['offX'], ENEMYFRAMESPLAYERDATA['offY'])
 	elseif event == 'PLAYER_LOGOUT' then

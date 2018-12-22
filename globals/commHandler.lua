@@ -1,4 +1,5 @@
 	-------------------------------------------------------------------------------
+	local L = enemyFrames.L
 	local msgPrefix = {['RT'] = 'BGEFRT', ['EFC'] = 'BGEFEFC', ['AV'] = 'BGEFEAV', ['BF'] = 'BGEFEBF'}
 	
 	local playerFaction = UnitFactionGroup'player'
@@ -50,7 +51,7 @@
 			if nv > ENEMYFRAMESNEWVERSION then				
 				ENEMYFRAMESNEWVERSION = nv				
 					
-				print('|cff' ..tc.. '[enemyFrames] New version detected. |cffffff00(' .. nv .. ')')
+				print('|cff' ..tc.. L['[enemyFrames] New version detected.']..' |cffffff00(' .. nv .. ')')
 				ENEMYFRAMESVERSIONFOUND = true	
 			end
 			--print(arg1 .. ' ' .. arg2)

@@ -1,4 +1,5 @@
 	-------------------------------------------------------------------------------
+	local L = enemyFrames.L
 	local settings = _G['enemyFramesSettings']
 	
 	local container = CreateFrame('Frame', 'enemyFramesSettingsfeaturesContainer', settings)
@@ -8,23 +9,23 @@
 	container:EnableMouseWheel(true)
 	container:Hide()
 	-------------------------------------------------------------------------------
-	local checkBoxFeaturesN, checkBoxFeatures  = 6, { 	--[1] = {['id'] = 'enableOutdoors', 		['label'] = 'Enable outside of BattleGrounds'},
-														[1] = {['id'] = 'mouseOver', 			['label'] = 'Mouseover cast on frames'},	
-														[2] = {['id'] = 'targetFrameCastbar', 	['label'] = 'Moveable Target Cast Bar'},														
-														[3] = {['id'] = 'integratedTargetFrameCastbar', 	['label'] = 'Integrated Target Cast Bar'},
-														[4] = {['id'] = 'targetPortraitDebuff', ['label'] = 'Prio debuff on Target Portrait'},
-														[5] = {['id'] = 'playerPortraitDebuff', ['label'] = 'Prio debuff on Player Portrait'},
-														[6] = {['id'] = 'targetDebuffTimers', 	['label'] = 'Debuff timers on target'},
+	local checkBoxFeaturesN, checkBoxFeatures  = 6, { 	--[1] = {['id'] = 'enableOutdoors', 		['label'] = L['Enable outside of BattleGrounds']},
+														[1] = {['id'] = 'mouseOver', 			['label'] = L['Mouseover cast on frames']},	
+														[2] = {['id'] = 'targetFrameCastbar', 	['label'] = L['Moveable Target Cast Bar']},														
+														[3] = {['id'] = 'integratedTargetFrameCastbar', 	['label'] = L['Integrated Target Cast Bar']},
+														[4] = {['id'] = 'targetPortraitDebuff', ['label'] = L['Prio debuff on Target Portrait']},
+														[5] = {['id'] = 'playerPortraitDebuff', ['label'] = L['Prio debuff on Player Portrait']},
+														[6] = {['id'] = 'targetDebuffTimers', 	['label'] = L['Debuff timers on target']},
 													}
-	local checkBoxFeaturesBGN, checkBoxFeaturesBG  = 3, {	[1] = {['id'] = 'incomingSpells', 		['label'] = 'Incoming Spells (BGs only)'},
-															[2] = {['id'] = 'pvpmapblips', 			['label'] = 'Class colored map blips'},
-															[3] = {['id'] = 'efcBGannouncement', 	['label'] = 'Low Health EFC announcement'},
+	local checkBoxFeaturesBGN, checkBoxFeaturesBG  = 3, {	[1] = {['id'] = 'incomingSpells', 		['label'] = L['Incoming Spells (BGs only)']},
+															[2] = {['id'] = 'pvpmapblips', 			['label'] = L['Class colored map blips']},
+															[3] = {['id'] = 'efcBGannouncement', 	['label'] = L['Low Health EFC announcement']},
 														}
 	-------------------------------------------------------------------------------
 	-- features
 	container.features = container:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
 	container.features:SetPoint('LEFT', container, 'TOPLEFT', 45, -30)
-	container.features:SetText'features'
+	container.features:SetText(L['features'])
 
 	container.featuresList = {}
 	for i = 1, checkBoxFeaturesN, 1 do
@@ -42,7 +43,7 @@
 	-------------------------------------------------------------------------------
 	container.bgLabel = container:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
 	container.bgLabel:SetPoint('LEFT', container.featuresList[checkBoxFeaturesN], 'LEFT', 0, -30)
-	container.bgLabel:SetText'battlegrounds'
+	container.bgLabel:SetText(L['battlegrounds'])
 	
 	container.bgList = {}
 	for i = 1, checkBoxFeaturesBGN, 1 do
