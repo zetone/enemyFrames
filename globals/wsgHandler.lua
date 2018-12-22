@@ -1,4 +1,5 @@
 	-------------------------------------------------------------------------------
+	local L = enemyFrames.L
 	local flagCarriers, fcTemp = {}, {}
 	-------------------------------------------------------------------------------
 	function WSGHANDLERsetFlagCarriers(fc)
@@ -9,24 +10,33 @@
 
 		if event ~= 'RAID_ROSTER_UPDATE' then
 			-- Flag for Alliance flag for horde. thanks blizzard
-			local pick 	= 'The (.+) (.+) was picked up by (.+)!'
-			local drop 	= 'The (.+) (.+) was dropped by (.+)!'
-			local score = 'captured the (.+) (.+)!'
+			local pick = L['The %s [Ff]lag was picked up by %s!']
+			local drop = L['The %s [Ff]lag was dropped by %s!']
+			local score = L['%s captured the %s [Ff]lag!']
 			
-			if string.find(arg1, pick) then
-				local flag 		= gsub(arg1, pick, '%1')
-				local carrier 	= gsub(arg1, pick, '%3')
+			if string.find(arg1, enemyFrames:SanitizePattern(pick)) then
+				local first, second = enemyFrames:cmatch(arg1, pick)
+				local flag 		= first
+				local carrier 	= second
+
+				if GetLocale() == 'ruRU' then
+					flag = flag == enemyFrames.custom_locale_strings['Horde'] and 'Horde' or flag == enemyFrames.custom_locale_strings['Alliance'] and 'Alliance'
+				end
 				
 				flagCarriers[flag] = carrier
 			end
 			
-			if string.find(arg1, drop) then
-				local flag 		= gsub(arg1, drop, '%1')
+			if string.find(arg1, enemyFrames:SanitizePattern(drop)) then
+				local flag 		= enemyFrames:cmatch(arg1, drop)
+				
+				if GetLocale() == 'ruRU' then
+					flag = flag == enemyFrames.custom_locale_strings['Horde'] and 'Horde' or flag == enemyFrames.custom_locale_strings['Alliance'] and 'Alliance'
+				end
 				
 				flagCarriers[flag] = nil
 			end
 			
-			if string.find(arg1, score) then
+			if string.find(arg1, enemyFrames:SanitizePattern(score)) then
 				flagCarriers = {}
 			end
 			

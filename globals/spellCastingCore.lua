@@ -1,4 +1,4 @@
-
+local L = enemyFrames.L
 local Cast 			= {} 		local casts 		= {}
 local Heal 			= {} 		local heals			= {}
 local InstaBuff 	= {} 		local iBuffs 		= {}
@@ -336,35 +336,38 @@ local forceHideTableItem = function(tab, caster, spell)
 end
 
 local CastCraftPerform = function()
-	local pcast 	= 'You cast (.+).'							local fpcast = string.find(arg1, pcast)	-- standby for now
-	local cast		= '(.+) casts (.+).'						local fcast = string.find(arg1, cast)
-	local bcast 	= '(.+) begins to cast (.+).' 				local fbcast = string.find(arg1, bcast)
+	local pcast 	= SPELLCASTGOSELF						local fpcast = string.find(arg1, enemyFrames:SanitizePattern(pcast))	-- standby for now
+	local cast		= SPELLCASTGOOTHER					local fcast = string.find(arg1, enemyFrames:SanitizePattern(cast))
+	local bcast 	= SPELLCASTOTHERSTART			local fbcast = string.find(arg1, enemyFrames:SanitizePattern(bcast))
 	local craft 	= '(.+) -> (.+).' 							local fcraft = string.find(arg1, craft)
-	local perform 	= '(.+) performs (.+).' 					local fperform = string.find(arg1, perform)
-	local bperform 	= '(.+) begins to perform (.+).' 			local fbperform = string.find(arg1, bperform)
-	local performOn = '(.+) performs (.+) on (.+).' 			local fperformOn = string.find(arg1, performOn)
+	local perform 	= SPELLPERFORMGOOTHER				local fperform = string.find(arg1, enemyFrames:SanitizePattern(perform))
+	local bperform 	= SPELLPERFORMOTHERSTART		local fbperform = string.find(arg1, enemyFrames:SanitizePattern(bperform))
+	local performOn = SIMPLEPERFORMOTHEROTHER		local fperformOn = string.find(arg1, enemyFrames:SanitizePattern(performOn))
 	
-	local pcastFin 	= 'You cast (.+) on (.+).'					local fpcastFin = string.find(arg1, pcastFin)
-	local castFin 	= '(.+) casts (.+) on (.+).'				local fcastFin = string.find(arg1, castFin)
+	local pcastFin 	= SPELLCASTGOSELFTARGETTED				local fpcastFin = string.find(arg1, enemyFrames:SanitizePattern(pcastFin))
+	local castFin 	= SPELLCASTGOOTHERTARGETTED			local fcastFin = string.find(arg1, enemyFrames:SanitizePattern(castFin))
 	
 	if fbcast or fcraft then
 		local m = fbcast and bcast or fcraft and craft or fperform and perform
-		local c = gsub(arg1, m, '%1')
-		local s = gsub(arg1, m, '%2')
+		local first, second = enemyFrames:cmatch(arg1, m)
+		local c = first
+		local s = second
 		newCast(c, s, false)
 		--print(arg1)
 		
 	elseif fperform or fbperform or fperformOn then
 		local m = fperform and perform or fbperform and bperform or fperformOn and performOn
-		local c = gsub(arg1, m, '%1')
-		local s = gsub(arg1, m, '%2')
+		local first, second = enemyFrames:cmatch(arg1, m)
+		local c = first
+		local s = second
 		newCast(c, s, fperform and true or false)
 		
 	-- object spawn casts (totems, traps, etc)
 	elseif fcast then
 		local m = cast
-		local c = gsub(arg1, m, '%1')
-		local s = gsub(arg1, m, '%2')
+		local first, second = enemyFrames:cmatch(arg1, m)
+		local c = first
+		local s = second
 		if SPELLINFO_SPELLCASTS_TO_TRACK[s] then
 			newCast(c, s, false)
 		else
@@ -374,8 +377,9 @@ local CastCraftPerform = function()
 		--[[ finished casts CC(?)	
 	elseif fpcastFin or fcastFin then
 		local m = fpcastFin and pcastFin or fcastFin and castFin
-		local t = fpcastFin and gsub(arg1, m, '%2') or gsub(arg1, m, '%3')
-		local s = fpcastFin and gsub(arg1, m, '%1') or gsub(arg1, m, '%2')
+		local first, second, third = enemyFrames:cmatch(arg1, m)
+		local t = fpcastFin and second or third
+		local s = fpcastFin and first or second
 		
 		if SPELLINFO_BUFFS_TO_TRACK[s] then
 			newbuff(t, s, true)
@@ -386,27 +390,30 @@ local CastCraftPerform = function()
 end
 
 local handleHeal = function()
-	local h   	 = 'Your (.+) heals (.+) for (.+).'					local fh 	  = string.find(arg1, h)
-	local c   	 = 'Your (.+) critically heals (.+) for (.+).'		local fc 	  = string.find(arg1, c)
-	local hot 	 = '(.+) gains (.+) health from your (.+).'			local fhot 	  = string.find(arg1, hot)
-	local oheal  = '(.+)\'s (.+) heals (.+) for (.+).'				local foheal  = string.find(arg1, oheal)
-	local ocheal = '(.+)\'s (.+) critically heals (.+) for (.+).'	local focheal = string.find(arg1, ocheal)
+	local h   	 = HEALEDSELFOTHER				local fh 	  = string.find(arg1, enemyFrames:SanitizePattern(h))
+	local c   	 = HEALEDCRITSELFOTHER	local fc 	  = string.find(arg1, enemyFrames:SanitizePattern(c))
+	local hot 	 = PERIODICAURAHEALSELFOTHER		local fhot 	  = string.find(arg1, enemyFrames:SanitizePattern(hot))
+	local oheal  = HEALEDOTHEROTHER			local foheal  = string.find(arg1, enemyFrames:SanitizePattern(oheal))
+	local ocheal = HEALEDCRITOTHEROTHER local focheal = string.find(arg1, enemyFrames:SanitizePattern(ocheal))
 		
 	if fh or fc then
-		local n  = gsub(arg1, h, '%2')
-		local no = gsub(arg1, h, '%3')
+		local first, second, third = enemyFrames:cmatch(arg1, h)
+		local n  = second
+		local no = third
 		newHeal(n, no, fc and 1 or 0)
 	elseif fhot then--or string.find(arg1, totemHot)  then
 		local m = hot--fhot and hot --or  string.find(arg1, totemHot) and totemHot			
-		local n  = gsub(arg1, m, '%1')
-		local no = gsub(arg1, m, '%2')
+		local first, second = enemyFrames:cmatch(arg1, m)
+		local n  = first
+		local no = second
 		newHeal(n, no, 0)	
 		
 		-- other's heals (insta heals)
 	elseif foheal or focheal then
 		local m = foheal and oheal or focheal and ocheal
-		local c = gsub(arg1, m, '%1')
-		local s = gsub(arg1, m, '%2')
+		local first, second = enemyFrames:cmatch(arg1, m)
+		local c = first
+		local s = second
 		
 		if SPELLINFO_INSTANT_SPELLCASTS_TO_TRACK[s] then
 			forceHideTableItem(casts, c, nil)
@@ -417,11 +424,12 @@ local handleHeal = function()
 end
 
 local processUniqueSpell = function()
-	local vanish = '(.+) performs Vanish'		local fvanish = string.find(arg1, vanish)
+	local pVanish = SPELLPERFORMGOSELF		local fpVanish = string.find(arg1, enemyFrames:SanitizePattern(pVanish))
+	local oVanish = SPELLPERFORMGOOTHER		local foVanish = string.find(arg1, enemyFrames:SanitizePattern(oVanish)) -- In the chat there is no message about the casts of other players, ONLY a message for your player!
 	
-	if fvanish then
-		local m = vanish
-		local c = gsub(arg1, m, '%1')
+	if string.find(arg1, L['Vanish']) and (fpVanish or foVanish) then
+		local m = fpVanish and pVanish or foVanish and oVanish
+		local c = m == pVanish and playerName or enemyFrames:cmatch(arg1, m)
 		--print(arg1)
 		for k, v in pairs(SPELLINFO_ROOTS_SNARES) do
 			forceHideTableItem(buffList, c, k)
@@ -432,13 +440,14 @@ local processUniqueSpell = function()
 end
 
 local DirectInterrupt = function()
-	local pintrr 	= 'You interrupt (.+)\'s (.+).'			local fpintrr  	= string.find(arg1, pintrr)
-	local intrr 	= '(.+) interrupts (.+)\'s (.+).'		local fintrr  	= string.find(arg1, pintrr)
+	local pintrr 	= SPELLINTERRUPTSELFOTHER		local fpintrr  	= string.find(arg1, enemyFrames:SanitizePattern(pintrr))
+	local intrr 	= SPELLINTERRUPTOTHEROTHER	local fintrr  	= string.find(arg1, enemyFrames:SanitizePattern(intrr))
 
 	if fpintrr  or fintrr then
 		local m = fpintrr and pintrr or intrr
-		local t = fpintrr and gsub(arg1, m, '%1') or gsub(arg1, m, '%2') 
-		local s = fpintrr and gsub(arg1, m, '%2') or gsub(arg1, m, '%3') 
+		local first, second, third = enemyFrames:cmatch(arg1, m)
+		local t = fpintrr and first or second 
+		local s = fpintrr and second or third 
 		
 		forceHideTableItem(casts, t, nil)
 	end	
@@ -447,16 +456,17 @@ local DirectInterrupt = function()
 end
 
 local GainAfflict = function()
-	local gain 		= '(.+) gains (.+).' 								local fgain = string.find(arg1, gain)
-	local pgain 	= 'You gain (.+).'									local fpgain = string.find(arg1, pgain)	
-	local afflict 	= '(.+) is afflicted by (.+).' 						local fafflict = string.find(arg1, afflict)
-	local pafflict 	= 'You are afflicted by (.+).' 						local fpafflict = string.find(arg1, pafflict)
+	local gain 		= AURAADDEDOTHERHELPFUL							local fgain = string.find(arg1, enemyFrames:SanitizePattern(gain))
+	local pgain 	= AURAADDEDSELFHELPFUL								local fpgain = string.find(arg1, enemyFrames:SanitizePattern(pgain))	
+	local afflict 	= AURAADDEDOTHERHARMFUL					local fafflict = string.find(arg1, enemyFrames:SanitizePattern(afflict))
+	local pafflict 	= AURAADDEDSELFHARMFUL					local fpafflict = string.find(arg1, enemyFrames:SanitizePattern(pafflict))
 	
 	-- start channeling based on buffs (evocation, first aid, ..)
 	if fgain or fpgain then
 		local m = fgain and gain or fpgain and pgain
-		local c = fgain and gsub(arg1, m, '%1') or fpgain and playerName
-		local s = fgain and gsub(arg1, m, '%2') or fpgain and gsub(arg1, m, '%1')
+		local first, second = enemyFrames:cmatch(arg1, m)
+		local c = fgain and first or fpgain and playerName
+		local s = fgain and second or fpgain and first
 		
 		-- buffs/debuffs to be displayed
 		if SPELLINFO_BUFFS_TO_TRACK[s] then
@@ -478,8 +488,9 @@ local GainAfflict = function()
 	-- cast-interruting CC
 	elseif fafflict or fpafflict then
 		local m = fafflict and afflict or fpafflict and pafflict
-		local c = fafflict and gsub(arg1, m, '%1') or fpafflict and playerName
-		local s = fafflict and gsub(arg1, m, '%2') or fpafflict and gsub(arg1, m, '%1')
+		local first, second = enemyFrames:cmatch(arg1, m)
+		local c = fafflict and first or fpafflict and playerName
+		local s = fafflict and second or fpafflict and first
 		
 		-- rank & stacks
 		local auxS, st = s, 1
@@ -524,17 +535,17 @@ local GainAfflict = function()
 end
 
 local FadeRem = function()
-	local fade 		= '(.+) fades from (.+).'							local ffade = string.find(arg1, fade)
-	local rem 		= '(.+)\'s (.+) is removed'							local frem = string.find(arg1, rem)
-	local prem 		= 'Your (.+) is removed'							local fprem = string.find(arg1, prem)
+	local fade 		= AURAREMOVEDOTHER						local ffade = string.find(arg1, enemyFrames:SanitizePattern(fade))
+	local pfade = AURAREMOVEDSELF local fpfade = string.find(arg1, enemyFrames:SanitizePattern(pfade))
+	local rem 		= AURADISPELOTHER						local frem = string.find(arg1, enemyFrames:SanitizePattern(rem))
+	local prem 		= AURADISPELSELF local fprem = string.find(arg1, enemyFrames:SanitizePattern(prem))
 	
 	-- end channeling based on buffs (evocation ..)
 	if ffade then
-		local m = fade
-		local c = gsub(arg1, m, '%2')
-		local s = gsub(arg1, m, '%1')
-		
-		c = c == 'you' and playerName or c
+		local m = ffade and fade or fpfade and pfade
+		local first, second = enemyFrames:cmatch(arg1, m)
+		local c = m == pfade and playerName or second
+		local s = first
 		
 		-- buffs/debuffs to be displayed
 		if SPELLINFO_BUFFS_TO_TRACK[s] then
@@ -550,8 +561,9 @@ local FadeRem = function()
 		end
 	elseif frem or fprem then
 		local m = frem and rem or fprem and prem
-		local c = frem and gsub(arg1, m, '%1') or fprem and playerName
-		local s = frem and gsub(arg1, m, '%2') or fprem and gsub(arg1, m, '%1')
+		local first, second = enemyFrames:cmatch(arg1, m)
+		local c = frem and first or fprem and playerName
+		local s = frem and second or fprem and first
 		
 		-- buffs/debuffs to be displayed
 		if SPELLINFO_BUFFS_TO_TRACK[s] then
@@ -567,25 +579,24 @@ local FadeRem = function()
 end
 
 local HitsCrits = function()
-	local hits = '(.+)\'s (.+) hits (.+) for (.+)' 					local fhits = string.find(arg1, hits)
-	local crits = '(.+)\'s (.+) crits (.+) for (.+)' 				local fcrits = string.find(arg1, crits)
-	local absb = '(.+)\'s (.+) is absorbed by (.+).'				local fabsb = string.find(arg1, absb)
+	local hits = L['%s\'s %s hits %s for %d'] 								local fhits = string.find(arg1, enemyFrames:SanitizePattern(hits))
+	local crits = L['%s\'s %s crits %s for %d'] 							local fcrits = string.find(arg1, enemyFrames:SanitizePattern(crits))
+	local absb = SPELLLOGABSORBOTHEROTHER				local fabsb = string.find(arg1, enemyFrames:SanitizePattern(absb))
 	
-	local phits = 'Your (.+) hits (.+) for (.+)' 					local fphits = string.find(arg1, phits)
-	local pcrits = 'Your (.+) crits (.+) for (.+)' 					local fpcrits = string.find(arg1, pcrits)	
-	local pabsb = 'Your (.+) is absorbed by (.+).'					local fpabsb = string.find(arg1, pabsb)
+	local phits = L['Your %s hits %s for %d'] 									local fphits = string.find(arg1, enemyFrames:SanitizePattern(phits))
+	local pcrits = L['Your %s crits %s for %d'] 								local fpcrits = string.find(arg1, enemyFrames:SanitizePattern(pcrits))	
+	local pabsb = SPELLLOGABSORBSELFOTHER				local fpabsb = string.find(arg1, enemyFrames:SanitizePattern(pabsb))
 	
-	local channelDotRes = "(.+)'s (.+) was resisted by (.+)."		local fchannelDotRes = string.find(arg1, channelDotRes)
-	local pchannelDotRes = "(.+)'s (.+) was resisted."				local fpchannelDotRes = string.find(arg1, pchannelDotRes)
+	local channelDotRes = SPELLRESISTOTHEROTHER	local fchannelDotRes = string.find(arg1, enemyFrames:SanitizePattern(channelDotRes))
+	local pchannelDotRes = SPELLRESISTOTHERSELF	local fpchannelDotRes = string.find(arg1, enemyFrames:SanitizePattern(pchannelDotRes))
 	
 	-- other hits/crits
 	if fhits or fcrits or fabsb then
 		local m = fhits and hits or fcrits and crits or fabsb and absb
-		local c = gsub(arg1, m, '%1')
-		local s = gsub(arg1, m, '%2')
-		local t = gsub(arg1, m, '%3')
-		
-		t = t == 'you' and playerName or t
+		local first, second, third = enemyFrames:cmatch(arg1, m)
+		local c = first
+		local s = second
+		local t = third == L['You_HitsCrits'] and playerName or third
 		
 		-- instant spells that cancel casted ones
 		if SPELLINFO_INSTANT_SPELLCASTS_TO_TRACK[s] then 
@@ -610,8 +621,9 @@ local HitsCrits = function()
 	-- self hits/crits
 	if fphits or fpcrits or fpabsb then
 		local m = fphits and phits or fpcrits and pcrits or fpabsb and pabsb
-		local s = gsub(arg1, m, '%1')
-		local t = gsub(arg1, m, '%2')
+		local first, second = enemyFrames:cmatch(arg1, m)
+		local s = first
+		local t = second
 		
 		-- interrupt dmg spell
 		if SPELLINFO_INTERRUPTS_TO_TRACK[s] then
@@ -627,8 +639,9 @@ local HitsCrits = function()
 	-- resisted channeling dmg spells (arcane missiles ITS A VERY SPECIAL AND UNIQUE SNOWFLAKE SPELL)
 	if fchannelDotRes or fpchannelDotRes then
 		local m = fchannelDotRes and channelDotRes or fpchannelDotRes and pchannelDotRes
-		local c = gsub(arg1, m, '%1')
-		local s = gsub(arg1, m, '%2')
+		local first, second = enemyFrames:cmatch(arg1, m)
+		local c = first
+		local s = second
 		
 		if SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[s] then
 			newCast(c, s, true)
@@ -639,18 +652,19 @@ local HitsCrits = function()
 end
 
 local channelDot = function()
-	local channelDot 	= "(.+) suffers (.+) from (.+)'s (.+)."		local fchannelDot = string.find(arg1, channelDot)
-	local channelpDot 	= '(.+) suffers (.+) from your (.+).'		local fchannelpDot	= string.find(arg1, channelpDot)
-	local pchannelDot 	= "You suffer (.+) from (.+)'s (.+)."		local fpchannelDot = string.find(arg1, pchannelDot)
+	local channelDot 	= PERIODICAURADAMAGEOTHEROTHER	local fchannelDot = string.find(arg1, enemyFrames:SanitizePattern(channelDot))
+	local channelpDot 	= PERIODICAURADAMAGESELFOTHER	local fchannelpDot	= string.find(arg1, enemyFrames:SanitizePattern(channelpDot))
+	local pchannelDot 	= PERIODICAURADAMAGEOTHERSELF	local fpchannelDot = string.find(arg1, enemyFrames:SanitizePattern(pchannelDot))
 				
-	local MDrain = '(.+)\'s (.+) drains (.+) Mana from' 			local fMDrain = string.find(arg1, MDrain)
+	local MDrain = L['%s\'s %s drains'] 			local fMDrain = string.find(arg1, enemyFrames:SanitizePattern(MDrain))
 	
 	-- channeling dmg spells on other (mind flay, life drain(?))
 	if fchannelDot then
 		local m = channelDot
-		local c = gsub(arg1, m, '%3')
-		local s = gsub(arg1, m, '%4')
-		local t = gsub(arg1, m, '%1')
+		local first, second, third, fourth = enemyFrames:cmatch(arg1, m)
+		local c = third
+		local s = fourth
+		local t = first
 		
 		if SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[s] then
 			newCast(c, s, true)
@@ -660,8 +674,9 @@ local channelDot = function()
 	-- channeling dmg spells on self (mind flay, life drain(?))
 	if fpchannelDot then
 		local m = pchannelDot
-		local c = gsub(arg1, m, '%2')
-		local s = gsub(arg1, m, '%3')
+		local first, second, third = enemyFrames:cmatch(arg1, m)
+		local c = second
+		local s = third
 		
 		if SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[s] then
 			newCast(c, s, true)
@@ -669,10 +684,11 @@ local channelDot = function()
 	end
 		
 	-- drain mana 
-	if fMDrain then
+	if fMDrain and string.find(arg1, L['Mana']) then
 		local m = MDrain
-		local c = gsub(arg1, m, '%1')
-		local s = gsub(arg1, m, '%2')
+		local first, second = enemyFrames:cmatch(arg1, m)
+		local c = first
+		local s = second
 		
 		if SPELLINFO_CHANNELED_SPELLCASTS_TO_TRACK[s] then
 			--print(arg1)
@@ -683,24 +699,26 @@ local channelDot = function()
 end
 
 local channelHeal = function()
-	local hot  = '(.+) gains (.+) health from (.+)\'s (.+).'		local fhot = string.find(arg1, hot)
-	local phot = 'You gain (.+) health from (.+)\'s (.+).'			local fphot = string.find(arg1, phot)
-	local shot = 'You gain (.+) health from (.+).'					local fshot = string.find(arg1, shot)	
+	local hot  = PERIODICAURAHEALOTHEROTHER	local fhot = string.find(arg1, enemyFrames:SanitizePattern(hot))
+	local phot = PERIODICAURAHEALOTHERSELF		local fphot = string.find(arg1, enemyFrames:SanitizePattern(phot))
+	local shot = PERIODICAURAHEALSELFSELF				local fshot = string.find(arg1, enemyFrames:SanitizePattern(shot))	
 	
 	
 	if fhot or fphot then
 		local m = fhot and hot or fphot and phot
-		local c = fhot and gsub(arg1, m, '%3') or fphot and gsub(arg1, m, '%2')
-		local s = fhot and gsub(arg1, m, '%4') or fphot and gsub(arg1, m, '%3')
-		--local t = fhot and gsub(arg1, m, '%1') or nil
+		local first, second, third, fourth = enemyFrames:cmatch(arg1, m)
+		local c = fhot and third or fphot and second
+		local s = fhot and fourth or fphot and third
+		--local t = fhot and first or nil
 		
 		if SPELLINFO_CHANNELED_HEALS_SPELLCASTS_TO_TRACK[s] then
 			newCast(c, s, true)
 		end	
 	elseif fshot then
 		local m = shot
+		local first, second = enemyFrames:cmatch(arg1, m)
 		local c = playerName
-		local s = gsub(arg1, m, '%2')
+		local s = second
 		
 		if SPELLINFO_CHANNELED_HEALS_SPELLCASTS_TO_TRACK[s] then
 			newCast(c, s, true)
@@ -711,14 +729,14 @@ local channelHeal = function()
 end
 
 local playerDeath = function()
-	local pdie 		= 'You die.'					local fpdie		= string.find(arg1, pdie)
-	local dies		= '(.+) dies.'					local fdies		= string.find(arg1, dies)
-	local slain 	= '(.+) is slain by (.+).'		local fslain 	= string.find(arg1, slain)
-	local pslain 	= 'You have slain (.+).'		local fpslain 	= string.find(arg1, pslain)
+	local pdie 		= UNITDIESSELF					local fpdie		= string.find(arg1, pdie)
+	local dies		= UNITDIESOTHER				local fdies		= string.find(arg1, enemyFrames:SanitizePattern(dies))
+	local slain 	= PARTYKILLOTHER	local fslain 	= string.find(arg1, enemyFrames:SanitizePattern(slain))
+	local pslain 	= SELFKILLOTHER	local fpslain 	= string.find(arg1, enemyFrames:SanitizePattern(pslain))
 	
 	if fpdie or fdies or fslain or fpslain then
 		local m = fdies and dies or fslain and slain or fpslain and pslain
-		local c = fpdie and playerName or gsub(arg1, m, '%1')
+		local c = fpdie and playerName or enemyFrames:cmatch(arg1, m)
 		
 		forceHideTableItem(casts, c, nil)
 		forceHideTableItem(buffList, c, nil)
@@ -731,7 +749,7 @@ local playerDeath = function()
 end
 
 local fear = function()
-	local fear = '(.+) attempts to run away in fear!' 				local ffear = string.find(arg1, fear)
+	local fear = L['(.+) attempts to run away in fear!'] 				local ffear = string.find(arg1, fear)
 	
 	if ffear then
 		local t = arg2			
@@ -743,7 +761,7 @@ end
 
 ----------------------------------------------------------------------------
 local singleEventdebug = function()
-	local v = '(.+) gains (.+) health from your (.+).'
+	local v = enemyFrames:SanitizePattern(PERIODICAURAHEALSELFOTHER)
 	
 	if string.find(arg1, v) then
 		print(event)

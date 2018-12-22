@@ -1,20 +1,6 @@
 
 	local enabled = false
 	
-	-- Binding Variables
-	BINDING_HEADER_EFKHEADER 	= "Enemy Frames Keybinds"
-	BINDING_NAME_SETKT 			= "Assign Skull to Target"
-	BINDING_NAME_GETKT 			= "Target Skull"
-	
-	BINDING_NAME_SETSTAR 		= "Assign Star to Target"
-	BINDING_NAME_SETMOON		= "Assign Moon to Target"
-	BINDING_NAME_SETSQUARE		= "Assign Square to Target"
-	BINDING_NAME_SETDIAMOND		= "Assign Diamond to Target"
-	BINDING_NAME_SETCROSS		= "Assign Cross to Target"
-	BINDING_NAME_SETCIRCLE		= "Assign Circle to Target"
-	BINDING_NAME_SETTRIANGLE	= "Assign Triangle to Target"
-	
-	
 	function getKTbind()
 		if enabled then
 			TargetByName(ENEMYFRAMECOREGetRaidTargetbyIcon('skull'), true)

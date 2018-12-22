@@ -16,7 +16,7 @@
 				if name ~= UnitName'player' then
 					--buttonName = getglobal("WorldStateScoreButton"..i.."NameButtonName")
 					if class then
-						class = string.upper(class)
+						class = enemyFrames:GetEnglishClass(class)
 					
 						getglobal("WorldStateScoreButton"..i.."NameButtonName"):SetVertexColor(RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b)
 					end

@@ -1,4 +1,5 @@
 	-------------------------------------------------------------------------------
+	local L = enemyFrames.L
 	local raidTargetFrame = CreateFrame('Frame', nil, TargetFrame)
 	raidTargetFrame:SetFrameLevel(2)
 	raidTargetFrame:SetHeight(36)	raidTargetFrame:SetWidth(36)
@@ -50,7 +51,7 @@
     --TargetFrame.EFcast.text:SetShadowOffset(1, -1)
     TargetFrame.EFcast.text:SetShadowColor(0, 0, 0)
     TargetFrame.EFcast.text:SetPoint('LEFT', TargetFrame.EFcast, 2, .5)
-    TargetFrame.EFcast.text:SetText('drag-me')
+    TargetFrame.EFcast.text:SetText(L['drag-me'])
 
     TargetFrame.EFcast.timer = TargetFrame.EFcast:CreateFontString(nil, 'OVERLAY')
     TargetFrame.EFcast.timer:SetTextColor(1, 1, 1)
@@ -98,7 +99,7 @@
     TargetFrame.IntegratedCastBar.spellText:SetFont(STANDARD_TEXT_FONT, 10, 'OUTLINE')
     TargetFrame.IntegratedCastBar.spellText:SetShadowColor(0, 0, 0)
     TargetFrame.IntegratedCastBar.spellText:SetPoint('LEFT', TargetFrame.IntegratedCastBar, 1, .5)
-    TargetFrame.IntegratedCastBar.spellText:SetText('Polymorph') 
+    TargetFrame.IntegratedCastBar.spellText:SetText(L['Polymorph']) 
 	
 	TargetFrame.IntegratedCastBar.timer = TargetFrame.IntegratedCastBar:CreateFontString(nil, 'OVERLAY')
     TargetFrame.IntegratedCastBar.timer:SetTextColor(1, 1, 1)
@@ -161,8 +162,8 @@
 						sparkPosition = (GetTime() - v.timeStart) / (v.timeEnd - v.timeStart)
 					end
 					
-					TargetFrame.EFcast.text:SetText(string.sub(v.spell, 1, 20))
-					TargetFrame.IntegratedCastBar.spellText:SetText(string.sub(v.spell, 1, 15))
+					TargetFrame.EFcast.text:SetText(v.spell)
+					TargetFrame.IntegratedCastBar.spellText:SetText(v.spell)
 					TargetFrame.EFcast.timer:SetText(getTimerLeft(v.timeEnd)..'s')
 					TargetFrame.IntegratedCastBar.timer:SetText(getTimerLeft(v.timeEnd)..'s')
 					TargetFrame.EFcast.icon:SetTexture(v.icon)

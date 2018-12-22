@@ -147,12 +147,13 @@
 	end
 	-------------------------------------------------------------------------------
 	local parseCombatLog = function()
-		local bCast = '(.+) begins to cast (.+).'	local bbCast = string.find(arg1, bCast)
+		local bCast = SPELLCASTOTHERSTART	local bbCast = string.find(arg1, enemyFrames:SanitizePattern(bCast))
 		
 		if bbCast then
 			local m = bCast
-			local c = gsub(arg1, m, '%1')
-			local s = gsub(arg1, m, '%2')
+			local first, second = enemyFrames:cmatch(arg1, m)
+			local c = first
+			local s = second
 			
 			if not SPELLINFO_SINGLE_TARGET_BUFF_SPELLS[s] and SPELLINFO_SPELLCASTS_TO_TRACK[s] then
 				newCasterEntry(c, s)
