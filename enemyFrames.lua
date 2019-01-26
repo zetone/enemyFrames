@@ -260,10 +260,14 @@ for i = 1, unitLimit,1 do
 	units[i] = CreateEnemyUnitFrame('enemyFrameUnit'..i, enemyFrame)
 	units[i].index = i	
 		
-	units[i]:SetScript('OnClick', function()	if arg1 == 'LeftButton' and this.tar ~= nil  then  	TargetByName(this.tar, true)			end
-		if arg1 == 'RightButton' then	
-			spawnRTMenu(this, this.tar)	end
-	end)
+	units[i]:SetScript('OnClick', function()	
+			if arg1 == 'LeftButton' and this.tar ~= nil  then  	
+				TargetByName(this.tar, true)
+			end
+			if arg1 == 'RightButton' then	
+				spawnRTMenu(this, this.tar)	
+			end
+		end)
 end
 
 

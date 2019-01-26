@@ -41,16 +41,20 @@ local function fillPlayerList()
 	-- add new players
 	for k, v in pairs(l) do
 		if playerList[v['name']] == nil then	
-			playerList[v['name']] 			 = v 		
+			playerList[v['name']] = v 		
 			refreshUnits = true 
 		end
 	end
 	-- remove aabsent players
 	for k, v in pairs(playerList) do
 		if l[v['name']] == nil then	
-			playerList[v['name']] = nil	
-			nearbyList[v['name']] = nil	
-				
+			playerList[v['name']] = nil
+			-- check if a nearby player left
+			for r, t in pairs(nearbyList) do
+				if t['name'] == v['name'] then
+					nearbyList[r] = nil
+				end
+			end				
 			refreshUnits = true 
 		end
 	end
@@ -100,7 +104,7 @@ local function addNearbyPlayers(players)
 	end
 end
 
-local function verifyUnitInfo(unit)
+local function verifyUnitInfo(unit) --/run print(UnitIsPlayer('target') and 'true' or 'false')
 	if UnitExists(unit) and UnitIsPlayer(unit) and UnitFactionGroup(unit) ~= playerFaction then --UnitIsEnemy(unit, 'player') then
 		local u = {}
 		u['name']		= UnitName(unit)
@@ -161,8 +165,9 @@ local function updatePlayerListInfo()
 		local c, b = v['castinfo'], v['buff'] 
 		v['castinfo'] 	= SPELLCASTINGCOREgetCast(v['name'])
 		v['buff'] 		= SPELLCASTINGCOREgetPrioBuff(v['name'], 1)[1]
+		local buffList = SPELLCASTINGCOREgetBuffs(v['name'])
 		
-		if v['castinfo'] or v['buff'] then	
+		if v['castinfo'] or v['buff'] or tlength(buffList) > 0 then	
 			v['nextCheck'] 	= nextCheck	
 			-- set health to 100 for newly seen players
 			if v['nearby'] == false then	v['health'] = v['maxhealth'] and v['maxhealth'] or 100	v['mana'] = v['maxmana'] and v['maxmana'] or 100	refreshUnits 	= true	v['refresh'] 	= true	end
@@ -453,6 +458,12 @@ SlashCmdList["ENEMYFRAMECORE"] = function(msg)
 			local name, killingBlows, honorableKills, deaths, honorGained, faction, rank, race, class = GetBattlefieldScore(i)
 			print(name)
 		end	
+	elseif msg == 'near' then
+		
+		print('nearbyList:')
+		for k, v in pairs(nearbyList) do
+			print(v['name'])
+		end
 	else
 		print('playerlist:')
 		for k, v in pairs(playerList) do

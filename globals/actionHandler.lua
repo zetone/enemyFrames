@@ -9,6 +9,15 @@
 		return true
 	end
 	-------------------------------------------------------------------------------
+	local function reTarget(b, currentTarget)
+		if b then 
+			if currentTarget == nil then	ClearTarget()	
+			else
+				TargetByName(currentTarget, true)
+			end
+		end
+	end
+	-------------------------------------------------------------------------------
 	local AHTooltip = CreateFrame("GameTooltip","AHTooltip",UIParent,"GameTooltipTemplate")
 	AHTooltip:SetOwner(UIParent,"ANCHOR_NONE")
 
@@ -23,10 +32,7 @@
 		
 		UseActionAH( slot, checkFlags, checkSelf )
 		
-		if b then 
-			if currentTarget == nil then	ClearTarget()	
-			else	TargetByName(currentTarget, true)	end
-		end	
+		reTarget(b, currentTarget)	
 	end
 	-------------------------------------------------------------------------------
 	CastSpellByNameAH = CastSpellByName;
@@ -37,9 +43,6 @@
 		
 		CastSpellByNameAH(spellName, onself)
 		
-		if b then 
-			if currentTarget == nil then	ClearTarget()	
-			else	TargetByName(currentTarget, true)	end
-		end	
+		reTarget(b, currentTarget)
 	end
 	-------------------------------------------------------------------------------

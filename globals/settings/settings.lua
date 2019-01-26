@@ -5,7 +5,7 @@ print = function(m) DEFAULT_CHAT_FRAME:AddMessage(m) end
 
 tlength = function(t)	local i = 0 for k, j in ipairs(t) do i = i + 1 end return i end
 
-ENEMYFRAMESVERSION = 1.33
+ENEMYFRAMESVERSION = 1.34
 ENEMYFRAMESNEWVERSION = ENEMYFRAMESVERSION
 ENEMYFRAMESVERSIONFOUND = false
 

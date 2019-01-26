@@ -129,13 +129,17 @@
 		return false
 	end
 	local newCasterEntry = function(c, s)
-		local currentTarget = UnitExists'target' and UnitName'target' or nil
+		local currentTarget 	 = UnitExists'target' and UnitName'target' or nil
+		
+		if not ENEMYFRAMECOREgetPlayer(c) then return end
 		
 		if currentTarget and currentTarget ~= c then
 			local b = checkCasterTarget(c)
 			
 			if currentTarget == nil then	ClearTarget()	
-			else	TargetByName(currentTarget, true)	end
+			else	
+				TargetByName(currentTarget, true)
+			end
 			
 			if b then
 				removeDoubleEntry(c)
