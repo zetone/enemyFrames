@@ -29,7 +29,7 @@
 		['Ice Barrier'] = true, ['Ice Armor'] = true, 				['Ice Block'] = true, 	['Impact'] = true, 		['Mage Armor'] = true, 	
 		['Mana Shield'] = true, ['Polymorph'] = true, 				['Polymorph: Pig'] = true, 						['Polymorph: Turtle'] = true,
 		-- PALADIN
-		['Divine Intervention'] = true, 	['Divine Protection'] = true, 		['Divine Shield'] = true, ['Hammer of Justice'] = true, 
+		['Divine Intervention'] = true, 	['Divine Protection'] = true, 		['Divine Shield'] = true, ['Hammer of Justice'] = true, ['Seal of Command'] = true,
 		['Seal of the Crusader'] = true, 	['Seal of Righteousness'] = true, 	['Stun'] = true,
 		-- PRIEST
 		['Blackout'] = true, ['Inner Fire'] = true, ['Psychic Scream'] = true,   ['Silence'] = true,
@@ -76,6 +76,7 @@
 		['Invulnerability']        	= {['icon'] = [[Interface\Icons\Spell_holy_divineintervention]], 	['duration'] = 6, 	['type'] = 'magic',		['prio'] = 5},
 		['Living Free Action'] 		= {['icon'] = [[Interface\Icons\Inv_potion_07]], 					['duration'] = 5, 	['type'] = 'magic', 	['prio'] = 4},
 		['Net-o-Matic']        		= {['icon'] = [[Interface\Icons\ability_ensnare]], 					['duration'] = 10, 	['type'] = 'physical',	['prio'] = 2},
+		['Nimble Reflexes']			= {['icon'] = [[Interface\Icons\ability_meleedamage]],				['duration'] = 8,},
 		['Perception']        		= {['icon'] = [[Interface\Icons\Spell_nature_sleep]], 				['duration'] = 20,},
 		['Recently Bandaged']		= {['icon'] = [[Interface\Icons\inv_misc_bandage_08]],				['duration'] = 60,	['display'] = false,},
 		["Reckless Charge"] 		= {['icon'] = [[Interface\Icons\Spell_nature_astralrecal]], 		['duration'] = 12, 	['type'] = 'magic', 	['prio'] = 3},
@@ -98,6 +99,7 @@
             -- DRUID
     	['Abolish Poison']         	= {['icon'] = [[Interface\Icons\Spell_nature_nullifypoison_02]],	['duration'] = 8,	['type'] = 'magic' },
 		['Barkskin']				= {['icon'] = [[Interface\Icons\Spell_nature_stoneclawtotem]],		['duration'] = 15,	['type'] = 'magic', 	['prio'] = 2},
+		['Bash']					= {['icon'] = [[Interface\Icons\Ability_druid_bash]],				['duration'] = 4,	['type'] = 'physical', 	['prio'] = 1},
 		['Dash']					= {['icon'] = [[Interface\Icons\ability_druid_dash]],				['duration'] = 15,	},
 		['Demoralizing Roar']		= {['icon'] = [[Interface\Icons\ability_druid_demoralizingroar]],	['duration'] = 30,	['display'] = false,},
 		['Entangling Roots'] 		= {['icon'] = [[Interface\Icons\Spell_nature_stranglevines]], 		['duration'] = 12, 	['type'] = 'magic', 	['prio'] = 1, 	['dr'] = 'Controlled Root'},
@@ -113,6 +115,8 @@
     	['Nature\'s Grasp']        	= {['icon'] = [[Interface\Icons\Spell_nature_natureswrath]], 		['type'] = 'magic', ['duration'] = 45},
 		['Pounce']					= {['icon'] = [[Interface\Icons\Ability_druid_supriseattack]],		['duration'] = 2,	['display'] = false,},
 		['Rake']					= {['icon'] = [[Interface\Icons\Ability_druid_disembowel]],			['duration'] = 9,	['display'] = false,},
+		['Regrowth']				= {['icon'] = [[Interface\Icons\Spell_nature_resistnature]],		['duration'] = 21,	['display'] = false,},
+		['Rejuvenation']			= {['icon'] = [[Interface\Icons\Spell_nature_rejuvenation]],		['duration'] = 12,	['display'] = false,},
 		['Rip']						= {['icon'] = [[Interface\Icons\Ability_ghoulfrenzy]],				['duration'] = 12,	['display'] = false,},
 		['Tiger\'s Fury']			= {['icon'] = [[Interface\Icons\ability_mount_jungletiger]],		['duration'] = 6,	['display'] = false,},
 		
@@ -323,7 +327,7 @@
 		-- DRUID
 		['Moonfire']		= {'Moonfire'},
 		['Rake']			= {'Rake'},
-		--['Regrowth']		= {},
+		['Regrowth']		= {'Regrowth',},
 		-- HUNTER
 		['Wing Clip']		= {'Wing Clip',},
 		-- MAGE

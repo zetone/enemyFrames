@@ -11,15 +11,18 @@ local playerOutdoorLastseen = 60
 local insideBG = false
 local nextPlayerCheck = 6	-- timer since last seen in seconds
 local refreshUnits = true
+local globalNearbyCheckTimer, globalNearbyCheckNext = 10, 0
 -- LISTS
 local playerList = {}
 local raidTargets = {}
 local prioMembers = {}
 local nearbyList = {}
 local maxUnitsDisplayed = 15
+local playerTargetCounterList = {}
 -- DUMMY FRAME
 local f = CreateFrame('Frame', 'enemyFramesCore', UIParent)
 --
+local playerTargetCounter = 0
 
 local function fillPlayerList()
 	local f
@@ -130,7 +133,6 @@ local function verifyUnitInfo(unit) --/run print(UnitIsPlayer('target') and 'tru
 		-- update fc health text
 		if playerList[u['name']] and playerList[u['name']]['fc'] then WSGUIupdateFChealth(unit) end
 		
-		--u['targetcount'] = u['targetcount'] and u['targetcount'] + 1 or 1
 		
 		return true
 	end
@@ -159,7 +161,6 @@ end
 -- update unit info: casts, cc, inactive
 local function updatePlayerListInfo()
 	local nextCheck = GetTime() + nextPlayerCheck
-	local nextSeen	= GetTime() + playerOutdoorLastseen
 
 	for k, v in pairs(playerList) do
 		local c, b = v['castinfo'], v['buff'] 
@@ -175,6 +176,19 @@ local function updatePlayerListInfo()
 			
 		end
 		
+		-- outdoors
+		if not insideBG then
+			if not v['nearby'] and v['lastSeen'] and GetTime() > v['lastSeen'] then
+				playerList[v['name']] 	= nil
+				refreshUnits 			= true				
+			end
+		end		
+	end
+end
+
+local function globalNearbyMaintenance()
+	local nextSeen	= GetTime() + playerOutdoorLastseen
+	for k, v in pairs(playerList) do
 		-- remove inactive player
 		if v['nextCheck'] and v['nearby'] then
 			if GetTime() > v['nextCheck'] then	
@@ -186,14 +200,6 @@ local function updatePlayerListInfo()
 				if not insideBG then v['lastSeen'] = nextSeen	end 
 			end	
 		end
-		
-		-- outdoors
-		if not insideBG then
-			if not v['nearby'] and v['lastSeen'] and GetTime() > v['lastSeen'] then
-				playerList[v['name']] 	= nil
-				refreshUnits 			= true				
-			end
-		end		
 	end
 end
 
@@ -269,6 +275,28 @@ local function resetTargetCount()
 	end
 end
 
+local playerTargetCounterMaintenance = function()
+	if not insideBG then playerTargetCounter = 0 return end
+	
+	local currentTarget = UnitName'target'
+	for k, v in pairs(playerTargetCounterList) do
+		if not playerList[v] or not playerList[v]['nearby'] then
+			playerTargetCounterList[v] = nil
+		--[[else
+			TargetByName(v, true)
+			if  UnitName'target' ~= v or UnitName'targettarget' ~= UnitName'player' then
+				playerTargetCounterList[v] = nil
+			end]]--
+		end
+	end
+	--[[
+	if not currentTarget then
+		ClearTarget()
+	else
+		TargetByName(currentTarget, true)
+	end]]--
+end
+
 --- GLOBAL ACCESS ---
 function ENEMYFRAMECOREgetPlayer(name)
 	return playerList[name]
@@ -292,6 +320,17 @@ function ENEMYFRAMECOREUpdateFlagCarriers(fc)
 	TARGETFRAMEsetFC(fc)
 	WSGUIupdateFC(fc)
 	WSGHANDLERsetFlagCarriers(fc)
+	--[[
+	if fc['Alliance'] then
+		print('Alliance: ' .. fc['Alliance'])
+	else
+		print('Alliance: none')
+	end
+	if fc['Horde'] then
+		print('Horde: ' .. fc['Horde'])
+	else
+		print('Horde: none')
+	end]]--
 end
 
 function ENEMYFRAMECORESetPlayersData(list)
@@ -344,6 +383,10 @@ end
 IsInsideBG = function()
 	return insideBG
 end
+
+ENEMYFRAMECOREgetPlayerTargetCounter = function()
+	return tlength(playerTargetCounterList)
+end
 --
 --#################--
 ---------------------
@@ -355,6 +398,9 @@ local function enemyFramesCoreOnUpdate()
 	-- use target & mouseover to further populate list
 	verifyUnitInfo('target')
 	verifyUnitInfo('mouseover')
+	
+	--
+	
 	
 	
 	getRaidMembersTarget()
@@ -370,7 +416,13 @@ local function enemyFramesCoreOnUpdate()
 	-- update player list
 	-- add casts/buffs 
 	-- remove inactive players
-	updatePlayerListInfo()	
+	updatePlayerListInfo()
+	
+	if now > globalNearbyCheckNext then
+		globalNearbyMaintenance()
+		
+		globalNearbyCheckNext = now + globalNearbyCheckTimer
+	end
 	
 	if ENEMYFRAMESPLAYERDATA['enableFrames'] then
 		if refreshUnits then

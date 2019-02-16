@@ -192,7 +192,7 @@
     end
 	-------------------------------------------------------------------------------
 	TARGETFRAMEsetFC = function(fc)
-		flagCarriers = fc	
+		flagCarriers = fc
 	end
 	-------------------------------------------------------------------------------
 	local portraitDebuff = CreateFrame('Frame', 'TargetPortraitDebuff', TargetFrame)

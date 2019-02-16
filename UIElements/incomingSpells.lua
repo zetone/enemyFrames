@@ -138,7 +138,8 @@
 			
 			if currentTarget == nil then	ClearTarget()	
 			else	
-				TargetByName(currentTarget, true)
+				--TargetByName(currentTarget, true)
+				TargetLastTarget()
 			end
 			
 			if b then
@@ -164,11 +165,18 @@
 		end
 	end
 	-------------------------------------------------------------------------------
+	local hideEntries = function()
+		for i = 1, unitsLimit do
+			units[i]:Hide()
+		end
+	end
+	-------------------------------------------------------------------------------
 	local eventHandler = function()
 		if event == 'PLAYER_ENTERING_WORLD' or event == 'ZONE_CHANGED_NEW_AREA' then
 			--incFrame:Hide()
 			enabled = false
 			incFrame:SetScript('OnUpdate', nil)
+			hideEntries()
 		elseif event == 'CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE' then
 			if enabled and ENEMYFRAMESPLAYERDATA['incomingSpells'] then
 				parseCombatLog()

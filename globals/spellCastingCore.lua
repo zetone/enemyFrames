@@ -393,9 +393,16 @@ local handleHeal = function()
 	local ocheal = '(.+)\'s (.+) critically heals (.+) for (.+).'	local focheal = string.find(arg1, ocheal)
 		
 	if fh or fc then
+		local s = gsub(arg1, h, '%1')
 		local n  = gsub(arg1, h, '%2')
 		local no = gsub(arg1, h, '%3')
 		newHeal(n, no, fc and 1 or 0)
+		
+		n = n == 'you' and playerName or n
+		
+		if SPELLINFO_DEBUFF_REFRESHING_SPELLS[s] then
+			refreshBuff(n, s)
+		end
 	elseif fhot then--or string.find(arg1, totemHot)  then
 		local m = hot--fhot and hot --or  string.find(arg1, totemHot) and totemHot			
 		local n  = gsub(arg1, m, '%1')
@@ -407,9 +414,14 @@ local handleHeal = function()
 		local m = foheal and oheal or focheal and ocheal
 		local c = gsub(arg1, m, '%1')
 		local s = gsub(arg1, m, '%2')
+		local t = gsub(arg1, m, '%3')
 		
 		if SPELLINFO_INSTANT_SPELLCASTS_TO_TRACK[s] then
 			forceHideTableItem(casts, c, nil)
+		end
+		
+		if SPELLINFO_DEBUFF_REFRESHING_SPELLS[s] then
+			refreshBuff(t, s)
 		end
 	end
 	
@@ -743,7 +755,7 @@ end
 
 ----------------------------------------------------------------------------
 local singleEventdebug = function()
-	local v = '(.+) gains (.+) health from your (.+).'
+	local v = '(.+) begins to cast Seduction.'
 	
 	if string.find(arg1, v) then
 		print(event)
@@ -914,6 +926,8 @@ f:RegisterEvent'CHAT_MSG_SPELL_PERIODIC_PARTY_BUFFS'
 f:RegisterEvent'CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE'    
 f:RegisterEvent'CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE'
 f:RegisterEvent'CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS'
+f:RegisterEvent'CHAT_MSG_SPELL_PET_DAMAGE'
+f:RegisterEvent'CHAT_MSG_SPELL_PET_BUFF'
 f:RegisterEvent'CHAT_MSG_SPELL_BREAK_AURA'
 f:RegisterEvent'CHAT_MSG_SPELL_AURA_GONE_SELF'
 f:RegisterEvent'CHAT_MSG_SPELL_AURA_GONE_PARTY'

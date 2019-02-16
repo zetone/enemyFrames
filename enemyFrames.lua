@@ -524,7 +524,9 @@ local getTimerLeft = function(tEnd)
 end
 
 local function SetDefaultIconTex(p)
-	p['portrait']	= p['sex'] .. '-' .. p['race']
+	if p['race'] then
+		p['portrait']	= p['sex'] .. '-' .. p['race']
+	end
 	local d = ENEMYFRAMESPLAYERDATA['defaultIcon']
 	if d == 'rank' and (p['rank'] < 0 or not p['rank']) then d = 'portrait' end
 	return GET_DEFAULT_ICON(d, p[d])
@@ -543,7 +545,9 @@ local function drawUnits(list)
 		
 		-- hightlight nearby unit
 		if v['nearby'] then		
-			units[i].hpbar:SetStatusBarColor(colour.r, colour.g, colour.b)
+			if colour then
+				units[i].hpbar:SetStatusBarColor(colour.r, colour.g, colour.b)
+			end
 			if not units[i].mo then
 				units[i].name:SetTextColor(colour.r, colour.g, colour.b)	
 			end			

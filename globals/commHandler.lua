@@ -34,11 +34,16 @@
 				flagCarriers['Alliance'] = gsub(arg2, m, '%2')
 				flagCarriers['Horde'] 	 = gsub(arg2, m, '%3')
 				
-				if flagCarriers['Alliance'] == ' ' then flagCarriers['Alliance'] = nil end
-				if flagCarriers['Horde'] 	== ' ' then flagCarriers['Horde'] = nil end
+				if flagCarriers['Alliance'] == ' ' then flagCarriers['Alliance'] = nil
+				--print('no one with alliance flag')
+				end
+				if flagCarriers['Horde'] 	== ' ' then flagCarriers['Horde'] = nil
+				--print('no one with horde flag')
+				end
 				
-				ENEMYFRAMECOREUpdateFlagCarriers(flagCarriers)
-			end		
+				ENEMYFRAMECOREUpdateFlagCarriers(flagCarriers)				
+			end
+			--print(arg1 .. ' - ' .. arg2)			
 		end
 	end
 	-------------------------------------------------------------------------------

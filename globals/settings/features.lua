@@ -15,10 +15,12 @@
 														[4] = {['id'] = 'targetPortraitDebuff', ['label'] = 'Prio debuff on Target Portrait'},
 														[5] = {['id'] = 'playerPortraitDebuff', ['label'] = 'Prio debuff on Player Portrait'},
 														[6] = {['id'] = 'targetDebuffTimers', 	['label'] = 'Debuff timers on target'},
+														
 													}
 	local checkBoxFeaturesBGN, checkBoxFeaturesBG  = 3, {	[1] = {['id'] = 'incomingSpells', 		['label'] = 'Incoming Spells (BGs only)'},
 															[2] = {['id'] = 'pvpmapblips', 			['label'] = 'Class colored map blips'},
 															[3] = {['id'] = 'efcBGannouncement', 	['label'] = 'Low Health EFC announcement'},
+															
 														}
 	-------------------------------------------------------------------------------
 	-- features

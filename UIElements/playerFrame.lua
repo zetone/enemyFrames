@@ -45,6 +45,20 @@
 	-- cooldown spiral
 	playerDebuffFrame.cd = CreateCooldown(playerDebuffFrame, 1.054, true)
 	playerDebuffFrame.cd:SetAlpha(1)
+	--- TARGET COUNT ---
+	--[[
+	PlayerFrame.targetCount = CreateFrame('Frame', nil, PlayerFrame)
+	PlayerFrame.targetCount:SetWidth(26) PlayerFrame.targetCount:SetHeight(20)
+	PlayerFrame.targetCount:SetPoint('CENTER', playerDebuffFrame,'TOP', 0, 4)
+	PlayerFrame.targetCount:SetFrameLevel(7)
+	
+	PlayerFrame.targetCount.text = PlayerFrame.targetCount:CreateFontString(nil, 'OVERLAY')--, 'GameFontNormalSmall')
+	PlayerFrame.targetCount.text:SetFont(STANDARD_TEXT_FONT, 17, 'OUTLINE')
+	PlayerFrame.targetCount.text:SetTextColor(.9, .9, .2, 1)
+	PlayerFrame.targetCount.text:SetShadowOffset(1, -1)
+	PlayerFrame.targetCount.text:SetShadowColor(0, 0, 0)
+	PlayerFrame.targetCount.text:SetPoint('CENTER', PlayerFrame.targetCount)
+	PlayerFrame.targetCount.text:SetText('8')]]--
 	-------------------------------------------------------------------------------
 	local a, maxa, b, c = .002, .058, 0, 1
 	local showPortraitDebuff = function()
@@ -74,7 +88,8 @@
 			playerDebuffFrame.debuffText:SetTexture()
 			playerDebuffFrame.duration:SetText('')
 			playerPortraitbgFrame.bgText:Hide()
-		end			
+		end
+
 			
 	end
 	-------------------------------------------------------------------------------

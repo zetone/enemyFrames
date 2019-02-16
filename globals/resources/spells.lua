@@ -95,6 +95,7 @@
 		['Dark Sludge']					= {['icon'] = [[Interface\Icons\spell_shadow_creepingplague]], 		['casttime'] = 5},
 		['Decayed Strength']			= {['icon'] = [[Interface\Icons\spell_holy_harmundeadaura]], 		['casttime'] = 2},
 		['Dire Growl'] 					= {['icon'] = [[Interface\Icons\ability_racial_cannibalize]], 		['casttime'] = 1,	['immune'] = true,},
+		['Enveloping Winds']			= {['icon'] = [[Interface\Icons\Spell_nature_cyclone]], 			['casttime'] = 2},
 		['Fevered Fatigue'] 			= {['icon'] = [[Interface\Icons\spell_nature_nullifydisease]], 		['casttime'] = 3,},
 		['Fire Shield II'] 				= {['icon'] = [[Interface\Icons\spell_fire_immolation]], 			['casttime'] = 1,},
 		['Flame Spike']					= {['icon'] = [[Interface\Icons\spell_fire_flamebolt]], 			['casttime'] = 3,},
@@ -111,6 +112,7 @@
 		['Ink Spray']					= {['icon'] = [[Interface\Icons\spell_nature_sleep]], 				['casttime'] = 1,	['immune'] = true,},
 		['Healing Ward']				= {['icon'] = [[Interface\Icons\spell_holy_layonhands]], 			['casttime'] = 2},
 		['Holy Smite']					= {['icon'] = [[Interface\Icons\Spell_holy_holysmite]], 			['casttime'] = 2.5},
+		['Lightning Blast'] 			= {['icon'] = [[Interface\Icons\Spell_nature_lightning]], 			['casttime'] = 3.2,},
 		['Lizard Bolt']					= {['icon'] = [[Interface\Icons\spell_nature_lightning]], 			['casttime'] = 2},
 		['Plague Cloud'] 				= {['icon'] = [[Interface\Icons\spell_shadow_callofbone]], 			['casttime'] = 2,},
 		['Plague Mind']					= {['icon'] = [[Interface\Icons\spell_shadow_callofbone]], 			['casttime'] = 4},
@@ -277,6 +279,7 @@
         ['Create Soulstone (Major)']    = {['icon'] = [[Interface\Icons\Spell_shadow_soulgem]], 		['casttime'] = 3},
         ['Enslave Demon']           	= {['icon'] = [[Interface\Icons\Spell_shadow_enslavedemon]], 	['casttime'] = 3},
         ['Fear']                    	= {['icon'] = [[Interface\Icons\Spell_shadow_possession]], 		['casttime'] = 1.5, ['type'] = 'dmg', ['school'] = 'shadow', ['class'] = 'WARLOCK'},
+		['Firebolt']               	 	= {['icon'] = [[Interface\Icons\Spell_fire_firebolt]], 			['casttime'] = 2,	['type'] = 'dmg', ['school'] = 'fire', 	 ['class'] = 'WARLOCK'},
         ['Howl of Terror']          	= {['icon'] = [[Interface\Icons\Spell_shadow_deathscream]], 	['casttime'] = 2, 	['type'] = 'dmg', ['school'] = 'shadow', ['class'] = 'WARLOCK'},
         ['Immolate']               	 	= {['icon'] = [[Interface\Icons\Spell_fire_immolation]], 		['casttime'] = 1.5, ['type'] = 'dmg', ['school'] = 'fire', 	 ['class'] = 'WARLOCK'},
         ['Inferno']                 	= {['icon'] = [[Interface\Icons\Spell_fire_incinerate]], 		['casttime'] = 2},
@@ -350,7 +353,7 @@
 		['Arcane Explosion'] 	= true,	['Cone of Cold'] = true, ['Fire Blast'] = true,	['Frost Nova'] = true,
 		
 		-- PALADIN
-		['Holy Shock'] = true, 
+		['Holy Shock'] 			= true, 
 		
 		-- PRIEST
 		['Holy Nova'] 			= true,
